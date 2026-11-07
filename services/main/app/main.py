@@ -19,6 +19,10 @@ app = FastAPI(title="SStudio Main Portal", version="3.0.0")
 
 # Statik fayllar va Shablonlar
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+static_dir = BASE_DIR / "static"
+if not static_dir.exists():
+    static_dir.mkdir(parents=True, exist_ok=True)
+app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
 
 async def get_current_user_optional(request: Request) -> Optional[User]:

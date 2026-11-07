@@ -46,7 +46,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px 36px;
+            padding: 14px 36px;
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -54,7 +54,7 @@
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
         }
 
-        /* Brand Logo */
+        /* Brand Logo with Favicon */
         .brand {
             font-size: 22px;
             font-weight: 900;
@@ -64,8 +64,21 @@
             color: #fff;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             position: relative;
+        }
+
+        .brand-logo-img {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            object-fit: cover;
+            filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.6));
+            transition: transform 0.3s ease;
+        }
+
+        .brand:hover .brand-logo-img {
+            transform: scale(1.08) rotate(4deg);
         }
 
         .brand span {
@@ -103,8 +116,8 @@
         }
 
         .avatar-icon {
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 16px;
+            font-weight: 800;
             color: #fff;
         }
 
@@ -114,7 +127,7 @@
             right: 0;
             top: 54px;
             width: 260px;
-            background: rgba(11, 15, 28, 0.85);
+            background: rgba(11, 15, 28, 0.88);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
             border: 1px solid var(--glass-border);
@@ -252,10 +265,11 @@
 <body>
     <header class="navbar">
         <a href="/" class="brand">
-            ⚡ <span>SStudio</span>
+            <img src="/static/favicon.png" alt="SStudio Logo" class="brand-logo-img">
+            <span>SStudio</span>
         </a>
 
-        <!-- Faqat Profile Avatari va Dropdown -->
+        <!-- Profile Avatari va Dropdown -->
         <div class="profile-container" id="profile-trigger-box">
             <div class="avatar-trigger" tabindex="0">
                 <span class="avatar-icon">
@@ -307,7 +321,6 @@
     </footer>
 
     <script>
-        // Mobil qurilmalarda click/active orqali dropdown ochish
         const profileBox = document.getElementById('profile-trigger-box');
         profileBox.addEventListener('click', function(e) {
             e.stopPropagation();
