@@ -60,11 +60,17 @@ jobs:
                 bash infra/setup-vps.sh
             else
                 cd /root/app/v3
-                echo "Yangi kod tortilmoqda (git pull)..."
-                git pull origin main
+                echo "Yangi kod tortilmoqda (toza reset bilan)..."
+                git fetch origin main
+                git reset --hard origin/main
             fi
 
-            # 2. Virtual muhit va kutubxonalar
+            # 2. Agar .env yo'q bo'lsa, yaratamiz
+            if [ ! -f "/root/app/v3/.env" ]; then
+                cp /root/app/v3/.env.example /root/app/v3/.env || true
+            fi
+
+            # 3. Virtual muhit va kutubxonalar
             if [ ! -d "/root/app/v3/.venv" ]; then
                 echo "Python venv yaratilmoqda..."
                 python3 -m venv /root/app/v3/.venv
@@ -75,7 +81,7 @@ jobs:
             /root/app/v3/.venv/bin/pip install -r /root/app/v3/requirements.txt
             /root/app/v3/.venv/bin/pip install email-validator
 
-            # 3. Systemd va Nginx ni yangilash
+            # 4. Systemd va Nginx ni yangilash
             echo "Xizmatlar yangilanmoqda..."
             cp /root/app/v3/infra/systemd/*.service /etc/systemd/system/ 2>/dev/null || true
             systemctl daemon-reload
