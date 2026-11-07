@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SStudio Quizer — Test Platformasi</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --bg: #0b0f19;
+            --card-bg: #131c2e;
+            --card-border: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+        .navbar { background: rgba(11, 15, 25, 0.9); border-bottom: 1px solid var(--card-border); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+        .nav-brand { font-size: 20px; font-weight: 800; color: #fff; text-decoration: none; }
+        .nav-brand span { color: var(--primary); }
+        .container { max-width: 900px; margin: 60px auto; padding: 0 20px; text-align: center; }
+        .badge { display: inline-block; background: rgba(99, 102, 241, 0.2); color: #a5b4fc; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-bottom: 16px; border: 1px solid #6366f144; }
+        h1 { font-size: 40px; font-weight: 800; margin-bottom: 16px; }
+        p { font-size: 16px; color: var(--text-muted); max-width: 600px; margin: 0 auto 30px; line-height: 1.6; }
+        .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 30px; margin-top: 30px; text-align: left; }
+        .btn { display: inline-block; padding: 10px 20px; background: var(--primary); color: #fff; text-decoration: none; border-radius: 8px; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <a href="/" class="nav-brand">🎯 <span>Quizer</span> by SStudio</a>
+        <div>
+            <a href="https://{{ domain }}" style="color: var(--text-muted); text-decoration: none; font-size: 14px;">← Asosiy portalga qaytish</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="badge">🚀 3-Bosqich: Quizer Engine</div>
+        <h1>Testlar va Olimpiadalar Platformasi</h1>
+        <p>AI yordamida savollar tuzish, 5 xil savol turlari, PIN-kodli maxfiy testlar va shaffof anti-cheat nazorati.</p>
+
+        <div class="card">
+            <h3 style="margin-bottom: 12px; color: #fff;">Quizer Servisi Muvaffaqiyatli Ishga Tushdi ✅</h3>
+            <p style="margin: 0; font-size: 14px;">Mikroservis port <strong>8002</strong> da to'liq ishlamoqda. Test tuzish va ishlash modullari ulanmoqda.</p>
+        </div>
+    </div>
+</body>
+</html>
