@@ -25,7 +25,7 @@ if not static_dir.exists():
 app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
 
-async def get_current_user_optional(request: Request) -> Optional[User]:
+async def get_current_user_optional(request: Request):
     token = request.cookies.get("sstudio_token")
     if not token:
         return None
@@ -39,9 +39,20 @@ async def get_current_user_optional(request: Request) -> Optional[User]:
         async with async_session_maker() as db:
             stmt = select(User).where(User.id == user_id, User.is_active == True, User.is_banned == False)
             res = await db.execute(stmt)
-            return res.scalar_one_or_none()
+            db_user = res.scalar_one_or_none()
+            if db_user:
+                return db_user
     except Exception:
-        return None
+        pass
+
+    # Fallback to JWT payload
+    return {
+        "id": payload.get("sub"),
+        "username": payload.get("username"),
+        "name": payload.get("name", payload.get("username", "Foydalanuvchi")),
+        "surname": payload.get("surname", ""),
+        "status": payload.get("status", "FREEMIUM")
+    }
 
 
 # --- 1. Redirectlar ---

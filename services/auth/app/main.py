@@ -132,7 +132,13 @@ async def api_register(
     await db.refresh(new_user)
 
     # Sessiya yaratish (30 kunlik)
-    token = create_access_token({"sub": str(new_user.id), "username": new_user.username})
+    token = create_access_token({
+        "sub": str(new_user.id),
+        "username": new_user.username,
+        "name": new_user.name,
+        "surname": new_user.surname,
+        "status": new_user.status
+    })
     token_hash = get_token_hash(token)
     expires_at = datetime.now(timezone.utc) + timedelta(days=30)
 
@@ -196,7 +202,13 @@ async def api_login(
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Akkauntingiz bloklangan")
 
     # Token va DB sessiya
-    token = create_access_token({"sub": str(user.id), "username": user.username})
+    token = create_access_token({
+        "sub": str(user.id),
+        "username": user.username,
+        "name": user.name,
+        "surname": user.surname,
+        "status": user.status
+    })
     token_hash = get_token_hash(token)
     expires_at = datetime.now(timezone.utc) + timedelta(days=30)
 
