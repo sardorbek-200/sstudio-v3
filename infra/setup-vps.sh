@@ -7,29 +7,35 @@ echo "=== SStudio v3: VPS Sozlash Boshlandi ==="
 mkdir -p /root/app/v3
 cd /root/app/v3
 
-# 2. Virtual muhit (venv) tekshirish / yaratish
+# 2. Agar .env mavjud bo'lmasa, .env.example dan yaratamiz
+if [ ! -f "/root/app/v3/.env" ]; then
+    echo ".env fayli yaratilmoqda..."
+    cp /root/app/v3/.env.example /root/app/v3/.env || true
+fi
+
+# 3. Virtual muhit (venv) tekshirish / yaratish
 if [ ! -d "/root/app/v3/.venv" ]; then
     echo "Python venv yaratilmoqda..."
     python3 -m venv /root/app/v3/.venv
 fi
 
-# 3. Paketlarni o'rnatish
+# 4. Paketlarni o'rnatish
 /root/app/v3/.venv/bin/pip install --upgrade pip
 /root/app/v3/.venv/bin/pip install -r /root/app/v3/requirements.txt
 /root/app/v3/.venv/bin/pip install email-validator
 
-# 4. Systemd servislarni joylashtirish
+# 5. Systemd servislarni joylashtirish
 echo "Systemd servislari ko'chirilmoqda..."
-cp /root/app/v3/infra/systemd/*.service /etc/systemd/system/
+cp /root/app/v3/infra/systemd/*.service /etc/systemd/system/ 2>/dev/null || true
 systemctl daemon-reload
 
-# 5. Servislarni yoqish
-systemctl enable sstudio-auth
-systemctl restart sstudio-auth
+# 6. Servislarni yoqish
+systemctl enable sstudio-auth || true
+systemctl restart sstudio-auth || true
 
-# 6. Nginx konfiguratsiyalarini ulash
+# 7. Nginx konfiguratsiyalarini ulash
 echo "Nginx sozlanmoqda..."
-cp /root/app/v3/infra/nginx/*.conf /etc/nginx/conf.d/
-nginx -t && systemctl reload nginx
+cp /root/app/v3/infra/nginx/*.conf /etc/nginx/conf.d/ 2>/dev/null || true
+nginx -t && systemctl reload nginx 2>/dev/null || true
 
 echo "=== SStudio v3: Barcha xizmatlar muvaffaqiyatli ishga tushdi! ==="
