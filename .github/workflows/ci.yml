@@ -33,27 +33,18 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
-      - name: VPS ga rasmiy OpenSSH orqali ulanish va avto-o'rnatish
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_KEY }}
-          VPS_HOST: ${{ secrets.VPS_HOST }}
-          VPS_USER: ${{ secrets.VPS_USER }}
+      - name: Setup SSH (v2 usuli - Base64)
         run: |
-          echo "=== SSH Kalit sozlanmoqda (Windows CRLF tozalanadi) ==="
           mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 -d > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts 2>/dev/null || true
 
-          # Windows \r belgilarini tozalash va toza Linux formati qilish
-          echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/deploy_key
-          echo "" >> ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-
-          # Serverni tekshirish
-          ssh-keyscan -p 22 -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
-
-          echo "=== Serverga ulanish va Deploy boshlandi ==="
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no "$VPS_USER@$VPS_HOST" bash << 'EOF'
+      - name: Deploy to Ubuntu Server
+        run: |
+          ssh root@${{ secrets.SERVER_IP }} 'bash -se' << 'EOF'
             set -e
-            echo "=== VPS ga kirdik! ==="
+            echo "=== VPS ga ulandik! SStudio v3 o'rnatilmoqda ==="
 
             # 1. Papka tekshirish
             if [ ! -d "/root/app/v3" ]; then
