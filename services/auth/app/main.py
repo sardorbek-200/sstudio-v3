@@ -69,6 +69,7 @@ async def register_page(request: Request):
 # --- API / Amallar ---
 
 @app.post("/api/register")
+@app.post("/register")
 async def api_register(
     req: RegisterRequest,
     request: Request,
@@ -160,6 +161,7 @@ async def api_register(
 
 
 @app.post("/api/login")
+@app.post("/login")
 async def api_login(
     req: LoginRequest,
     request: Request,

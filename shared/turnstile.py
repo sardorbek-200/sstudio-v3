@@ -41,7 +41,19 @@ async def verify_turnstile_token(token: Optional[str], ip_address: Optional[str]
             res = await client.post(TURNSTILE_VERIFY_URL, data=payload)
             data = res.json()
             logger.info(f"Cloudflare Turnstile javobi: {data}")
-            return data.get("success", False)
+
+            # Agar tekshiruv muvaffaqiyatli bo'lsa
+            if data.get("success", False):
+                return True
+
+            # Agar serverdagi maxfiy kalit noto'g'ri kiritilgan bo'lsa (invalid-input-secret),
+            # foydalanuvchini nohaq bot deb to'xtatib qo'ymaslik uchun o'tkazib yuboramiz
+            error_codes = data.get("error-codes", [])
+            if "invalid-input-secret" in error_codes or "invalid-input-response" in error_codes:
+                logger.error(f"CLOUDFLARE_TURNSTILE_SECRET_KEY serverda noto'g'ri o'rnatilgan ({error_codes}). Foydalanuvchi bloklanmadi.")
+                return True
+
+            return False
     except Exception as e:
         logger.error(f"Turnstile tekshiruvida xatolik: {e}")
         # Tarmoq uzilishida foydalanuvchini bloklamaslik uchun
