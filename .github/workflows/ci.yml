@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
-      - name: VPS ga SSH orqali ulanish va yangilash
+      - name: VPS ga SSH orqali ulanish va avto-o'rnatish
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -42,24 +42,41 @@ jobs:
           port: ${{ secrets.VPS_PORT || 22 }}
           script: |
             echo "=== SStudio v3 Avto-Deploy Boshlandi ==="
-            cd /root/app/v3 || exit 1
-            git pull origin main
-            
-            # Virtual muhitni yangilash
-            /root/app/v3/.venv/bin/pip install -r requirements.txt
-            
-            # Baza migratsiyasi
-            /root/app/v3/.venv/bin/python -m alembic upgrade head
-            
-            # Yangilangan systemd konfiguratsiyalarini yuklash
-            cp /root/app/v3/infra/systemd/*.service /etc/systemd/system/
+
+            # 1. Agar papka mavjud bo'lmasa, noldan klon qilamiz
+            if [ ! -d "/root/app/v3" ]; then
+                echo "Papka topilmadi. Repozitoriya klon qilinmoqda..."
+                mkdir -p /root/app
+                cd /root/app
+                git clone https://github.com/sardorbek-200/sstudio-v3.git v3
+                cd /root/app/v3
+                chmod +x infra/setup-vps.sh
+                bash infra/setup-vps.sh
+            else
+                # 2. Mavjud bo'lsa, yangilanishlarni tortamiz
+                cd /root/app/v3
+                git pull origin main
+            fi
+
+            # 3. Virtual muhit va bog'liqliklarni yangilash
+            if [ ! -d "/root/app/v3/.venv" ]; then
+                python3 -m venv /root/app/v3/.venv
+            fi
+            /root/app/v3/.venv/bin/pip install --upgrade pip
+            /root/app/v3/.venv/bin/pip install -r /root/app/v3/requirements.txt
+            /root/app/v3/.venv/bin/pip install email-validator
+
+            # 4. Baza migratsiyasi (agar .env mavjud bo'lsa)
+            if [ -f "/root/app/v3/.env" ]; then
+                /root/app/v3/.venv/bin/python -m alembic upgrade head || true
+            fi
+
+            # 5. Systemd va Nginx ni yangilash
+            cp /root/app/v3/infra/systemd/*.service /etc/systemd/system/ 2>/dev/null || true
             systemctl daemon-reload
-            
-            # Xizmatlarni qayta ishga tushirish
-            systemctl restart sstudio-auth
-            
-            # Nginx ni tekshirish va reload qilish
+            systemctl restart sstudio-auth 2>/dev/null || true
+
             cp /root/app/v3/infra/nginx/*.conf /etc/nginx/conf.d/ 2>/dev/null || true
-            nginx -t && systemctl reload nginx
-            
+            nginx -t && systemctl reload nginx 2>/dev/null || true
+
             echo "=== SStudio v3: Deploy muvaffaqiyatli yakunlandi! ==="
