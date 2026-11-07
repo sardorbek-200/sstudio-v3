@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SStudio — Yagona Ta'limiy Ekotizim{% endblock %}</title>
+    <link rel="icon" type="image/png" href="/static/favicon.png">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #0b0f19;
+            --card-bg: #131c2e;
+            --card-border: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #8b5cf6;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+        
+        /* Navbar */
+        .navbar {
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nav-brand { font-size: 22px; font-weight: 800; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .nav-brand span { background: linear-gradient(135deg, #6366f1, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-links { display: flex; gap: 20px; align-items: center; }
+        .nav-link { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+        .nav-link:hover { color: #fff; }
+        .nav-actions { display: flex; gap: 12px; align-items: center; }
+        .btn { padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-outline { border: 1px solid var(--card-border); color: #fff; background: transparent; }
+        .btn-outline:hover { background: #1e293b; }
+        .btn-primary { background: var(--primary); color: #fff; border: none; }
+        .btn-primary:hover { background: var(--primary-hover); }
+        .user-pill { display: flex; align-items: center; gap: 8px; background: #1e293b; padding: 6px 12px; border-radius: 20px; color: #fff; text-decoration: none; font-size: 13px; font-weight: 500; }
+        .user-status { background: #4f46e5; font-size: 10px; padding: 2px 6px; border-radius: 10px; text-transform: uppercase; font-weight: 700; }
+
+        /* Container */
+        .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; flex: 1; width: 100%; }
+
+        /* Footer */
+        .footer { background: #080c14; border-top: 1px solid var(--card-border); padding: 40px 20px; margin-top: auto; font-size: 13px; color: var(--text-muted); }
+        .footer-content { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+        .footer-links { display: flex; gap: 16px; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; }
+        .footer-links a:hover { color: #fff; }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <header class="navbar">
+        <a href="/" class="nav-brand">⚡ <span>SStudio</span></a>
+        <nav class="nav-links">
+            <a href="/apps" class="nav-link">Ilovalar</a>
+            <a href="/users" class="nav-link">Reyting & Foydalanuvchilar</a>
+            <a href="/faq" class="nav-link">FAQ</a>
+            <a href="/connect" class="nav-link">Bog'lanish</a>
+        </nav>
+        <div class="nav-actions">
+            {% if user %}
+                <a href="/user/{{ user.id }}" class="user-pill">
+                    <span>{{ user.name }}</span>
+                    <span class="user-status">{{ user.status }}</span>
+                </a>
+                <a href="https://auth.{{ domain }}/logout" class="btn btn-outline" style="padding: 6px 10px;">Chiqish</a>
+            {% else %}
+                <a href="/login" class="btn btn-outline">Kirish</a>
+                <a href="/register" class="btn btn-primary">Ro'yxatdan o'tish</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                © 2026 SStudio Ecosystem. Barcha huquqlar himoyalangan.
+            </div>
+            <div class="footer-links">
+                <a href="/privacy">Maxfiylik Siyosati</a>
+                <a href="/terms">Foydalanish Shartlari</a>
+                <a href="/connect">Yordam</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -30,8 +30,8 @@ cp /root/app/v3/infra/systemd/*.service /etc/systemd/system/ 2>/dev/null || true
 systemctl daemon-reload
 
 # 6. Servislarni yoqish
-systemctl enable sstudio-auth || true
-systemctl restart sstudio-auth || true
+systemctl enable sstudio-auth sstudio-main || true
+systemctl restart sstudio-auth sstudio-main || true
 
 # 7. Nginx konfiguratsiyalarini ulash
 echo "Nginx sozlanmoqda..."

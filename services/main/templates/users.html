@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}SStudio — Foydalanuvchilar va Reyting{% endblock %}
+
+{% block content %}
+<style>
+    .page-header { margin-bottom: 28px; }
+    .page-header h1 { font-size: 28px; font-weight: 800; margin-bottom: 6px; }
+    .users-table { width: 100%; border-collapse: collapse; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden; }
+    .users-table th, .users-table td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--card-border); font-size: 14px; }
+    .users-table th { background: #0f172a; color: var(--text-muted); font-size: 12px; text-transform: uppercase; font-weight: 600; }
+    .user-row:hover { background: #1a2436; }
+    .user-link { color: #fff; text-decoration: none; font-weight: 600; }
+    .user-link:hover { color: var(--primary); }
+</style>
+
+<div class="page-header">
+    <h1>Foydalanuvchilar va Reyting</h1>
+    <p>Platformaning faol o'quvchilari va o'qituvchilari</p>
+</div>
+
+<table class="users-table">
+    <thead>
+        <tr>
+            <th>Foydalanuvchi</th>
+            <th>Maktab / Universitet</th>
+            <th>Viloyat</th>
+            <th>Status</th>
+            <th>Profil</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for u in users_list %}
+        <tr class="user-row">
+            <td>
+                <a href="/user/{{ u.id }}" class="user-link">{{ u.name }} {{ u.surname }}</a>
+                <div style="font-size: 12px; color: var(--text-muted);">@{{ u.username }}</div>
+            </td>
+            <td>{{ u.school_normalized or u.school_raw or "Ko'rsatilmagan" }}</td>
+            <td>{{ u.location_region or "Noma'lum" }}</td>
+            <td><span class="user-status">{{ u.status }}</span></td>
+            <td><a href="/user/{{ u.id }}" class="btn btn-outline" style="padding: 4px 10px; font-size: 12px;">Ko'rish</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

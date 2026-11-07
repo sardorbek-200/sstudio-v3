@@ -56,13 +56,14 @@ jobs:
                 cd /root/app
                 git clone https://github.com/sardorbek-200/sstudio-v3.git v3
                 cd /root/app/v3
-                chmod +x infra/setup-vps.sh
+                chmod +x infra/setup-vps.sh infra/setup-ssl.sh
                 bash infra/setup-vps.sh
             else
                 cd /root/app/v3
                 echo "Yangi kod tortilmoqda (toza reset bilan)..."
                 git fetch origin main
                 git reset --hard origin/main
+                chmod +x infra/setup-vps.sh infra/setup-ssl.sh
             fi
 
             # 2. Agar .env yo'q bo'lsa, yaratamiz
@@ -85,7 +86,8 @@ jobs:
             echo "Xizmatlar yangilanmoqda..."
             cp /root/app/v3/infra/systemd/*.service /etc/systemd/system/ 2>/dev/null || true
             systemctl daemon-reload
-            systemctl restart sstudio-auth 2>/dev/null || true
+            systemctl enable sstudio-auth sstudio-main 2>/dev/null || true
+            systemctl restart sstudio-auth sstudio-main 2>/dev/null || true
 
             cp /root/app/v3/infra/nginx/*.conf /etc/nginx/conf.d/ 2>/dev/null || true
             nginx -t && systemctl reload nginx 2>/dev/null || true

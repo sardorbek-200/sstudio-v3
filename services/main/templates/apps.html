@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}SStudio — Ilovalar Katalogi{% endblock %}
+
+{% block content %}
+<style>
+    .page-header { margin-bottom: 36px; text-align: center; }
+    .page-header h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+    .page-header p { color: var(--text-muted); font-size: 15px; }
+    .apps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
+    .app-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s; }
+    .app-card:hover { border-color: var(--primary); transform: translateY(-4px); }
+    .app-top { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+    .app-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; background: #1e293b; }
+    .app-info h3 { font-size: 18px; margin-bottom: 4px; color: #fff; }
+    .app-tag { font-size: 11px; padding: 2px 8px; border-radius: 6px; background: rgba(99, 102, 241, 0.2); color: #a5b4fc; font-weight: 600; text-transform: uppercase; }
+    .app-desc { font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; }
+</style>
+
+<div class="page-header">
+    <h1>Ilovalar Katalogi</h1>
+    <p>SStudio ekotizimining barcha vositalari va xizmatlari</p>
+</div>
+
+<div class="apps-grid">
+    <!-- Quizer -->
+    <div class="app-card">
+        <div>
+            <div class="app-top">
+                <div class="app-icon">🎯</div>
+                <div class="app-info">
+                    <h3>Quizer</h3>
+                    <span class="app-tag">Test & AI</span>
+                </div>
+            </div>
+            <p class="app-desc">Avtomatlashtirilgan test sinovlari, AI savollar tahlili, rasmiy olimpiadalar va PIN-kodli yopiq testlar.</p>
+        </div>
+        <a href="https://quizer.{{ domain }}" class="btn btn-primary" style="text-align: center; justify-content: center;">Ilovaga o'tish</a>
+    </div>
+
+    <!-- Shop / Wallet -->
+    <div class="app-card">
+        <div>
+            <div class="app-top">
+                <div class="app-icon">🛒</div>
+                <div class="app-info">
+                    <h3>S-Shop & Wallet</h3>
+                    <span class="app-tag">Moliya & Tariflar</span>
+                </div>
+            </div>
+            <p class="app-desc">SCoin hamyoni, P2P do'stona o'tkazmalar, omad charxi va qo'shimcha kvotalar xaridi.</p>
+        </div>
+        <a href="https://shop.{{ domain }}" class="btn btn-outline" style="text-align: center; justify-content: center;">Hamyonni ochish</a>
+    </div>
+
+    <!-- STest -->
+    <div class="app-card">
+        <div>
+            <div class="app-top">
+                <div class="app-icon">📝</div>
+                <div class="app-info">
+                    <h3>STest</h3>
+                    <span class="app-tag">AI Generator</span>
+                </div>
+            </div>
+            <p class="app-desc">PDF, Word va rasmlardan bir soniyada sifatli test savollarini avtomatik tuzuvchi sun'iy intellekt moduli.</p>
+        </div>
+        <a href="https://stest.{{ domain }}" class="btn btn-outline" style="text-align: center; justify-content: center;">Ishlatish</a>
+    </div>
+
+    <!-- SMavzu -->
+    <div class="app-card">
+        <div>
+            <div class="app-top">
+                <div class="app-icon">📚</div>
+                <div class="app-info">
+                    <h3>SMavzu</h3>
+                    <span class="app-tag">Ma'ruzalar</span>
+                </div>
+            </div>
+            <p class="app-desc">Mavzular bo'yicha konspektlar, tushuntirishlar va ta'limiy materiallarni tartibga soluvchi arxiv.</p>
+        </div>
+        <a href="https://smavzu.{{ domain }}" class="btn btn-outline" style="text-align: center; justify-content: center;">Ochish</a>
+    </div>
+</div>
+{% endblock %}
