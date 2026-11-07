@@ -63,3 +63,9 @@ class SmartAIRotator:
 
 
 ai_rotator = SmartAIRotator()
+
+
+async def generate_with_ai(prompt: str, task_type: str = "light") -> Optional[str]:
+    """Asinxron yordamchi funksiya"""
+    return ai_rotator.generate_text(prompt, task_type=task_type)
+

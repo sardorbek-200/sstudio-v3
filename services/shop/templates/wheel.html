@@ -1,0 +1,178 @@
+{% extends "shop_base.html" %}
+
+{% block title %}Omad G'ildiragi — SStudio Shop{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Wheel container */
+    .wheel-wrapper {
+        position: relative;
+        width: 360px;
+        height: 360px;
+        margin: 0 auto;
+    }
+
+    #wheel-canvas {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        box-shadow: 0 0 35px rgba(245, 158, 11, 0.4), inset 0 0 20px rgba(0, 0, 0, 0.8);
+        border: 4px solid var(--neon-gold);
+        transition: transform 4s cubic-bezier(0.15, 0.9, 0.2, 1);
+    }
+
+    .wheel-arrow {
+        position: absolute;
+        top: -16px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 16px solid transparent;
+        border-right: 16px solid transparent;
+        border-top: 28px solid #f87171;
+        z-index: 10;
+        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6));
+    }
+
+    .wheel-center-pin {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: #05070d;
+        border: 3px solid var(--neon-gold);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        box-shadow: 0 0 15px rgba(245, 158, 11, 0.5);
+        z-index: 5;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="max-width: 650px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; text-align: center;">
+    <div class="glass-panel" style="padding: 36px;">
+        <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: var(--neon-gold); margin-bottom: 8px;">
+            🎡 Har 3 kunda 1 marta bepul
+        </div>
+        <h1 style="font-size: 32px; font-weight: 900; color: #fff; margin-bottom: 12px;">
+            Omad G'ildiragi (Wheel of Fortune)
+        </h1>
+        <p style="font-size: 13px; color: var(--text-dim); max-width: 480px; margin: 0 auto 30px;">
+            G'ildirakni aylantiring va SCoin, qo'shimcha tajriba (XP) yoki VIP obunalarni yutib oling!
+        </p>
+
+        <!-- G'ildirak -->
+        <div class="wheel-wrapper">
+            <div class="wheel-arrow"></div>
+            <canvas id="wheel-canvas" width="400" height="400"></canvas>
+            <div class="wheel-center-pin">💎</div>
+        </div>
+
+        <div style="margin-top: 36px;">
+            {% if can_spin %}
+            <button id="spin-btn" onclick="spinWheel()" class="cyber-btn cyber-btn-gold" style="font-size: 16px; padding: 14px 36px;">
+                ⚡ G'ildirakni Aylantirish
+            </button>
+            {% else %}
+            <button disabled class="cyber-btn" style="background: rgba(255,255,255,0.1); color: var(--text-dim); cursor: not-allowed; padding: 14px 36px;">
+                ⏳ Qayta aylantirish: {{ next_spin_hours }} soatdan keyin
+            </button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    const canvas = document.getElementById('wheel-canvas');
+    const ctx = canvas.getContext('2d');
+    const sectors = [
+        { label: "10 SCoin", color: "#1e293b", text: "#f59e0b" },
+        { label: "50 XP", color: "#0f172a", text: "#a855f7" },
+        { label: "25 SCoin", color: "#1e293b", text: "#f59e0b" },
+        { label: "100 XP", color: "#0f172a", text: "#00f2fe" },
+        { label: "50 SCoin", color: "#1e293b", text: "#f59e0b" },
+        { label: "VIP 3-Kun", color: "#0f172a", text: "#ec4899" },
+        { label: "5 SCoin", color: "#1e293b", text: "#f59e0b" },
+        { label: "200 XP", color: "#0f172a", text: "#10b981" }
+    ];
+
+    const numSectors = sectors.length;
+    const arc = (2 * Math.PI) / numSectors;
+
+    function drawWheel() {
+        ctx.clearRect(0, 0, 400, 400);
+        const radius = 200;
+
+        for (let i = 0; i < numSectors; i++) {
+            const angle = i * arc;
+            ctx.beginPath();
+            ctx.fillStyle = sectors[i].color;
+            ctx.moveTo(200, 200);
+            ctx.arc(200, 200, radius, angle, angle + arc);
+            ctx.lineTo(200, 200);
+            ctx.fill();
+            ctx.strokeStyle = "rgba(245, 158, 11, 0.4)";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Matn
+            ctx.save();
+            ctx.translate(200, 200);
+            ctx.rotate(angle + arc / 2);
+            ctx.textAlign = "right";
+            ctx.fillStyle = sectors[i].text;
+            ctx.font = "bold 15px -apple-system, monospace";
+            ctx.fillText(sectors[i].label, radius - 25, 6);
+            ctx.restore();
+        }
+    }
+
+    drawWheel();
+
+    let isSpinning = false;
+
+    async function spinWheel() {
+        if (isSpinning) return;
+        isSpinning = true;
+        const btn = document.getElementById('spin-btn');
+        if (btn) btn.disabled = true;
+
+        try {
+            const res = await fetch('/api/wheel/spin', { method: 'POST' });
+            const data = await res.json();
+            if (!res.ok) {
+                alert(data.detail || "Xatolik yuz berdi");
+                isSpinning = false;
+                if (btn) btn.disabled = false;
+                return;
+            }
+
+            const prizeIndex = data.prize_index || 2;
+            const fullRotations = 5;
+            const degreesPerSector = 360 / numSectors;
+            // Arrow is at top (270 deg / -90 deg)
+            const targetDeg = (fullRotations * 360) + (360 - (prizeIndex * degreesPerSector) - (degreesPerSector / 2)) - 90;
+
+            canvas.style.transform = `rotate(${targetDeg}deg)`;
+
+            setTimeout(() => {
+                alert(`🎉 Tabriklaymiz! Siz yutib oldingiz: ${data.prize_label}!`);
+                window.location.reload();
+            }, 4200);
+        } catch (e) {
+            alert('Tarmoq xatosi: ' + e.message);
+            isSpinning = false;
+            if (btn) btn.disabled = false;
+        }
+    }
+</script>
+{% endblock %}

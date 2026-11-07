@@ -66,8 +66,8 @@ jobs:
             # Systemd servislarni yangilash va qayta ishga tushirish (Nginx ga tegilmaydi!)
             cp /root/app/v3/infra/systemd/*.service /etc/systemd/system/ 2>/dev/null || true
             systemctl daemon-reload
-            systemctl enable sstudio-auth sstudio-main sstudio-quizer 2>/dev/null || true
-            systemctl restart sstudio-auth sstudio-main sstudio-quizer 2>/dev/null || true
+            systemctl enable sstudio-auth sstudio-main sstudio-quizer sstudio-shop sstudio-admin 2>/dev/null || true
+            systemctl restart sstudio-auth sstudio-main sstudio-quizer sstudio-shop sstudio-admin 2>/dev/null || true
 
             echo "=== SStudio v3: Deploy to'liq va xavfsiz yakunlandi! ==="
           EOF

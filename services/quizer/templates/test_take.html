@@ -1,0 +1,269 @@
+{% extends "quizer_base.html" %}
+
+{% block title %}{{ test.title }} — Quizer{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Anti-cheat ogohlantirish banneri */
+    #anti-cheat-hud {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        background: rgba(18, 24, 41, 0.9);
+        backdrop-filter: blur(16px);
+        border: 1px solid var(--neon-cyan);
+        border-radius: 14px;
+        padding: 12px 20px;
+        box-shadow: 0 0 20px rgba(0,242,254,0.3);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        font-size: 13px;
+    }
+    .hud-stat {
+        display: flex;
+        flex-direction: column;
+    }
+    .hud-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        color: var(--text-dim);
+    }
+    .hud-val {
+        font-weight: 800;
+        color: var(--neon-cyan);
+    }
+    /* Matn nusxalashni taqiqlash */
+    .unselectable {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="unselectable" style="display: flex; flex-direction: column; gap: 24px; max-width: 850px; margin: 0 auto;">
+    <!-- Test HUD & Timer Bar -->
+    <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+        <div>
+            <h1 style="font-size: 20px; font-weight: 800; color: #fff;">{{ test.title }}</h1>
+            <div style="font-size: 12px; color: var(--text-dim); margin-top: 4px;">
+                Savol: <span id="current-q-num" style="color: var(--neon-cyan); font-weight: bold;">1</span> / {{ questions | length }}
+            </div>
+        </div>
+
+        <!-- Timer -->
+        <div style="display: flex; align-items: center; gap: 10px; background: rgba(5,7,13,0.7); border: 1px solid var(--neon-primary); border-radius: 12px; padding: 8px 18px;">
+            <span style="font-size: 16px;">⏳</span>
+            <div>
+                <div style="font-size: 10px; text-transform: uppercase; color: var(--text-dim);">Qolgan Vaqt</div>
+                <div id="timer-display" style="font-size: 18px; font-weight: 900; color: var(--neon-cyan); font-family: monospace;">00:00</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Savol Kartochkasi -->
+    <div id="question-card" class="glass-panel" style="padding: 32px; min-height: 320px; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+            <div id="q-type-badge" style="display: inline-block; font-size: 11px; font-weight: 800; text-transform: uppercase; padding: 3px 10px; border-radius: 6px; background: rgba(0,242,254,0.15); color: var(--neon-cyan); margin-bottom: 16px;">
+                SINGLE
+            </div>
+            <h2 id="q-text" style="font-size: 19px; font-weight: 700; color: #fff; line-height: 1.5; margin-bottom: 24px;">
+                Yuklanmoqda...
+            </h2>
+            <div id="q-options-box" style="display: flex; flex-direction: column; gap: 12px;">
+                <!-- Variantlar dinamik chiqadi -->
+            </div>
+        </div>
+
+        <!-- Navigatsiya Tugmalari -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 32px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.06);">
+            <button id="prev-btn" onclick="prevQuestion()" class="cyber-btn cyber-btn-glass" style="padding: 10px 20px;">
+                ◀ Oldingi
+            </button>
+            <div style="display: flex; gap: 10px;">
+                <button id="next-btn" onclick="nextQuestion()" class="cyber-btn cyber-btn-glass" style="padding: 10px 20px;">
+                    Keyingi ▶
+                </button>
+                <button id="submit-btn" onclick="confirmSubmit()" class="cyber-btn cyber-btn-primary" style="padding: 10px 24px;">
+                    🏁 Yakunlash
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Anti-Cheat Monitoring HUD -->
+<div id="anti-cheat-hud">
+    <div class="hud-stat">
+        <span class="hud-label">🛡️ Anti-Cheat</span>
+        <span class="hud-val" style="color: var(--neon-green);">FAOL</span>
+    </div>
+    <div class="hud-stat">
+        <span class="hud-label">Ogohlantirish</span>
+        <span id="cheat-warnings-val" class="hud-val">0 / 3</span>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    const testData = {{ test_json | safe }};
+    const questions = testData.questions || [];
+    let currentIndex = 0;
+    let userAnswers = {};
+    let cheatWarnings = 0;
+    let timeLeft = (testData.time_limit_minutes || 30) * 60;
+    let timerInterval = null;
+
+    // Timer boshlash
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                alert("Vaqtingiz tugadi! Test avtomatik tarzda topshiriladi.");
+                submitTest();
+                return;
+            }
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            document.getElementById('timer-display').innerText = 
+                `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }, 1000);
+    }
+
+    function renderCurrentQuestion() {
+        if (!questions.length) return;
+        const q = questions[currentIndex];
+        document.getElementById('current-q-num').innerText = currentIndex + 1;
+        document.getElementById('q-type-badge').innerText = (q.question_type || 'single').toUpperCase();
+        document.getElementById('q-text').innerText = q.question_text;
+
+        const optBox = document.getElementById('q-options-box');
+        optBox.innerHTML = '';
+
+        let opts = [];
+        try {
+            opts = typeof q.options === 'string' ? JSON.parse(q.options) : (q.options || []);
+        } catch(e) {
+            opts = [];
+        }
+
+        if (q.question_type === 'single' || q.question_type === 'multiple') {
+            opts.forEach((opt, idx) => {
+                const isSelected = userAnswers[q.id] === opt;
+                const btn = document.createElement('div');
+                btn.style.padding = '14px 18px';
+                btn.style.borderRadius = '10px';
+                btn.style.border = isSelected ? '1px solid var(--neon-cyan)' : '1px solid var(--glass-border)';
+                btn.style.background = isSelected ? 'rgba(0, 242, 254, 0.15)' : 'rgba(13, 18, 30, 0.6)';
+                btn.style.color = '#fff';
+                btn.style.fontSize = '14px';
+                btn.style.cursor = 'pointer';
+                btn.style.transition = 'all 0.2s';
+                btn.innerText = opt;
+                btn.onclick = () => {
+                    userAnswers[q.id] = opt;
+                    renderCurrentQuestion();
+                };
+                optBox.appendChild(btn);
+            });
+        } else if (q.question_type === 'numeric') {
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.step = 'any';
+            input.placeholder = 'Javobingizni raqamda kiriting...';
+            input.value = userAnswers[q.id] || '';
+            input.style = 'width: 100%; padding: 14px; background: rgba(5,7,13,0.7); border: 1px solid var(--glass-border); border-radius: 10px; color: #fff; font-size: 15px; outline: none;';
+            input.oninput = (e) => { userAnswers[q.id] = e.target.value; };
+            optBox.appendChild(input);
+        } else if (q.question_type === 'open_ai') {
+            const area = document.createElement('textarea');
+            area.rows = 4;
+            area.placeholder = 'Javobingizni batafsil bayon eting (Gemini AI tekshiradi)...';
+            area.value = userAnswers[q.id] || '';
+            area.style = 'width: 100%; padding: 14px; background: rgba(5,7,13,0.7); border: 1px solid var(--glass-border); border-radius: 10px; color: #fff; font-size: 14px; outline: none; resize: vertical;';
+            area.oninput = (e) => { userAnswers[q.id] = e.target.value; };
+            optBox.appendChild(area);
+        }
+
+        // Tugmalar holati
+        document.getElementById('prev-btn').style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
+        document.getElementById('next-btn').style.display = currentIndex === questions.length - 1 ? 'none' : 'inline-flex';
+    }
+
+    function prevQuestion() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            renderCurrentQuestion();
+        }
+    }
+
+    function nextQuestion() {
+        if (currentIndex < questions.length - 1) {
+            currentIndex++;
+            renderCurrentQuestion();
+        }
+    }
+
+    function confirmSubmit() {
+        if (confirm("Testni topshirishga ishonchingiz komilmi?")) {
+            submitTest();
+        }
+    }
+
+    async function submitTest() {
+        clearInterval(timerInterval);
+        try {
+            const res = await fetch(`/api/test/${testData.id}/submit`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ answers: userAnswers, warnings: cheatWarnings })
+            });
+            const data = await res.json();
+            if (res.ok && data.result_id) {
+                window.location.href = `/results/${data.result_id}`;
+            } else {
+                alert(data.detail || 'Javoblarni yuborishda xatolik yuz berdi');
+            }
+        } catch(e) {
+            alert('Topshirishda xatolik: ' + e.message);
+        }
+    }
+
+    // Anti-Cheat: Tab/Window blur hodisasi
+    window.addEventListener('blur', () => {
+        cheatWarnings++;
+        document.getElementById('cheat-warnings-val').innerText = `${cheatWarnings} / 3`;
+        document.getElementById('cheat-warnings-val').style.color = '#f87171';
+        
+        // Serverga anti-cheat xabarnomasi yuborish
+        fetch(`/api/test/${testData.id}/anti-cheat`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ action: 'tab_switched', count: cheatWarnings })
+        }).catch(()=>{});
+
+        if (cheatWarnings >= 3) {
+            alert("Diqqat! Siz 3 marta sinov ekranidan chiqdingiz. Qoidalarga ko'ra test avtomatik topshirilmoqda!");
+            submitTest();
+        } else {
+            alert(`Ogohlantirish! Ekranni almashtirish taqiqlanadi! (${cheatWarnings}/3)`);
+        }
+    });
+
+    // Anti-Cheat: Nusxa olishni bloklash
+    document.addEventListener('copy', (e) => {
+        e.preventDefault();
+        alert("Sinov davomida savollardan nusxa olish taqiqlangan!");
+    });
+
+    // Initsializatsiya
+    startTimer();
+    renderCurrentQuestion();
+</script>
+{% endblock %}

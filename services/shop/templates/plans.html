@@ -1,0 +1,114 @@
+{% extends "shop_base.html" %}
+
+{% block title %}Obuna Rejalari — SStudio Shop{% endblock %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column; gap: 32px; text-align: center;">
+    <div>
+        <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: var(--neon-gold); margin-bottom: 8px;">
+            💎 SStudio 30-Kunlik Tariflar
+        </div>
+        <h1 style="font-size: 36px; font-weight: 900; color: #fff; margin-bottom: 12px;">
+            Imkoniyatlaringizni Kengaytiring
+        </h1>
+        <p style="font-size: 14px; color: var(--text-dim); max-width: 550px; margin: 0 auto;">
+            AI test generatsiyasi, cheksiz testlar va maxsus nishonlar uchun qulay rejalarni tanlang.
+        </p>
+    </div>
+
+    <!-- Tariflar Karti -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; text-align: left;">
+        <!-- Pro Plan -->
+        <div class="glass-panel" style="display: flex; flex-direction: column; justify-content: space-between; border-color: rgba(99,102,241,0.3);">
+            <div>
+                <span style="font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 6px; background: rgba(99,102,241,0.15); color: #a5b4fc;">TALABA & O'QUVCHI</span>
+                <h3 style="font-size: 24px; font-weight: 800; margin: 12px 0 6px; color: #fff;">PRO REJA</h3>
+                <div style="font-size: 32px; font-weight: 900; color: #fff; margin-bottom: 20px;">
+                    25 <span style="font-size: 14px; color: var(--neon-gold);">SCoin / oy</span>
+                </div>
+                
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: var(--text-dim); margin-bottom: 24px;">
+                    <li>✓ 50 ta Gemini AI savol generatsiyasi</li>
+                    <li>✓ Barcha ommaviy testlarni yechish</li>
+                    <li>✓ Anti-cheat tahlillarini ko'rish</li>
+                    <li>✓ Maxsus "PRO" profil nishoni</li>
+                </ul>
+            </div>
+            <button onclick="buyPlan('pro', 25)" class="cyber-btn cyber-btn-glass" style="width: 100%;">
+                PRO Obuna Bo'lish
+            </button>
+        </div>
+
+        <!-- VIP Plan (Featured) -->
+        <div class="glass-panel" style="display: flex; flex-direction: column; justify-content: space-between; border-color: var(--neon-gold); box-shadow: 0 0 30px rgba(245,158,11,0.25); position: relative;">
+            <div style="position: absolute; top: -12px; right: 20px; background: var(--neon-gold); color: #000; font-size: 10px; font-weight: 900; padding: 2px 10px; border-radius: 10px; text-transform: uppercase;">
+                Eng Ommabop
+            </div>
+            <div>
+                <span style="font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 6px; background: rgba(245,158,11,0.15); color: var(--neon-gold);">MAKSIMAL KUCH</span>
+                <h3 style="font-size: 24px; font-weight: 800; margin: 12px 0 6px; color: #fff;">VIP REJA</h3>
+                <div style="font-size: 32px; font-weight: 900; color: #fff; margin-bottom: 20px;">
+                    60 <span style="font-size: 14px; color: var(--neon-gold);">SCoin / oy</span>
+                </div>
+                
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: var(--text-dim); margin-bottom: 24px;">
+                    <li>✓ Cheksiz Gemini AI test yaratish</li>
+                    <li>✓ Shaxsiy PIN-kodli maxfiy testlar ochish</li>
+                    <li>✓ Barcha qatnashchilar anti-cheat xatolarini yuklab olish</li>
+                    <li>✓ Oltin yaltiraydigan VIP profil ramkasi</li>
+                    <li>✓ P2P o'tkazmalarda birinchi navbatli qo'llab-quvvatlash</li>
+                </ul>
+            </div>
+            <button onclick="buyPlan('vip', 60)" class="cyber-btn cyber-btn-gold" style="width: 100%;">
+                VIP Obunani Faollashtirish
+            </button>
+        </div>
+
+        <!-- Teacher Plan -->
+        <div class="glass-panel" style="display: flex; flex-direction: column; justify-content: space-between; border-color: rgba(16,185,129,0.3);">
+            <div>
+                <span style="font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 6px; background: rgba(16,185,129,0.15); color: #34d399;">O'QITUVCHI & REPETITOR</span>
+                <h3 style="font-size: 24px; font-weight: 800; margin: 12px 0 6px; color: #fff;">USTOZ REJA</h3>
+                <div style="font-size: 32px; font-weight: 900; color: #fff; margin-bottom: 20px;">
+                    40 <span style="font-size: 14px; color: var(--neon-gold);">SCoin / oy</span>
+                </div>
+                
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: var(--text-dim); margin-bottom: 24px;">
+                    <li>✓ Maktab va sinf sinovlarini yaratish</li>
+                    <li>✓ 100 tagacha o'quvchini guruhlash</li>
+                    <li>✓ Natijalarni Excel va PDF ga eksport qilish</li>
+                    <li>✓ "Tasdiqlangan O'qituvchi" sertifikat nishoni</li>
+                </ul>
+            </div>
+            <button onclick="buyPlan('teacher', 40)" class="cyber-btn cyber-btn-glass" style="width: 100%;">
+                Ustoz Rejasini Tanlash
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    async function buyPlan(code, price) {
+        if (!confirm(`${code.toUpperCase()} rejasiga ${price} SCoin evaziga 30 kunga obuna bo'lasizmi?`)) return;
+
+        try {
+            const res = await fetch('/api/plans/subscribe', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ plan_code: code })
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                alert(`Tabriklaymiz! Siz ${code.toUpperCase()} rejasiga 30 kunga obuna bo'ldingiz!`);
+                window.location.href = '/';
+            } else {
+                alert(data.detail || 'Obunani rasmiylashtirishda xatolik');
+            }
+        } catch(e) {
+            alert('Tarmoq xatosi: ' + e.message);
+        }
+    }
+</script>
+{% endblock %}

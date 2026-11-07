@@ -1,48 +1,148 @@
-<!DOCTYPE html>
-<html lang="uz">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SStudio Quizer — Test Platformasi</title>
-    <style>
-        :root {
-            --primary: #6366f1;
-            --bg: #0b0f19;
-            --card-bg: #131c2e;
-            --card-border: #1e293b;
-            --text: #f8fafc;
-            --text-muted: #94a3b8;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
-        .navbar { background: rgba(11, 15, 25, 0.9); border-bottom: 1px solid var(--card-border); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
-        .nav-brand { font-size: 20px; font-weight: 800; color: #fff; text-decoration: none; }
-        .nav-brand span { color: var(--primary); }
-        .container { max-width: 900px; margin: 60px auto; padding: 0 20px; text-align: center; }
-        .badge { display: inline-block; background: rgba(99, 102, 241, 0.2); color: #a5b4fc; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-bottom: 16px; border: 1px solid #6366f144; }
-        h1 { font-size: 40px; font-weight: 800; margin-bottom: 16px; }
-        p { font-size: 16px; color: var(--text-muted); max-width: 600px; margin: 0 auto 30px; line-height: 1.6; }
-        .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 30px; margin-top: 30px; text-align: left; }
-        .btn { display: inline-block; padding: 10px 20px; background: var(--primary); color: #fff; text-decoration: none; border-radius: 8px; font-weight: 600; }
-    </style>
-</head>
-<body>
-    <header class="navbar">
-        <a href="/" class="nav-brand">🎯 <span>Quizer</span> by SStudio</a>
-        <div>
-            <a href="https://{{ domain }}" style="color: var(--text-muted); text-decoration: none; font-size: 14px;">← Asosiy portalga qaytish</a>
+{% extends "quizer_base.html" %}
+
+{% block title %}Quizer — Cyber Testlar Markazi{% endblock %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column; gap: 32px;">
+    <!-- Cyber Hero -->
+    <div class="glass-panel" style="position: relative; overflow: hidden; padding: 40px; text-align: center;">
+        <div style="display: inline-block; padding: 6px 16px; border-radius: 20px; background: rgba(0, 242, 254, 0.1); border: 1px solid rgba(0, 242, 254, 0.3); color: var(--neon-cyan); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 16px;">
+            ⚡ Quizer v3.0 Powered by Gemini AI
         </div>
-    </header>
+        <h1 style="font-size: 36px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 14px;">
+            Kelajak Ta'limi: <span style="background: linear-gradient(135deg, var(--neon-cyan), var(--neon-primary), var(--neon-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Interaktiv Cyber Sinovlar</span>
+        </h1>
+        <p style="color: var(--text-dim); max-width: 650px; margin: 0 auto 28px; font-size: 15px; line-height: 1.6;">
+            Anti-cheat tizimi, 5 xil savol turlari, Gemini AI yordamida tezkor savol generatsiyasi va avtomatik reyting tizimi.
+        </p>
 
-    <div class="container">
-        <div class="badge">🚀 3-Bosqich: Quizer Engine</div>
-        <h1>Testlar va Olimpiadalar Platformasi</h1>
-        <p>AI yordamida savollar tuzish, 5 xil savol turlari, PIN-kodli maxfiy testlar va shaffof anti-cheat nazorati.</p>
-
-        <div class="card">
-            <h3 style="margin-bottom: 12px; color: #fff;">Quizer Servisi Muvaffaqiyatli Ishga Tushdi ✅</h3>
-            <p style="margin: 0; font-size: 14px;">Mikroservis port <strong>8002</strong> da to'liq ishlamoqda. Test tuzish va ishlash modullari ulanmoqda.</p>
+        <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+            <button onclick="openPinModal()" class="cyber-btn cyber-btn-primary">
+                🔒 PIN orqali Testga Kirish
+            </button>
+            <a href="/create" class="cyber-btn cyber-btn-glass">
+                ➕ Yangi Test Yaratish
+            </a>
         </div>
     </div>
-</body>
-</html>
+
+    <!-- Testlar Ro'yxati -->
+    <div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                <span style="color: var(--neon-cyan);">◈</span> Ommabop Sinovlar
+            </h2>
+            <div style="font-size: 13px; color: var(--text-dim);">
+                Jami: <strong>{{ tests | length }}</strong> ta test
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
+            {% for t in tests %}
+            <div class="glass-panel" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <span style="font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 6px; text-transform: uppercase; background: {% if t.test_type == 'secret' %}rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3);{% else %}rgba(99, 102, 241, 0.15); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.3);{% endif %}">
+                            {{ t.test_type }}
+                        </span>
+                        <span style="font-size: 12px; color: var(--text-dim);">⏳ {{ t.time_limit_minutes }} daqiqa</span>
+                    </div>
+                    <h3 style="font-size: 17px; font-weight: 700; margin-bottom: 8px; color: #fff;">{{ t.title }}</h3>
+                    <p style="font-size: 13px; color: var(--text-dim); line-height: 1.5; margin-bottom: 16px;">
+                        {{ t.description or "Tavsif mavjud emas." }}
+                    </p>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);">
+                    <div style="font-size: 12px; color: var(--neon-cyan);">
+                        ◈ {{ t.question_count }} ta savol
+                    </div>
+                    {% if t.test_type == 'secret' %}
+                        <button onclick="promptPinForTest('{{ t.id }}')" class="cyber-btn cyber-btn-glass" style="padding: 8px 16px; font-size: 12px;">
+                            🔒 PIN kiritish
+                        </button>
+                    {% else %}
+                        <a href="/test/{{ t.id }}" class="cyber-btn cyber-btn-primary" style="padding: 8px 16px; font-size: 12px;">
+                            Boshlash ➔
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- PIN Kirish Modal -->
+<div id="pin-modal" style="display: none; position: fixed; inset: 0; background: rgba(5,7,13,0.85); backdrop-filter: blur(12px); z-index: 2000; align-items: center; justify-content: center;">
+    <div class="glass-panel" style="width: 100%; max-width: 420px; text-align: center; border-color: var(--neon-cyan); box-shadow: 0 0 35px rgba(0,242,254,0.25);">
+        <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 8px;">Maxfiy Testga Kirish</h3>
+        <p style="font-size: 13px; color: var(--text-dim); margin-bottom: 20px;">
+            Muallif tomonidan berilgan 4 xonali PIN kodni kiriting.<br>
+            <strong style="color: #f87171;">Diqqat:</strong> 3 ta xatodan so'ng 30 daqiqa bloklanasiz.
+        </p>
+
+        <form id="pin-form" onsubmit="handlePinSubmit(event)">
+            <input type="hidden" id="modal-target-test-id" value="">
+            <input type="text" id="pin-input" maxlength="4" pattern="[0-9]{4}" placeholder="••••" required autofocus
+                   style="width: 160px; font-size: 28px; text-align: center; letter-spacing: 12px; padding: 12px; background: rgba(13,18,30,0.8); border: 2px solid var(--neon-cyan); border-radius: 12px; color: #fff; outline: none; margin-bottom: 20px;">
+            
+            <div id="pin-error" style="display: none; color: #f87171; font-size: 12px; margin-bottom: 14px;"></div>
+
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <button type="button" onclick="closePinModal()" class="cyber-btn cyber-btn-glass" style="padding: 10px 20px;">Bekor qilish</button>
+                <button type="submit" class="cyber-btn cyber-btn-primary" style="padding: 10px 24px;">Kirish ➔</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function openPinModal() {
+        document.getElementById('modal-target-test-id').value = '';
+        document.getElementById('pin-input').value = '';
+        document.getElementById('pin-error').style.display = 'none';
+        document.getElementById('pin-modal').style.display = 'flex';
+        document.getElementById('pin-input').focus();
+    }
+
+    function promptPinForTest(testId) {
+        document.getElementById('modal-target-test-id').value = testId;
+        document.getElementById('pin-input').value = '';
+        document.getElementById('pin-error').style.display = 'none';
+        document.getElementById('pin-modal').style.display = 'flex';
+        document.getElementById('pin-input').focus();
+    }
+
+    function closePinModal() {
+        document.getElementById('pin-modal').style.display = 'none';
+    }
+
+    async function handlePinSubmit(e) {
+        e.preventDefault();
+        const pin = document.getElementById('pin-input').value;
+        const testId = document.getElementById('modal-target-test-id').value;
+        const errBox = document.getElementById('pin-error');
+
+        try {
+            const res = await fetch('/api/verify-pin', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ pin: pin, test_id: testId || null })
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                window.location.href = `/test/${data.test_id}?pin=${pin}`;
+            } else {
+                errBox.innerText = data.detail || 'PIN kod noto\'g\'ri!';
+                errBox.style.display = 'block';
+            }
+        } catch (err) {
+            errBox.innerText = 'Tarmoq xatosi yuz berdi.';
+            errBox.style.display = 'block';
+        }
+    }
+</script>
+{% endblock %}

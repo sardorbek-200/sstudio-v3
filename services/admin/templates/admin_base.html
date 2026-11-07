@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SStudio Admin Control Center{% endblock %}</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <style>
+        :root {
+            --bg: #05070d;
+            --glass-bg: rgba(13, 18, 30, 0.7);
+            --glass-card: rgba(18, 24, 41, 0.6);
+            --glass-border: rgba(239, 68, 68, 0.25);
+            --glass-hover: rgba(239, 68, 68, 0.35);
+            --neon-red: #ef4444;
+            --neon-cyan: #00f2fe;
+            --neon-purple: #a855f7;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(circle at 80% 20%, rgba(239, 68, 68, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 20% 80%, rgba(168, 85, 247, 0.1) 0%, transparent 40%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 36px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .brand {
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            text-decoration: none;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo-img {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            object-fit: cover;
+            filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6));
+        }
+
+        .brand-name {
+            background: linear-gradient(135deg, #ef4444, #f43f5e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-badge {
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--neon-red);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+        }
+
+        .profile-container {
+            position: relative;
+        }
+
+        .avatar-trigger {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--glass-card);
+            border: 2px solid var(--neon-red);
+            box-shadow: 0 0 14px rgba(239, 68, 68, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .glass-dropdown {
+            position: absolute;
+            right: 0;
+            top: 54px;
+            width: 250px;
+            background: rgba(11, 15, 28, 0.94);
+            backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-8px) scale(0.96);
+            transition: all 0.25s;
+            z-index: 1001;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .profile-container:hover .glass-dropdown {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .profile-container.active .glass-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .dropdown-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .dropdown-link:hover {
+            background: rgba(239, 68, 68, 0.15);
+            color: #fff;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+            flex: 1;
+            width: 100%;
+        }
+
+        .glass-panel {
+            background: var(--glass-card);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .cyber-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: none;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .cyber-btn-red {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .cyber-btn-glass {
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .cyber-btn-glass:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 20px 36px;
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-dim);
+            background: rgba(5, 7, 13, 0.95);
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <a href="/" class="brand">
+            <img src="/favicon.png" alt="SStudio Logo" class="brand-logo-img">
+            <span class="brand-name">SStudio</span>
+            <span class="brand-badge">Admin</span>
+        </a>
+
+        <div class="profile-container" id="profile-trigger-box">
+            <div class="avatar-trigger" tabindex="0">
+                <span style="color: #fff; font-weight: 800; font-size: 14px;">👑</span>
+            </div>
+
+            <div class="glass-dropdown">
+                <div style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 10px; margin-bottom: 8px;">
+                    <div style="font-size: 14px; font-weight: 800; color: #fff;">Super Admin</div>
+                    <div style="font-size: 11px; color: var(--neon-red);">admin.sstudio.uz</div>
+                </div>
+                <a href="https://{{ domain }}" class="dropdown-link">🌐 Asosiy Sayt</a>
+                <a href="https://quizer.{{ domain }}" class="dropdown-link">⚡ Quizer</a>
+                <a href="https://shop.{{ domain }}" class="dropdown-link">💎 Shop</a>
+                <a href="https://auth.{{ domain }}/logout" class="dropdown-link" style="color: #f87171;">🚪 Chiqish</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div>🔒 SSTUDIO ADMIN CONSOLE — AUTHORIZED ACCESS ONLY</div>
+        <div>IP: {{ client_ip or '78.141.246.118' }}</div>
+    </footer>
+
+    <script>
+        const profileBox = document.getElementById('profile-trigger-box');
+        profileBox.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileBox.classList.toggle('active');
+        });
+        document.addEventListener('click', (e) => {
+            if (!profileBox.contains(e.target)) profileBox.classList.remove('active');
+        });
+    </script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

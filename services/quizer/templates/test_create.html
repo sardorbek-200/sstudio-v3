@@ -1,0 +1,272 @@
+{% extends "quizer_base.html" %}
+
+{% block title %}Yangi Test Yaratish — Quizer{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px;">
+    <!-- Sarlavha -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+        <div>
+            <h1 style="font-size: 26px; font-weight: 900; color: #fff;">⚙️ Yangi Test Konstruktori</h1>
+            <p style="font-size: 13px; color: var(--text-dim); margin-top: 4px;">5 xil savol turlari yoki Gemini AI avtomatik generatsiyasi</p>
+        </div>
+        
+        <!-- Gemini AI Generator Trigger -->
+        <button onclick="openAiModal()" class="cyber-btn" style="background: linear-gradient(135deg, #ec4899, var(--neon-purple)); color: #fff; box-shadow: 0 0 20px rgba(236,72,153,0.4);">
+            ✨ Gemini AI orqali Tuzish
+        </button>
+    </div>
+
+    <!-- Asosiy Form -->
+    <form id="create-test-form" onsubmit="saveTest(event)" class="glass-panel" style="display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 16px;">
+            <div>
+                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-dim); margin-bottom: 6px;">Test Nomi</label>
+                <input type="text" id="test-title" required placeholder="Masalan: Python OOP Asoslari" 
+                       style="width: 100%; padding: 12px; background: rgba(5,7,13,0.7); border: 1px solid var(--glass-border); border-radius: 10px; color: #fff; font-size: 14px; outline: none;">
+            </div>
+            <div>
+                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-dim); margin-bottom: 6px;">Test Turi</label>
+                <select id="test-type" onchange="togglePinField()"
+                        style="width: 100%; padding: 12px; background: rgba(5,7,13,0.7); border: 1px solid var(--glass-border); border-radius: 10px; color: #fff; font-size: 14px; outline: none;">
+                    <option value="practice">Mashq (Practice)</option>
+                    <option value="official">Rasmiy (Official)</option>
+                    <option value="secret">Maxfiy (PIN-kodli)</option>
+                </select>
+            </div>
+            <div>
+                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-dim); margin-bottom: 6px;">Vaqt (Daqiqa)</label>
+                <input type="number" id="test-time" value="30" min="5" max="180"
+                       style="width: 100%; padding: 12px; background: rgba(5,7,13,0.7); border: 1px solid var(--glass-border); border-radius: 10px; color: #fff; font-size: 14px; outline: none;">
+            </div>
+        </div>
+
+        <div id="pin-field-row" style="display: none;">
+            <label style="display: block; font-size: 12px; font-weight: 700; color: var(--neon-cyan); margin-bottom: 6px;">4 xonali PIN Kod</label>
+            <input type="text" id="test-pin" maxlength="4" pattern="[0-9]{4}" placeholder="Masalan: 7788"
+                   style="width: 140px; padding: 10px; letter-spacing: 4px; font-weight: bold; background: rgba(5,7,13,0.7); border: 1px solid var(--neon-cyan); border-radius: 10px; color: #fff; outline: none;">
+        </div>
+
+        <div>
+            <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-dim); margin-bottom: 6px;">Tavsif</label>
+            <textarea id="test-desc" rows="2" placeholder="Test haqida qisqacha ma'lumot..."
+                      style="width: 100%; padding: 12px; background: rgba(5,7,13,0.7); border: 1px solid var(--glass-border); border-radius: 10px; color: #fff; font-size: 13px; outline: none; resize: vertical;"></textarea>
+        </div>
+
+        <!-- Savollar ro'yxati -->
+        <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h3 style="font-size: 18px; font-weight: 800;">Savollar (<span id="questions-count">0</span>)</h3>
+                
+                <!-- Savol turi qo'shish knopkalari -->
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button type="button" onclick="addQuestion('single')" class="cyber-btn cyber-btn-glass" style="padding: 6px 12px; font-size: 12px;">+ Yagona Tanlov</button>
+                    <button type="button" onclick="addQuestion('multiple')" class="cyber-btn cyber-btn-glass" style="padding: 6px 12px; font-size: 12px;">+ Ko'p Tanlov</button>
+                    <button type="button" onclick="addQuestion('numeric')" class="cyber-btn cyber-btn-glass" style="padding: 6px 12px; font-size: 12px;">+ Sonli Javob</button>
+                    <button type="button" onclick="addQuestion('open_ai')" class="cyber-btn cyber-btn-glass" style="padding: 6px 12px; font-size: 12px;">+ Ochiq (AI)</button>
+                </div>
+            </div>
+
+            <div id="questions-container" style="display: flex; flex-direction: column; gap: 18px;">
+                <!-- Savollar dinamik ravishda shu yerga qo'shiladi -->
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 14px; margin-top: 10px;">
+            <a href="/" class="cyber-btn cyber-btn-glass">Bekor qilish</a>
+            <button type="submit" class="cyber-btn cyber-btn-primary">💾 Testni Saqlash va Nashr Etish</button>
+        </div>
+    </form>
+</div>
+
+<!-- Gemini AI Generatsiya Modali -->
+<div id="ai-modal" style="display: none; position: fixed; inset: 0; background: rgba(5,7,13,0.85); backdrop-filter: blur(14px); z-index: 2000; align-items: center; justify-content: center;">
+    <div class="glass-panel" style="width: 100%; max-width: 480px; border-color: var(--neon-purple); box-shadow: 0 0 35px rgba(168,85,247,0.3);">
+        <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 8px;">✨ Gemini AI Test Yaratuvchi</h3>
+        <p style="font-size: 13px; color: var(--text-dim); margin-bottom: 20px;">
+            Mavzu va murakkablik darajasini kiriting — AI avtomatik 5 ta sifatli savol tuzib beradi.
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div>
+                <label style="display: block; font-size: 12px; color: var(--text-dim); margin-bottom: 4px;">Mavzu</label>
+                <input type="text" id="ai-topic" placeholder="Masalan: Fizika: Nyuton qonunlari yoki Python Lug'atlar"
+                       style="width: 100%; padding: 10px; background: rgba(5,7,13,0.7); border: 1px solid var(--glass-border); border-radius: 8px; color: #fff; font-size: 13px; outline: none;">
+            </div>
+            <div>
+                <label style="display: block; font-size: 12px; color: var(--text-dim); margin-bottom: 4px;">Daraja</label>
+                <select id="ai-level" style="width: 100%; padding: 10px; background: rgba(5,7,13,0.7); border: 1px solid var(--glass-border); border-radius: 8px; color: #fff; font-size: 13px; outline: none;">
+                    <option value="easy">Boshlang'ich (Oddiy)</option>
+                    <option value="medium" selected>O'rta (Standart)</option>
+                    <option value="hard">Murakkab (Olimpiada)</option>
+                </select>
+            </div>
+
+            <div id="ai-loading" style="display: none; text-align: center; color: var(--neon-cyan); font-size: 13px; padding: 10px;">
+                ⚡ Gemini AI savollarni yaratmoqda... Kuting...
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
+                <button type="button" onclick="closeAiModal()" class="cyber-btn cyber-btn-glass" style="padding: 8px 16px;">Yopish</button>
+                <button type="button" onclick="generateWithAi()" id="ai-gen-btn" class="cyber-btn cyber-btn-primary" style="padding: 8px 18px;">Yaratish ➔</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    let questionsList = [];
+
+    function togglePinField() {
+        const type = document.getElementById('test-type').value;
+        document.getElementById('pin-field-row').style.display = type === 'secret' ? 'block' : 'none';
+    }
+
+    function addQuestion(type, prefill = null) {
+        const qIndex = questionsList.length;
+        const qData = prefill || {
+            type: type,
+            text: '',
+            options: ['Variant A', 'Variant B', 'Variant C', 'Variant D'],
+            correct: 'Variant A',
+            points: 1
+        };
+        questionsList.push(qData);
+        renderQuestions();
+    }
+
+    function removeQuestion(index) {
+        questionsList.splice(index, 1);
+        renderQuestions();
+    }
+
+    function renderQuestions() {
+        const container = document.getElementById('questions-container');
+        document.getElementById('questions-count').innerText = questionsList.length;
+        container.innerHTML = '';
+
+        questionsList.forEach((q, idx) => {
+            const card = document.createElement('div');
+            card.className = 'glass-panel';
+            card.style.background = 'rgba(13,18,30,0.5)';
+            card.style.padding = '18px';
+
+            let optionsHtml = '';
+            if (q.type === 'single' || q.type === 'multiple') {
+                optionsHtml = `
+                    <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+                        <label style="font-size: 11px; color: var(--text-dim);">Variantlar va to'g'ri javob:</label>
+                        ${q.options.map((opt, oIdx) => `
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <input type="radio" name="correct_${idx}" ${opt === q.correct ? 'checked' : ''} onchange="questionsList[${idx}].correct = questionsList[${idx}].options[${oIdx}]">
+                                <input type="text" value="${opt}" oninput="questionsList[${idx}].options[${oIdx}] = this.value"
+                                       style="flex: 1; padding: 6px 10px; background: rgba(5,7,13,0.6); border: 1px solid var(--glass-border); border-radius: 6px; color: #fff; font-size: 12px; outline: none;">
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (q.type === 'numeric') {
+                optionsHtml = `
+                    <div style="margin-top: 10px;">
+                        <label style="font-size: 11px; color: var(--text-dim);">To'g'ri sonli qiymat:</label>
+                        <input type="number" step="any" value="${q.correct || ''}" oninput="questionsList[${idx}].correct = this.value"
+                               style="width: 200px; padding: 8px; background: rgba(5,7,13,0.6); border: 1px solid var(--glass-border); border-radius: 6px; color: #fff; font-size: 13px; outline: none;">
+                    </div>
+                `;
+            } else if (q.type === 'open_ai') {
+                optionsHtml = `
+                    <div style="margin-top: 10px;">
+                        <label style="font-size: 11px; color: var(--neon-cyan);">Gemini AI Baholash Namunasi (Model Answer):</label>
+                        <textarea rows="2" oninput="questionsList[${idx}].correct = this.value"
+                                  style="width: 100%; padding: 8px; background: rgba(5,7,13,0.6); border: 1px solid var(--glass-border); border-radius: 6px; color: #fff; font-size: 12px; outline: none;">${q.correct || ''}</textarea>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 12px; font-weight: 800; color: var(--neon-cyan);">#${idx + 1} [${q.type.toUpperCase()}]</span>
+                    <button type="button" onclick="removeQuestion(${idx})" style="background: none; border: none; color: #f87171; font-size: 12px; cursor: pointer;">✕ O'chirish</button>
+                </div>
+                <input type="text" value="${q.text}" placeholder="Savol matnini kiriting..." oninput="questionsList[${idx}].text = this.value"
+                       style="width: 100%; padding: 10px; background: rgba(5,7,13,0.8); border: 1px solid var(--glass-border); border-radius: 8px; color: #fff; font-size: 13px; outline: none;">
+                ${optionsHtml}
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function openAiModal() {
+        document.getElementById('ai-modal').style.display = 'flex';
+        document.getElementById('ai-topic').focus();
+    }
+    function closeAiModal() {
+        document.getElementById('ai-modal').style.display = 'none';
+    }
+
+    async function generateWithAi() {
+        const topic = document.getElementById('ai-topic').value;
+        const level = document.getElementById('ai-level').value;
+        if (!topic) return alert('Iltimos, mavzuni kiriting');
+
+        document.getElementById('ai-loading').style.display = 'block';
+        document.getElementById('ai-gen-btn').disabled = true;
+
+        try {
+            const res = await fetch('/api/ai-generate', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ topic, level, count: 5 })
+            });
+            const data = await res.json();
+            if (res.ok && data.questions) {
+                data.questions.forEach(q => addQuestion(q.type || 'single', q));
+                closeAiModal();
+            } else {
+                alert(data.detail || 'AI bilan xatolik yuz berdi');
+            }
+        } catch(e) {
+            alert('Tarmoq xatosi: ' + e.message);
+        } finally {
+            document.getElementById('ai-loading').style.display = 'none';
+            document.getElementById('ai-gen-btn').disabled = false;
+        }
+    }
+
+    async function saveTest(e) {
+        e.preventDefault();
+        if (questionsList.length === 0) return alert('Kamida 1 ta savol qo\'shing!');
+
+        const payload = {
+            title: document.getElementById('test-title').value,
+            test_type: document.getElementById('test-type').value,
+            pin_code: document.getElementById('test-pin').value || null,
+            time_limit_minutes: parseInt(document.getElementById('test-time').value) || 30,
+            description: document.getElementById('test-desc').value,
+            questions: questionsList
+        };
+
+        try {
+            const res = await fetch('/api/create', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (res.ok && data.test_id) {
+                alert('Test muvaffaqiyatli saqlandi va nashr etildi!');
+                window.location.href = '/';
+            } else {
+                alert(data.detail || 'Xatolik yuz berdi');
+            }
+        } catch(e) {
+            alert('Saqlashda xatolik: ' + e.message);
+        }
+    }
+
+    // Default 1 ta savol ochish
+    addQuestion('single');
+</script>
+{% endblock %}

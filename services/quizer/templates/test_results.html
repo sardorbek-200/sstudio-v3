@@ -1,0 +1,67 @@
+{% extends "quizer_base.html" %}
+
+{% block title %}Natijalar — Quizer{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px;">
+    <!-- Natija Xulosasi -->
+    <div class="glass-panel" style="text-align: center; padding: 40px; position: relative;">
+        <div style="font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: var(--neon-cyan); margin-bottom: 12px;">
+            Sinov Yakunlandi
+        </div>
+        <h1 style="font-size: 32px; font-weight: 900; margin-bottom: 24px; color: #fff;">
+            {{ test.title }}
+        </h1>
+
+        <div style="display: flex; justify-content: center; gap: 30px; margin-bottom: 30px; flex-wrap: wrap;">
+            <div style="background: rgba(5,7,13,0.7); border: 1px solid var(--neon-primary); border-radius: 16px; padding: 20px 30px; min-width: 140px;">
+                <div style="font-size: 11px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 4px;">To'plangan Ball</div>
+                <div style="font-size: 32px; font-weight: 900; color: var(--neon-cyan);">{{ result.score }}%</div>
+            </div>
+            <div style="background: rgba(5,7,13,0.7); border: 1px solid var(--neon-purple); border-radius: 16px; padding: 20px 30px; min-width: 140px;">
+                <div style="font-size: 11px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 4px;">Olingan XP</div>
+                <div style="font-size: 32px; font-weight: 900; color: var(--neon-purple);">+{{ result.xp_earned }} XP</div>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: center; gap: 14px;">
+            <a href="/" class="cyber-btn cyber-btn-glass">Bosh sahifaga</a>
+            <a href="https://{{ domain }}/users" class="cyber-btn cyber-btn-primary">🏆 Reytingni ko'rish</a>
+        </div>
+    </div>
+
+    <!-- Savollar tahlili va AI Sharhi -->
+    <div class="glass-panel" style="padding: 28px;">
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+            <span style="color: var(--neon-cyan);">◈</span> Savollar Tahlili va Gemini AI Izohlari
+        </h3>
+
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+            {% for item in questions_breakdown %}
+            <div style="background: rgba(5,7,13,0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 18px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 13px; font-weight: 800; color: #fff;">#{{ loop.index }}. {{ item.question_text }}</span>
+                    <span style="font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px; {% if item.is_correct %}background: rgba(16,185,129,0.2); color: #34d399;{% else %}background: rgba(239,68,68,0.2); color: #f87171;{% endif %}">
+                        {% if item.is_correct %}TO'G'RI{% else %}NOTO'G'RI{% endif %}
+                    </span>
+                </div>
+                <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 6px;">
+                    Sizning javobingiz: <strong style="color: #fff;">{{ item.user_answer or "Javob berilmagan" }}</strong>
+                </div>
+                {% if not item.is_correct %}
+                <div style="font-size: 12px; color: #34d399; margin-bottom: 8px;">
+                    To'g'ri javob: <strong>{{ item.correct_answer }}</strong>
+                </div>
+                {% endif %}
+
+                {% if item.ai_explanation %}
+                <div style="background: rgba(168,85,247,0.1); border-left: 3px solid var(--neon-purple); padding: 8px 12px; border-radius: 4px; font-size: 12px; color: #d8b4fe; margin-top: 8px;">
+                    💡 <strong>Gemini AI Izohi:</strong> {{ item.ai_explanation }}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Quizer — Cyber Tests Platform{% endblock %}</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <style>
+        :root {
+            --bg: #05070d;
+            --glass-bg: rgba(13, 18, 30, 0.7);
+            --glass-card: rgba(18, 24, 41, 0.6);
+            --glass-border: rgba(99, 102, 241, 0.2);
+            --glass-hover: rgba(99, 102, 241, 0.35);
+            --neon-primary: #6366f1;
+            --neon-cyan: #00f2fe;
+            --neon-purple: #a855f7;
+            --neon-green: #10b981;
+            --neon-red: #ef4444;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "JetBrains Mono", monospace;
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 45%),
+                radial-gradient(circle at 90% 80%, rgba(0, 242, 254, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.08) 0%, transparent 60%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Cyber Glass Navbar */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 36px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .brand {
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo-img {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            object-fit: cover;
+            filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.6));
+            transition: transform 0.3s ease;
+        }
+
+        .brand:hover .brand-logo-img {
+            transform: scale(1.08) rotate(4deg);
+        }
+
+        .brand-name {
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-primary), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-badge {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: rgba(0, 242, 254, 0.15);
+            color: var(--neon-cyan);
+            border: 1px solid rgba(0, 242, 254, 0.3);
+        }
+
+        /* Profile Avatar & Glass Dropdown */
+        .profile-container {
+            position: relative;
+        }
+
+        .avatar-trigger {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--glass-card);
+            border: 2px solid var(--neon-primary);
+            box-shadow: 0 0 14px rgba(99, 102, 241, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .avatar-trigger:hover, .profile-container.active .avatar-trigger {
+            box-shadow: 0 0 22px rgba(0, 242, 254, 0.6);
+            border-color: var(--neon-cyan);
+            transform: scale(1.05);
+        }
+
+        .avatar-icon {
+            font-size: 16px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .glass-dropdown {
+            position: absolute;
+            right: 0;
+            top: 54px;
+            width: 260px;
+            background: rgba(11, 15, 28, 0.92);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7), 0 0 15px rgba(99, 102, 241, 0.15);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-8px) scale(0.96);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1001;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .profile-container:hover .glass-dropdown {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .profile-container.active .glass-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .dropdown-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 12px;
+            margin-bottom: 10px;
+        }
+
+        .dropdown-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .dropdown-username {
+            font-size: 12px;
+            color: var(--neon-cyan);
+            font-family: monospace;
+            margin-top: 2px;
+        }
+
+        .dropdown-status {
+            display: inline-block;
+            margin-top: 6px;
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            background: rgba(99, 102, 241, 0.2);
+            color: #a5b4fc;
+            border: 1px solid rgba(99, 102, 241, 0.4);
+        }
+
+        .dropdown-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-link:hover {
+            background: var(--glass-hover);
+            color: #fff;
+            transform: translateX(4px);
+        }
+
+        .dropdown-link.logout {
+            color: #f87171;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            margin-top: 8px;
+            padding-top: 10px;
+        }
+
+        .dropdown-link.logout:hover {
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+        }
+
+        /* Container & Global Glass Card */
+        .main-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 24px;
+            flex: 1;
+            width: 100%;
+        }
+
+        .glass-panel {
+            background: var(--glass-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel:hover {
+            border-color: var(--glass-hover);
+        }
+
+        /* Buttons */
+        .cyber-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            text-decoration: none;
+            border: none;
+            transition: all 0.25s ease;
+        }
+
+        .cyber-btn-primary {
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-primary));
+            color: #05070d;
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
+        }
+
+        .cyber-btn-primary:hover {
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .cyber-btn-glass {
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+            border: 1px solid var(--glass-border);
+        }
+
+        .cyber-btn-glass:hover {
+            background: var(--glass-hover);
+            border-color: var(--neon-primary);
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 24px 36px;
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-dim);
+            background: rgba(5, 7, 13, 0.9);
+        }
+
+        .footer a {
+            color: var(--text-dim);
+            text-decoration: none;
+            margin-left: 18px;
+            transition: color 0.2s;
+        }
+
+        .footer a:hover {
+            color: var(--neon-cyan);
+        }
+
+        @media (max-width: 600px) {
+            .navbar { padding: 14px 20px; }
+            .footer { flex-direction: column; gap: 14px; text-align: center; }
+            .footer a { margin: 0 8px; }
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <header class="navbar">
+        <a href="/" class="brand">
+            <img src="/favicon.png" alt="SStudio Logo" class="brand-logo-img">
+            <span class="brand-name">SStudio</span>
+            <span class="brand-badge">Quizer</span>
+        </a>
+
+        <!-- Profile Avatar & Glass Dropdown -->
+        <div class="profile-container" id="profile-trigger-box">
+            <div class="avatar-trigger" tabindex="0">
+                <span class="avatar-icon">
+                    {% if user %}
+                        {{ user.name[0] | upper }}
+                    {% else %}
+                        ✦
+                    {% endif %}
+                </span>
+            </div>
+
+            <div class="glass-dropdown">
+                {% if user %}
+                    <div class="dropdown-header">
+                        <div class="dropdown-name">{{ user.name }} {{ user.surname }}</div>
+                        <div class="dropdown-username">@{{ user.username }}</div>
+                        <span class="dropdown-status">{{ user.status }}</span>
+                    </div>
+                    <a href="https://{{ domain }}/user/{{ user.id }}" class="dropdown-link">👤 Profilim</a>
+                    <a href="/create" class="dropdown-link">➕ Yangi Test</a>
+                    <a href="https://shop.{{ domain }}" class="dropdown-link">💎 Shop & Wallet</a>
+                    <a href="https://{{ domain }}/apps" class="dropdown-link">🎯 Barcha Ilovalar</a>
+                    <a href="https://auth.{{ domain }}/logout" class="dropdown-link logout">🚪 Chiqish</a>
+                {% else %}
+                    <div class="dropdown-header">
+                        <div class="dropdown-name">SStudio Xush kelibsiz</div>
+                        <div class="dropdown-username">Tizimga kiring</div>
+                    </div>
+                    <a href="https://auth.{{ domain }}/login" class="dropdown-link">🔑 Kirish (Log in)</a>
+                    <a href="https://auth.{{ domain }}/register" class="dropdown-link">✨ Ro'yxatdan o'tish</a>
+                    <a href="https://{{ domain }}/apps" class="dropdown-link">🎯 Barcha Ilovalar</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div>© 2026 SSTUDIO QUIZER. CYBER EDUCATION ECOSYSTEM.</div>
+        <div>
+            <a href="https://{{ domain }}/privacy">Maxfiylik</a>
+            <a href="https://{{ domain }}/terms">Shartlar</a>
+            <a href="https://{{ domain }}/connect">Bog'lanish</a>
+        </div>
+    </footer>
+
+    <script>
+        const profileBox = document.getElementById('profile-trigger-box');
+        profileBox.addEventListener('click', function(e) {
+            e.stopPropagation();
+            profileBox.classList.toggle('active');
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!profileBox.contains(e.target)) {
+                profileBox.classList.remove('active');
+            }
+        });
+    </script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

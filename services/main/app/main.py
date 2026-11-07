@@ -84,7 +84,7 @@ async def users_page(request: Request):
     users_list = []
     try:
         async with async_session_maker() as db:
-            stmt = select(User).where(User.id == user_id, User.is_active == True, User.is_banned == False).order_by(desc(User.created_at)).limit(50)
+            stmt = select(User).where(User.is_active == True, User.is_banned == False).order_by(desc(User.created_at)).limit(50)
             res = await db.execute(stmt)
             users_list = res.scalars().all()
     except Exception:

@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 from shared.config import settings
@@ -20,6 +21,16 @@ class Base(DeclarativeBase):
 
 async def get_db():
     """FastAPI Depends uchun DB sessiyasi provayderi"""
+    async with async_session_maker() as session:
+        try:
+            yield session
+        finally:
+            await session.close()
+
+
+@asynccontextmanager
+async def get_db_context():
+    """Asinxron konteks menejeri uchun DB sessiyasi"""
     async with async_session_maker() as session:
         try:
             yield session

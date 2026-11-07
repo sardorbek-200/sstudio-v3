@@ -1,0 +1,97 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Boshqaruv Paneli — SStudio Admin{% endblock %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column; gap: 32px;">
+    <!-- Metrikalar -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px;">
+        <div class="glass-panel" style="padding: 20px;">
+            <div style="font-size: 11px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px;">Jami Foydalanuvchilar</div>
+            <div style="font-size: 32px; font-weight: 900; color: #fff;">{{ metrics.total_users }}</div>
+        </div>
+        <div class="glass-panel" style="padding: 20px;">
+            <div style="font-size: 11px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px;">Aylanmadagi SCoin</div>
+            <div style="font-size: 32px; font-weight: 900; color: #f59e0b;">{{ metrics.total_scoin }}</div>
+        </div>
+        <div class="glass-panel" style="padding: 20px;">
+            <div style="font-size: 11px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px;">Yaratilgan Testlar</div>
+            <div style="font-size: 32px; font-weight: 900; color: var(--neon-cyan);">{{ metrics.total_tests }}</div>
+        </div>
+        <div class="glass-panel" style="padding: 20px; border-color: var(--neon-red);">
+            <div style="font-size: 11px; text-transform: uppercase; color: #f87171; margin-bottom: 6px;">Kutilayotgan Cheklar</div>
+            <div style="font-size: 32px; font-weight: 900; color: #f87171;">{{ pending_receipts | length }}</div>
+        </div>
+    </div>
+
+    <!-- Cheklarni Tasdiqlash -->
+    <div class="glass-panel">
+        <h2 style="font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 18px; display: flex; align-items: center; gap: 8px;">
+            <span style="color: #f59e0b;">💳</span> Kutilayotgan To'lov Cheklari (Click/Payme)
+        </h2>
+
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 13px; text-align: left;">
+                <thead>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--text-dim);">
+                        <th style="padding: 10px;">ID</th>
+                        <th style="padding: 10px;">Foydalanuvchi</th>
+                        <th style="padding: 10px;">Summa (UZS)</th>
+                        <th style="padding: 10px;">SCoin</th>
+                        <th style="padding: 10px;">Chek Rasmi</th>
+                        <th style="padding: 10px;">Amallar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in pending_receipts %}
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="padding: 12px 10px;">#{{ r.id }}</td>
+                        <td style="padding: 12px 10px; font-weight: bold;">User #{{ r.user_id }}</td>
+                        <td style="padding: 12px 10px;">{{ r.amount_uzs }} so'm</td>
+                        <td style="padding: 12px 10px; color: #f59e0b; font-weight: bold;">+{{ r.scoin_requested }}</td>
+                        <td style="padding: 12px 10px;">
+                            <a href="{{ r.receipt_image_path }}" target="_blank" style="color: var(--neon-cyan);">Ko'rish ↗</a>
+                        </td>
+                        <td style="padding: 12px 10px; display: flex; gap: 8px;">
+                            <button onclick="reviewReceipt('{{ r.id }}', 'approve')" class="cyber-btn" style="background: #10b981; color: #fff; padding: 6px 12px; font-size: 11px;">Tasdiqlash ✓</button>
+                            <button onclick="reviewReceipt('{{ r.id }}', 'reject')" class="cyber-btn cyber-btn-red" style="padding: 6px 12px; font-size: 11px;">Rad etish ✕</button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" style="padding: 30px; text-align: center; color: var(--text-dim);">
+                            Hozirda kutilayotgan cheklar mavjud emas.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    async function reviewReceipt(id, action) {
+        if (!confirm(`Chek #${id} ni ${action} qilishga ishonchingiz komilmi?`)) return;
+
+        try {
+            const res = await fetch(`/api/receipts/${id}/action`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ action: action })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                alert(`Amal muvaffaqiyatli bajarildi: ${action}`);
+                window.location.reload();
+            } else {
+                alert(data.detail || 'Xatolik yuz berdi');
+            }
+        } catch(e) {
+            alert('Tarmoq xatosi: ' + e.message);
+        }
+    }
+</script>
+{% endblock %}
