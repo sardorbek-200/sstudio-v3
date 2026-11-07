@@ -39,9 +39,12 @@ jobs:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USER }}
         run: |
-          echo "=== SSH Kalit sozlanmoqda ==="
+          echo "=== SSH Kalit sozlanmoqda (Windows CRLF tozalanadi) ==="
           mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+
+          # Windows \r belgilarini tozalash va toza Linux formati qilish
+          echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/deploy_key
+          echo "" >> ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
 
           # Serverni tekshirish
