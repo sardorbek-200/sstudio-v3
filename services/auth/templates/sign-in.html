@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SStudio — Kirish</title>
+    <!-- Cloudflare Turnstile Script -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --radius: 12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .auth-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 420px;
+            padding: 32px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+        .header { text-align: center; margin-bottom: 28px; }
+        .header h1 { font-size: 26px; font-weight: 700; margin-bottom: 8px; color: #fff; }
+        .header p { color: var(--text-muted); font-size: 14px; }
+        .lang-switch { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 15px; }
+        .lang-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+        .lang-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 500; color: var(--text-muted); }
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus { border-color: var(--primary); }
+        .turnstile-container { margin: 16px 0; display: flex; justify-content: center; }
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-submit:hover { background: var(--primary-hover); }
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 24px 0;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border); }
+        .divider span { padding: 0 10px; }
+        .social-btns { display: flex; flex-direction: column; gap: 10px; }
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 10px;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .social-btn:hover { background: #1a2234; }
+        .social-btn.telegram { border-color: #229ED9; color: #229ED9; }
+        .footer-link { text-align: center; margin-top: 24px; font-size: 13px; color: var(--text-muted); }
+        .footer-link a { color: var(--primary); text-decoration: none; font-weight: 500; }
+        .error-msg { background: #ef444422; border: 1px solid #ef4444; color: #fca5a5; padding: 10px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; display: none; }
+    </style>
+</head>
+<body>
+    <div class="auth-card">
+        <div class="lang-switch">
+            <button class="lang-btn active">UZ</button>
+            <button class="lang-btn">RU</button>
+            <button class="lang-btn">EN</button>
+        </div>
+        <div class="header">
+            <h1>SStudio</h1>
+            <p>Yagona ta'lim platformasiga xush kelibsiz</p>
+        </div>
+
+        <div id="error-box" class="error-msg"></div>
+
+        <form id="login-form">
+            <div class="form-group">
+                <label>Username yoki Email</label>
+                <input type="text" id="username" required placeholder="sardorbek">
+            </div>
+            <div class="form-group">
+                <label>Parol</label>
+                <input type="password" id="password" required placeholder="••••••••">
+            </div>
+
+            <!-- Cloudflare Turnstile Bot Himoyasi -->
+            {% if turnstile_site_key %}
+            <div class="turnstile-container">
+                <div class="cf-turnstile" data-sitekey="{{ turnstile_site_key }}" data-theme="dark"></div>
+            </div>
+            {% endif %}
+
+            <button type="submit" class="btn-submit">Tizimga kirish</button>
+        </form>
+
+        <div class="divider"><span>YOKI</span></div>
+
+        <div class="social-btns">
+            <a href="/github/login" class="social-btn">
+                <span>GitHub orqali kirish</span>
+            </a>
+            <button type="button" class="social-btn telegram" onclick="alert('Telegram bot tez kunda ishga tushadi!')">
+                <span>Telegram orqali tasdiqlash</span>
+            </button>
+        </div>
+
+        <div class="footer-link">
+            Akkauntingiz yo'qmi? <a href="/register">Ro'yxatdan o'tish</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const errBox = document.getElementById('error-box');
+            errBox.style.display = 'none';
+
+            // Turnstile tokenini olish
+            const turnstileResponse = document.querySelector('[name="cf-turnstile-response"]')?.value || null;
+
+            const payload = {
+                username_or_email: document.getElementById('username').value,
+                password: document.getElementById('password').value,
+                cf_turnstile_response: turnstileResponse
+            };
+
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    errBox.innerText = data.detail || 'Kirishda xatolik yuz berdi';
+                    errBox.style.display = 'block';
+                } else {
+                    window.location.href = 'https://sstudio.uz';
+                }
+            } catch (err) {
+                errBox.innerText = 'Server bilan aloqa uzildi';
+                errBox.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

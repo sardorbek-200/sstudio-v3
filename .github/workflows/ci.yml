@@ -1,0 +1,65 @@
+name: SStudio v3 CI & Auto-Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kodni yuklab olish
+        uses: actions/checkout@v4
+
+      - name: Python 3.12 o'rnatish
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Kutubxonalarni o'rnatish
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install email-validator
+
+      - name: Testlarni ishga tushirish
+        run: |
+          python -m unittest discover tests -v
+
+  deploy:
+    name: Deploy to VPS (/root/app/v3)
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: VPS ga SSH orqali ulanish va yangilash
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script: |
+            echo "=== SStudio v3 Avto-Deploy Boshlandi ==="
+            cd /root/app/v3 || exit 1
+            git pull origin main
+            
+            # Virtual muhitni yangilash
+            /root/app/v3/.venv/bin/pip install -r requirements.txt
+            
+            # Baza migratsiyasi
+            /root/app/v3/.venv/bin/python -m alembic upgrade head
+            
+            # Yangilangan systemd konfiguratsiyalarini yuklash
+            cp /root/app/v3/infra/systemd/*.service /etc/systemd/system/
+            systemctl daemon-reload
+            
+            # Xizmatlarni qayta ishga tushirish
+            systemctl restart sstudio-auth
+            
+            # Nginx ni tekshirish va reload qilish
+            cp /root/app/v3/infra/nginx/*.conf /etc/nginx/conf.d/ 2>/dev/null || true
+            nginx -t && systemctl reload nginx
+            
+            echo "=== SStudio v3: Deploy muvaffaqiyatli yakunlandi! ==="

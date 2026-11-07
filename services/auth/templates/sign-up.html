@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SStudio — Ro'yxatdan o'tish</title>
+    <!-- Cloudflare Turnstile Script -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --radius: 12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 15px;
+        }
+        .auth-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 560px;
+            padding: 32px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+        .header { text-align: center; margin-bottom: 24px; }
+        .header h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; color: #fff; }
+        .header p { color: var(--text-muted); font-size: 14px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 500; color: var(--text-muted); }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+        }
+        .form-group input:focus, .form-group select:focus { border-color: var(--primary); }
+        .turnstile-container { margin: 16px 0; display: flex; justify-content: center; }
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn-submit:hover { background: var(--primary-hover); }
+        .footer-link { text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-muted); }
+        .footer-link a { color: var(--primary); text-decoration: none; }
+        .error-msg { background: #ef444422; border: 1px solid #ef4444; color: #fca5a5; padding: 10px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; display: none; }
+    </style>
+</head>
+<body>
+    <div class="auth-card">
+        <div class="header">
+            <h1>Ro'yxatdan o'tish</h1>
+            <p>SStudio profilingizni yarating</p>
+        </div>
+
+        <div id="error-box" class="error-msg"></div>
+
+        <form id="reg-form">
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Ism *</label>
+                    <input type="text" id="name" required placeholder="Sardor">
+                </div>
+                <div class="form-group">
+                    <label>Familiya *</label>
+                    <input type="text" id="surname" required placeholder="Karimov">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Sharif (Otasining ismi)</label>
+                    <input type="text" id="father_name" placeholder="Akrom o'g'li">
+                </div>
+                <div class="form-group">
+                    <label>Tug'ilgan sana *</label>
+                    <input type="date" id="birthday" required>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Username *</label>
+                    <input type="text" id="username" required placeholder="sardor_dev">
+                </div>
+                <div class="form-group">
+                    <label>Parol *</label>
+                    <input type="password" id="password" required placeholder="Kamida 6 belgi">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Davlat / Viloyat</label>
+                    <input type="text" id="location_region" placeholder="Toshkent">
+                </div>
+                <div class="form-group">
+                    <label>Shahar / Tuman</label>
+                    <input type="text" id="location_city" placeholder="Yunusobod">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Maktab / Universitet (AI reyting uchun avtomatik birlashtiriladi)</label>
+                <input type="text" id="school_raw" placeholder="Masalan: 1-maktab yoki TATU">
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Gmail</label>
+                    <input type="email" id="gmail" placeholder="example@gmail.com">
+                </div>
+                <div class="form-group">
+                    <label>Telefon raqam</label>
+                    <input type="text" id="tel_number" placeholder="+998901234567">
+                </div>
+            </div>
+
+            <!-- Cloudflare Turnstile Bot Himoyasi -->
+            {% if turnstile_site_key %}
+            <div class="turnstile-container">
+                <div class="cf-turnstile" data-sitekey="{{ turnstile_site_key }}" data-theme="dark"></div>
+            </div>
+            {% endif %}
+
+            <button type="submit" class="btn-submit">Hisob yaratish</button>
+        </form>
+
+        <div class="footer-link">
+            Akkauntingiz bormi? <a href="/login">Tizimga kirish</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('reg-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const errBox = document.getElementById('error-box');
+            errBox.style.display = 'none';
+
+            const turnstileResponse = document.querySelector('[name="cf-turnstile-response"]')?.value || null;
+
+            const payload = {
+                name: document.getElementById('name').value,
+                surname: document.getElementById('surname').value,
+                father_name: document.getElementById('father_name').value || null,
+                birthday: document.getElementById('birthday').value,
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value,
+                location_region: document.getElementById('location_region').value || null,
+                location_city: document.getElementById('location_city').value || null,
+                school_raw: document.getElementById('school_raw').value || null,
+                gmail: document.getElementById('gmail').value || null,
+                tel_number: document.getElementById('tel_number').value || null,
+                cf_turnstile_response: turnstileResponse
+            };
+
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    errBox.innerText = data.detail || 'Xatolik yuz berdi';
+                    errBox.style.display = 'block';
+                } else {
+                    window.location.href = 'https://sstudio.uz';
+                }
+            } catch (err) {
+                errBox.innerText = 'Server bilan aloqa uzildi';
+                errBox.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

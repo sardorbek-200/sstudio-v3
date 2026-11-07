@@ -1,0 +1,19 @@
+[Unit]
+Description=SStudio Quizer Service (v3)
+After=network.target postgresql.service sstudio-auth.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/app/v3
+Environment="PATH=/root/app/v3/.venv/bin"
+EnvironmentFile=/root/app/v3/.env
+ExecStart=/root/app/v3/.venv/bin/uvicorn services.quizer.app.main:app --host 127.0.0.1 --port 8002 --workers 2
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=sstudio-quizer
+
+[Install]
+WantedBy=multi-user.target

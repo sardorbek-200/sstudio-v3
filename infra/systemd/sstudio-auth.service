@@ -1,0 +1,19 @@
+[Unit]
+Description=SStudio Auth Service (v3)
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/app/v3
+Environment="PATH=/root/app/v3/.venv/bin"
+EnvironmentFile=/root/app/v3/.env
+ExecStart=/root/app/v3/.venv/bin/uvicorn services.auth.app.main:app --host 127.0.0.1 --port 8001 --workers 2
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=sstudio-auth
+
+[Install]
+WantedBy=multi-user.target
