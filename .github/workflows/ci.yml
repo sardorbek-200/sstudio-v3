@@ -39,11 +39,11 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_PORT || 22 }}
+          port: 22
           script: |
             echo "=== SStudio v3 Avto-Deploy Boshlandi ==="
 
-            # 1. Agar papka mavjud bo'lmasa, noldan klon qilamiz
+            # 1. Agar papka mavjud bo'lmasa, klon qilamiz
             if [ ! -d "/root/app/v3" ]; then
                 echo "Papka topilmadi. Repozitoriya klon qilinmoqda..."
                 mkdir -p /root/app
@@ -58,7 +58,7 @@ jobs:
                 git pull origin main
             fi
 
-            # 3. Virtual muhit va bog'liqliklarni yangilash
+            # 3. Virtual muhit va kutubxonalar
             if [ ! -d "/root/app/v3/.venv" ]; then
                 python3 -m venv /root/app/v3/.venv
             fi
@@ -66,12 +66,12 @@ jobs:
             /root/app/v3/.venv/bin/pip install -r /root/app/v3/requirements.txt
             /root/app/v3/.venv/bin/pip install email-validator
 
-            # 4. Baza migratsiyasi (agar .env mavjud bo'lsa)
+            # 4. Baza migratsiyasi
             if [ -f "/root/app/v3/.env" ]; then
                 /root/app/v3/.venv/bin/python -m alembic upgrade head || true
             fi
 
-            # 5. Systemd va Nginx ni yangilash
+            # 5. Systemd va Nginx qayta ishga tushirish
             cp /root/app/v3/infra/systemd/*.service /etc/systemd/system/ 2>/dev/null || true
             systemctl daemon-reload
             systemctl restart sstudio-auth 2>/dev/null || true
