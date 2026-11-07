@@ -7,7 +7,6 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import desc, select
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from models.auth import User
 from shared.config import settings
@@ -23,7 +22,6 @@ templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 
 async def get_current_user_optional(request: Request) -> Optional[User]:
-    """Faqat cookie mavjud bo'lsagina DB ga ulanadi, aks holda bazani bezovta qilmaydi!"""
     token = request.cookies.get("sstudio_token")
     if not token:
         return None
@@ -57,22 +55,22 @@ async def register_redirect():
 @app.get("/", response_class=HTMLResponse)
 async def home_page(request: Request):
     user = await get_current_user_optional(request)
-    return templates.TemplateResponse("index.html", {
-        "request": request,
-        "user": user,
-        "domain": settings.BASE_DOMAIN
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={"user": user, "domain": settings.BASE_DOMAIN}
+    )
 
 
 # --- 3. Ilovalar Katalogi (/apps) ---
 @app.get("/apps", response_class=HTMLResponse)
 async def apps_catalog(request: Request):
     user = await get_current_user_optional(request)
-    return templates.TemplateResponse("apps.html", {
-        "request": request,
-        "user": user,
-        "domain": settings.BASE_DOMAIN
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="apps.html",
+        context={"user": user, "domain": settings.BASE_DOMAIN}
+    )
 
 
 # --- 4. Foydalanuvchilar va Reyting (/users) ---
@@ -82,18 +80,17 @@ async def users_page(request: Request):
     users_list = []
     try:
         async with async_session_maker() as db:
-            stmt = select(User).where(User.is_active == True, User.is_banned == False).order_by(desc(User.created_at)).limit(50)
+            stmt = select(User).where(User.id == user_id, User.is_active == True, User.is_banned == False).order_by(desc(User.created_at)).limit(50)
             res = await db.execute(stmt)
             users_list = res.scalars().all()
     except Exception:
         users_list = []
 
-    return templates.TemplateResponse("users.html", {
-        "request": request,
-        "user": user,
-        "users_list": users_list,
-        "domain": settings.BASE_DOMAIN
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="users.html",
+        context={"user": user, "users_list": users_list, "domain": settings.BASE_DOMAIN}
+    )
 
 
 # --- 5. Ochiq Profil (/user/{id}) ---
@@ -112,34 +109,49 @@ async def user_profile(user_id: int, request: Request):
     if not target_user:
         raise HTTPException(status_code=404, detail="Foydalanuvchi topilmadi")
 
-    return templates.TemplateResponse("user_profile.html", {
-        "request": request,
-        "user": current_user,
-        "profile": target_user,
-        "domain": settings.BASE_DOMAIN
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="user_profile.html",
+        context={"user": current_user, "profile": target_user, "domain": settings.BASE_DOMAIN}
+    )
 
 
 # --- 6. Huquqiy va Ma'lumot Sahifalari ---
 @app.get("/privacy", response_class=HTMLResponse)
 async def privacy_page(request: Request):
     user = await get_current_user_optional(request)
-    return templates.TemplateResponse("privacy.html", {"request": request, "user": user})
+    return templates.TemplateResponse(
+        request=request,
+        name="privacy.html",
+        context={"user": user}
+    )
 
 
 @app.get("/terms", response_class=HTMLResponse)
 async def terms_page(request: Request):
     user = await get_current_user_optional(request)
-    return templates.TemplateResponse("terms.html", {"request": request, "user": user})
+    return templates.TemplateResponse(
+        request=request,
+        name="terms.html",
+        context={"user": user}
+    )
 
 
 @app.get("/faq", response_class=HTMLResponse)
 async def faq_page(request: Request):
     user = await get_current_user_optional(request)
-    return templates.TemplateResponse("faq.html", {"request": request, "user": user})
+    return templates.TemplateResponse(
+        request=request,
+        name="faq.html",
+        context={"user": user}
+    )
 
 
 @app.get("/connect", response_class=HTMLResponse)
 async def connect_page(request: Request):
     user = await get_current_user_optional(request)
-    return templates.TemplateResponse("connect.html", {"request": request, "user": user})
+    return templates.TemplateResponse(
+        request=request,
+        name="connect.html",
+        context={"user": user}
+    )

@@ -44,20 +44,26 @@ async def home_redirect():
 
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
-    return templates.TemplateResponse("sign-in.html", {
-        "request": request,
-        "domain": settings.BASE_DOMAIN,
-        "turnstile_site_key": settings.CLOUDFLARE_TURNSTILE_SITE_KEY or ""
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="sign-in.html",
+        context={
+            "domain": settings.BASE_DOMAIN,
+            "turnstile_site_key": settings.CLOUDFLARE_TURNSTILE_SITE_KEY or ""
+        }
+    )
 
 
 @app.get("/register", response_class=HTMLResponse)
 async def register_page(request: Request):
-    return templates.TemplateResponse("sign-up.html", {
-        "request": request,
-        "domain": settings.BASE_DOMAIN,
-        "turnstile_site_key": settings.CLOUDFLARE_TURNSTILE_SITE_KEY or ""
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="sign-up.html",
+        context={
+            "domain": settings.BASE_DOMAIN,
+            "turnstile_site_key": settings.CLOUDFLARE_TURNSTILE_SITE_KEY or ""
+        }
+    )
 
 
 # --- API / Amallar ---
