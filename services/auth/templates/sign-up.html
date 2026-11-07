@@ -163,7 +163,13 @@
             const errBox = document.getElementById('error-box');
             errBox.style.display = 'none';
 
-            const turnstileResponse = document.querySelector('[name="cf-turnstile-response"]')?.value || null;
+            let turnstileResponse = null;
+            if (window.turnstile && typeof window.turnstile.getResponse === 'function') {
+                try { turnstileResponse = window.turnstile.getResponse(); } catch(e) {}
+            }
+            if (!turnstileResponse) {
+                turnstileResponse = document.querySelector('[name="cf-turnstile-response"]')?.value || null;
+            }
 
             const payload = {
                 name: document.getElementById('name').value,

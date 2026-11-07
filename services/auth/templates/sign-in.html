@@ -161,7 +161,13 @@
             errBox.style.display = 'none';
 
             // Turnstile tokenini olish
-            const turnstileResponse = document.querySelector('[name="cf-turnstile-response"]')?.value || null;
+            let turnstileResponse = null;
+            if (window.turnstile && typeof window.turnstile.getResponse === 'function') {
+                try { turnstileResponse = window.turnstile.getResponse(); } catch(e) {}
+            }
+            if (!turnstileResponse) {
+                turnstileResponse = document.querySelector('[name="cf-turnstile-response"]')?.value || null;
+            }
 
             const payload = {
                 username_or_email: document.getElementById('username').value,
