@@ -4,83 +4,196 @@
 
 {% block content %}
 <style>
-    .page-header { margin-bottom: 36px; text-align: center; }
-    .page-header h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
-    .page-header p { color: var(--text-muted); font-size: 15px; }
-    .apps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
-    .app-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s; }
-    .app-card:hover { border-color: var(--primary); transform: translateY(-4px); }
-    .app-top { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
-    .app-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; background: #1e293b; }
-    .app-info h3 { font-size: 18px; margin-bottom: 4px; color: #fff; }
-    .app-tag { font-size: 11px; padding: 2px 8px; border-radius: 6px; background: rgba(99, 102, 241, 0.2); color: #a5b4fc; font-weight: 600; text-transform: uppercase; }
-    .app-desc { font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; }
+    .page-head {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    .page-title {
+        font-size: 36px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: -0.5px;
+        margin-bottom: 8px;
+    }
+    .page-title span {
+        background: linear-gradient(135deg, var(--neon-cyan), var(--neon-primary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .page-desc {
+        color: var(--text-dim);
+        font-size: 15px;
+    }
+
+    .apps-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 24px;
+    }
+
+    .app-glass-card {
+        background: var(--glass-card);
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-radius: 20px;
+        padding: 28px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+    }
+
+    .app-glass-card:hover {
+        transform: translateY(-6px);
+        border-color: var(--neon-cyan);
+        box-shadow: 0 10px 30px rgba(0, 242, 254, 0.2);
+    }
+
+    .app-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    .app-icon-wrap {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: rgba(99, 102, 241, 0.15);
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.4));
+    }
+
+    .app-name {
+        font-size: 20px;
+        font-weight: 800;
+        color: #fff;
+    }
+
+    .app-tag {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        color: var(--neon-cyan);
+        margin-top: 2px;
+    }
+
+    .app-body {
+        font-size: 14px;
+        color: var(--text-dim);
+        line-height: 1.6;
+        margin-bottom: 24px;
+    }
+
+    .btn-app {
+        display: block;
+        text-align: center;
+        padding: 12px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .btn-app-active {
+        background: linear-gradient(135deg, var(--neon-primary), var(--neon-purple));
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-app-active:hover {
+        box-shadow: 0 0 25px rgba(168, 85, 247, 0.5);
+    }
+
+    .btn-app-outline {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--glass-border);
+        color: var(--text-main);
+    }
+
+    .btn-app-outline:hover {
+        border-color: var(--neon-cyan);
+        color: var(--neon-cyan);
+    }
 </style>
 
-<div class="page-header">
-    <h1>Ilovalar Katalogi</h1>
-    <p>SStudio ekotizimining barcha vositalari va xizmatlari</p>
+<div class="page-head">
+    <h1 class="page-title">Ilovalar <span>Katalogi</span></h1>
+    <p class="page-desc">SStudio ekotizimining barcha modullari va xizmatlari</p>
 </div>
 
 <div class="apps-grid">
     <!-- Quizer -->
-    <div class="app-card">
+    <div class="app-glass-card">
         <div>
-            <div class="app-top">
-                <div class="app-icon">🎯</div>
-                <div class="app-info">
-                    <h3>Quizer</h3>
-                    <span class="app-tag">Test & AI</span>
+            <div class="app-header">
+                <div class="app-icon-wrap">🎯</div>
+                <div>
+                    <div class="app-name">Quizer</div>
+                    <span class="app-tag">Live Tests & AI</span>
                 </div>
             </div>
-            <p class="app-desc">Avtomatlashtirilgan test sinovlari, AI savollar tahlili, rasmiy olimpiadalar va PIN-kodli yopiq testlar.</p>
+            <p class="app-body">Testlar yaratish, topshirish, AI baholash, PIN-kodli yopiq testlar va shaffof anti-cheat nazorati.</p>
         </div>
-        <a href="https://quizer.{{ domain }}" class="btn btn-primary" style="text-align: center; justify-content: center;">Ilovaga o'tish</a>
+        <a href="https://quizer.{{ domain }}" class="btn-app btn-app-active">Quizerga o'tish →</a>
     </div>
 
-    <!-- Shop / Wallet -->
-    <div class="app-card">
+    <!-- S-Shop -->
+    <div class="app-glass-card">
         <div>
-            <div class="app-top">
-                <div class="app-icon">🛒</div>
-                <div class="app-info">
-                    <h3>S-Shop & Wallet</h3>
+            <div class="app-header">
+                <div class="app-icon-wrap">💎</div>
+                <div>
+                    <div class="app-name">S-Shop & Wallet</div>
                     <span class="app-tag">Moliya & Tariflar</span>
                 </div>
             </div>
-            <p class="app-desc">SCoin hamyoni, P2P do'stona o'tkazmalar, omad charxi va qo'shimcha kvotalar xaridi.</p>
+            <p class="app-body">SCoin virtual hamyoni, P2P o'tkazmalar, omad charxi va qo'shimcha kvotalar tizimi.</p>
         </div>
-        <a href="https://shop.{{ domain }}" class="btn btn-outline" style="text-align: center; justify-content: center;">Hamyonni ochish</a>
+        <a href="https://shop.{{ domain }}" class="btn-app btn-app-outline">Hamyonni ochish</a>
     </div>
 
     <!-- STest -->
-    <div class="app-card">
+    <div class="app-glass-card">
         <div>
-            <div class="app-top">
-                <div class="app-icon">📝</div>
-                <div class="app-info">
-                    <h3>STest</h3>
-                    <span class="app-tag">AI Generator</span>
+            <div class="app-header">
+                <div class="app-icon-wrap">📝</div>
+                <div>
+                    <div class="app-name">STest</div>
+                    <span class="app-tag">AI Test Generator</span>
                 </div>
             </div>
-            <p class="app-desc">PDF, Word va rasmlardan bir soniyada sifatli test savollarini avtomatik tuzuvchi sun'iy intellekt moduli.</p>
+            <p class="app-body">PDF, Word va rasmlardan soniyalar ichida test savollarini avtomatik tuzuvchi sun'iy intellekt moduli.</p>
         </div>
-        <a href="https://stest.{{ domain }}" class="btn btn-outline" style="text-align: center; justify-content: center;">Ishlatish</a>
+        <a href="https://stest.{{ domain }}" class="btn-app btn-app-outline">Ochish</a>
     </div>
 
     <!-- SMavzu -->
-    <div class="app-card">
+    <div class="app-glass-card">
         <div>
-            <div class="app-top">
-                <div class="app-icon">📚</div>
-                <div class="app-info">
-                    <h3>SMavzu</h3>
-                    <span class="app-tag">Ma'ruzalar</span>
+            <div class="app-header">
+                <div class="app-icon-wrap">📚</div>
+                <div>
+                    <div class="app-name">SMavzu</div>
+                    <span class="app-tag">Konspektlar</span>
                 </div>
             </div>
-            <p class="app-desc">Mavzular bo'yicha konspektlar, tushuntirishlar va ta'limiy materiallarni tartibga soluvchi arxiv.</p>
+            <p class="app-body">Mavzular bo'yicha tushuntirishlar, AI konspektlari va ta'limiy materiallarni tartibga soluvchi arxiv.</p>
         </div>
-        <a href="https://smavzu.{{ domain }}" class="btn btn-outline" style="text-align: center; justify-content: center;">Ochish</a>
+        <a href="https://smavzu.{{ domain }}" class="btn-app btn-app-outline">Ko'rish</a>
     </div>
 </div>
 {% endblock %}
