@@ -33,17 +33,26 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
-      - name: VPS ga SSH orqali ulanish va avto-o'rnatish
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: 22
-          script: |
-            echo "=== SStudio v3 Avto-Deploy Boshlandi ==="
+      - name: VPS ga rasmiy OpenSSH orqali ulanish va avto-o'rnatish
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          echo "=== SSH Kalit sozlanmoqda ==="
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
 
-            # 1. Agar papka mavjud bo'lmasa, klon qilamiz
+          # Serverni tekshirish
+          ssh-keyscan -p 22 -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+
+          echo "=== Serverga ulanish va Deploy boshlandi ==="
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no "$VPS_USER@$VPS_HOST" bash << 'EOF'
+            set -e
+            echo "=== VPS ga kirdik! ==="
+
+            # 1. Papka tekshirish
             if [ ! -d "/root/app/v3" ]; then
                 echo "Papka topilmadi. Repozitoriya klon qilinmoqda..."
                 mkdir -p /root/app
@@ -53,25 +62,24 @@ jobs:
                 chmod +x infra/setup-vps.sh
                 bash infra/setup-vps.sh
             else
-                # 2. Mavjud bo'lsa, yangilanishlarni tortamiz
                 cd /root/app/v3
+                echo "Yangi kod tortilmoqda (git pull)..."
                 git pull origin main
             fi
 
-            # 3. Virtual muhit va kutubxonalar
+            # 2. Virtual muhit va kutubxonalar
             if [ ! -d "/root/app/v3/.venv" ]; then
+                echo "Python venv yaratilmoqda..."
                 python3 -m venv /root/app/v3/.venv
             fi
+
+            echo "Kutubxonalar tekshirilmoqda..."
             /root/app/v3/.venv/bin/pip install --upgrade pip
             /root/app/v3/.venv/bin/pip install -r /root/app/v3/requirements.txt
             /root/app/v3/.venv/bin/pip install email-validator
 
-            # 4. Baza migratsiyasi
-            if [ -f "/root/app/v3/.env" ]; then
-                /root/app/v3/.venv/bin/python -m alembic upgrade head || true
-            fi
-
-            # 5. Systemd va Nginx qayta ishga tushirish
+            # 3. Systemd va Nginx ni yangilash
+            echo "Xizmatlar yangilanmoqda..."
             cp /root/app/v3/infra/systemd/*.service /etc/systemd/system/ 2>/dev/null || true
             systemctl daemon-reload
             systemctl restart sstudio-auth 2>/dev/null || true
@@ -79,4 +87,5 @@ jobs:
             cp /root/app/v3/infra/nginx/*.conf /etc/nginx/conf.d/ 2>/dev/null || true
             nginx -t && systemctl reload nginx 2>/dev/null || true
 
-            echo "=== SStudio v3: Deploy muvaffaqiyatli yakunlandi! ==="
+            echo "=== SStudio v3: Deploy to'liq va muvaffaqiyatli yakunlandi! ==="
+          EOF
