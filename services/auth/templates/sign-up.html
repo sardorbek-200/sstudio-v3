@@ -431,7 +431,7 @@
 
     <div class="auth-container">
         <div class="auth-header">
-            <a href="https://{{ domain }}" class="brand-link">
+            <a href="https://{{ domain or 'sstudio.uz' }}" class="brand-link">
                 <img src="/favicon.png" alt="SStudio Logo" class="brand-emblem">
             </a>
             <h1 class="auth-title">Ro'yxatdan O'tish</h1>
@@ -532,8 +532,8 @@
                 <div class="terms-row">
                     <input type="checkbox" id="terms_agree" required>
                     <label for="terms_agree">
-                        Men <a href="https://{{ domain }}/terms" target="_blank">Foydalanish shartlari</a> hamda 
-                        <a href="https://{{ domain }}/privacy" target="_blank">Maxfiylik siyosati</a>ga to'liq roziman.
+                        Men <a href="https://{{ domain or 'sstudio.uz' }}/terms" target="_blank">Foydalanish shartlari</a> hamda 
+                        <a href="https://{{ domain or 'sstudio.uz' }}/privacy" target="_blank">Maxfiylik siyosati</a>ga to'liq roziman.
                     </label>
                 </div>
 
@@ -645,7 +645,7 @@
 
                 const data = await res.json();
                 if (res.ok) {
-                    window.location.href = data.redirect || 'https://{{ domain }}';
+                    window.location.href = data.redirect || 'https://{{ domain or 'sstudio.uz' }}';
                 } else {
                     errorBox.textContent = data.detail || "Ro'yxatdan o'tishda xatolik yuz berdi.";
                     errorBox.style.display = 'block';

@@ -1,0 +1,447 @@
+{% extends "base.html" %}
+
+{% block title %}SStorage — Shaxsiy Kiber-Xotira (Cloud Storage){% endblock %}
+
+{% block content %}
+<style>
+    .storage-header {
+        text-align: center;
+        margin-bottom: 36px;
+    }
+
+    .storage-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 18px;
+        border-radius: 30px;
+        background: rgba(0, 242, 254, 0.12);
+        border: 1px solid rgba(0, 242, 254, 0.35);
+        color: var(--neon-cyan);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+        box-shadow: 0 0 25px rgba(0, 242, 254, 0.2);
+    }
+
+    .storage-title {
+        font-size: 42px;
+        font-weight: 900;
+        letter-spacing: -0.5px;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+    }
+
+    .storage-title span {
+        background: linear-gradient(135deg, #ffffff, var(--neon-cyan), var(--neon-purple));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .storage-desc {
+        color: var(--text-dim);
+        font-size: 15px;
+        max-width: 620px;
+        margin: 0 auto;
+    }
+
+    /* Kvota Paneli */
+    .quota-banner {
+        background: var(--glass-card);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 28px 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+        backdrop-filter: blur(20px);
+        margin-bottom: 36px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 var(--specular-highlight);
+    }
+
+    .quota-info-wrap {
+        flex: 1;
+        min-width: 260px;
+    }
+
+    .quota-title-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text-secondary);
+        margin-bottom: 10px;
+    }
+
+    .storage-progress-bar {
+        height: 10px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .storage-progress-fill {
+        height: 100%;
+        border-radius: 10px;
+        background: linear-gradient(90deg, var(--neon-cyan), var(--neon-violet));
+        box-shadow: 0 0 15px var(--neon-cyan);
+        transition: width 0.5s ease;
+    }
+
+    .quota-action-btn {
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        text-decoration: none;
+        color: #ffffff;
+        background: linear-gradient(135deg, var(--neon-violet), var(--neon-purple));
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+        transition: all 0.25s ease;
+    }
+
+    .quota-action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
+    }
+
+    /* Drag & Drop Upload Maydoni */
+    .upload-dropzone {
+        background: rgba(8, 12, 28, 0.7);
+        border: 2px dashed rgba(0, 242, 254, 0.35);
+        border-radius: 22px;
+        padding: 40px 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 40px;
+        backdrop-filter: blur(16px);
+    }
+
+    .upload-dropzone:hover, .upload-dropzone.dragover {
+        border-color: var(--neon-cyan);
+        background: rgba(0, 242, 254, 0.08);
+        box-shadow: 0 0 35px rgba(0, 242, 254, 0.2);
+        transform: scale(1.01);
+    }
+
+    .dropzone-icon {
+        font-size: 42px;
+        margin-bottom: 12px;
+        filter: drop-shadow(0 0 12px rgba(0, 242, 254, 0.5));
+    }
+
+    .dropzone-text {
+        font-size: 16px;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 6px;
+    }
+
+    .dropzone-hint {
+        font-size: 12px;
+        color: var(--text-dim);
+    }
+
+    /* Fayllar Ro'yxati */
+    .files-panel {
+        background: var(--glass-card);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 28px;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 var(--specular-highlight);
+    }
+
+    .files-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .files-title {
+        font-size: 18px;
+        font-weight: 800;
+        color: #ffffff;
+    }
+
+    .file-item-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 18px;
+        border-radius: 14px;
+        background: rgba(5, 7, 13, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        margin-bottom: 12px;
+        transition: all 0.25s ease;
+    }
+
+    .file-item-card:hover {
+        background: rgba(99, 102, 241, 0.12);
+        border-color: rgba(0, 242, 254, 0.3);
+        transform: translateX(4px);
+    }
+
+    .file-left-cluster {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .file-type-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: rgba(99, 102, 241, 0.15);
+        border: 1px solid rgba(0, 242, 254, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+    }
+
+    .file-name-text {
+        font-size: 14px;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 2px;
+    }
+
+    .file-meta-text {
+        font-size: 11px;
+        color: var(--text-dim);
+    }
+
+    .file-actions-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .file-action-btn {
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        color: var(--text-secondary);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--glass-border);
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+
+    .file-action-btn:hover {
+        color: #ffffff;
+        border-color: var(--neon-cyan);
+        background: rgba(0, 242, 254, 0.15);
+    }
+
+    .file-action-btn.delete {
+        color: #f87171;
+        border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .file-action-btn.delete:hover {
+        background: rgba(239, 68, 68, 0.15);
+        color: #fca5a5;
+    }
+
+    .empty-storage-msg {
+        text-align: center;
+        padding: 50px 20px;
+        color: var(--text-dim);
+        font-size: 14px;
+    }
+</style>
+
+<div class="storage-header">
+    <div class="storage-badge">☁️ SSTORAGE KIBER-BULUT</div>
+    <h1 class="storage-title">Shaxsiy <span>Xotira Ombori</span></h1>
+    <p class="storage-desc">
+        Darsliklar, konspektlar, SAgent yaratgan hujjatlar va shifrlangan <code>.squiz</code> testlaringizni xavfsiz boshqaring.
+    </p>
+</div>
+
+<!-- Kvota Barometri -->
+<div class="quota-banner">
+    <div class="quota-info-wrap">
+        <div class="quota-title-row">
+            <span>Disk Kvotasi: <b style="color: var(--neon-cyan);">{{ used_mb or '14.2' }} MB / 40.0 MB</b></span>
+            <span>{{ percent or '35' }}% to'lgan</span>
+        </div>
+        <div class="storage-progress-bar">
+            <div class="storage-progress-fill" style="width: {{ percent or '35' }}%;"></div>
+        </div>
+    </div>
+    <a href="/wallet" class="quota-action-btn">Kvotani Kengaytirish (Upgrade) ✦</a>
+</div>
+
+<!-- Drag & Drop Upload Maydoni -->
+<div class="upload-dropzone" id="drop-zone" onclick="document.getElementById('hidden-file-input').click()">
+    <input type="file" id="hidden-file-input" style="display: none;" multiple accept=".pdf,.docx,.pptx,.txt,.squiz,image/*">
+    <div class="dropzone-icon">☁️</div>
+    <div class="dropzone-text">Fayllarni bu yerga tashlang yoki tanlash uchun bosing</div>
+    <div class="dropzone-hint">PDF, Word (.docx), Slayd (.pptx), .squiz testlar va rasmlar (Maksimal hajm: 25 MB)</div>
+</div>
+
+<!-- Fayllar Ro'yxati -->
+<div class="files-panel">
+    <div class="files-header-row">
+        <h3 class="files-title">Mening Fayllarim ({{ files|length if files else 3 }})</h3>
+        <span style="font-size: 12px; color: var(--text-dim);">Oxirgi yangilanish: Bugun</span>
+    </div>
+
+    <div id="file-list-container">
+        {% if files %}
+            {% for f in files %}
+                <div class="file-item-card">
+                    <div class="file-left-cluster">
+                        <div class="file-type-icon">
+                            {% if f.name.endswith('.squiz') %}⚡
+                            {% elif f.name.endswith('.pdf') %}📕
+                            {% elif f.name.endswith('.docx') %}📝
+                            {% elif f.name.endswith('.pptx') %}📊
+                            {% else %}📄{% endif %}
+                        </div>
+                        <div>
+                            <div class="file-name-text">{{ f.name }}</div>
+                            <div class="file-meta-text">{{ f.size_kb }} KB • {{ f.date }}</div>
+                        </div>
+                    </div>
+                    <div class="file-actions-row">
+                        <a href="/api/storage/download/{{ f.name }}" class="file-action-btn">📥 Yuklab olish</a>
+                        {% if f.name.endswith('.squiz') %}
+                            <a href="https://quizer.{{ domain or 'sstudio.uz' }}/create?import={{ f.name }}" class="file-action-btn" style="border-color: var(--neon-cyan); color: var(--neon-cyan);">⚡ Quizerda ochish</a>
+                        {% endif %}
+                        <button class="file-action-btn delete" onclick="deleteFile('{{ f.name }}')">🗑️</button>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <!-- Standart namunaviy fayllar -->
+            <div class="file-item-card">
+                <div class="file-left-cluster">
+                    <div class="file-type-icon">⚡</div>
+                    <div>
+                        <div class="file-name-text">Fizika_10_Sinf_Mexanika.squiz</div>
+                        <div class="file-meta-text">42 KB • Shifrlangan Quizer testi</div>
+                    </div>
+                </div>
+                <div class="file-actions-row">
+                    <a href="https://quizer.{{ domain or 'sstudio.uz' }}" class="file-action-btn" style="border-color: var(--neon-cyan); color: var(--neon-cyan);">⚡ Quizerda ochish</a>
+                    <button class="file-action-btn">📥</button>
+                </div>
+            </div>
+
+            <div class="file-item-card">
+                <div class="file-left-cluster">
+                    <div class="file-type-icon">📝</div>
+                    <div>
+                        <div class="file-name-text">Python_Asinxron_Dasturlash_Konspekt.docx</div>
+                        <div class="file-meta-text">1.2 MB • SAgent Word hujjati</div>
+                    </div>
+                </div>
+                <div class="file-actions-row">
+                    <a href="https://sagent.{{ domain or 'sstudio.uz' }}" class="file-action-btn">🤖 SAgentda tahlil</a>
+                    <button class="file-action-btn">📥</button>
+                </div>
+            </div>
+
+            <div class="file-item-card">
+                <div class="file-left-cluster">
+                    <div class="file-type-icon">📊</div>
+                    <div>
+                        <div class="file-name-text">Suniy_Intellekt_Taqdimot_Slaydlar.pptx</div>
+                        <div class="file-meta-text">2.8 MB • PowerPoint slayd</div>
+                    </div>
+                </div>
+                <div class="file-actions-row">
+                    <button class="file-action-btn">📥 Yuklab olish</button>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('hidden-file-input');
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+        });
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        const files = e.dataTransfer.files;
+        if (files.length) handleUpload(files);
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length) handleUpload(e.target.files);
+    });
+
+    async function handleUpload(files) {
+        for (let file of files) {
+            if (file.size > 25 * 1024 * 1024) {
+                alert(`Xatolik: '${file.name}' hajmi 25 MB dan katta!`);
+                continue;
+            }
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const res = await fetch('/api/storage/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    alert(`'${file.name}' SStorage ga muvaffaqiyatli yuklandi!`);
+                    window.location.reload();
+                } else {
+                    alert(data.detail || 'Yuklashda xatolik yuz berdi');
+                }
+            } catch (err) {
+                alert('Yuklashda tarmoq xatosi.');
+            }
+        }
+    }
+
+    async function deleteFile(filename) {
+        if (!confirm(`'${filename}' faylini o'chirishga ishonchingiz komilmi?`)) return;
+        try {
+            const res = await fetch(`/api/storage/delete/${encodeURIComponent(filename)}`, {
+                method: 'DELETE'
+            });
+            if (res.ok) {
+                window.location.reload();
+            } else {
+                alert("O'chirishda xatolik.");
+            }
+        } catch(e) {
+            alert("Server xatosi.");
+        }
+    }
+</script>
+{% endblock %}

@@ -31,11 +31,14 @@ app = FastAPI(
 
 # Template va Static yo'llari
 TEMPLATES_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "templates")
+MAIN_TEMPLATES_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "main", "templates")
 STATIC_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")
 os.makedirs(TEMPLATES_DIR, exist_ok=True)
 os.makedirs(STATIC_DIR, exist_ok=True)
 
-templates = Jinja2Templates(directory=TEMPLATES_DIR)
+templates = Jinja2Templates(directory=[TEMPLATES_DIR, MAIN_TEMPLATES_DIR])
+templates.env.globals["domain"] = settings.BASE_DOMAIN or "sstudio.uz"
+templates.env.globals["base_domain"] = settings.BASE_DOMAIN or "sstudio.uz"
 
 
 # =========================================================================

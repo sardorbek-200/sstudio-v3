@@ -1,40 +1,68 @@
 {% extends "quizer_base.html" %}
 
-{% block title %}{{ test.title }} — Quizer{% endblock %}
+{% block title %}{{ test.title }} — Quizer Kiber-Sinov{% endblock %}
 
 {% block extra_head %}
 <style>
-    /* Anti-cheat ogohlantirish banneri */
-    #anti-cheat-hud {
+    /* Boshlash (Fullscreen) Modali */
+    #fullscreen-start-overlay {
         position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 1000;
-        background: rgba(18, 24, 41, 0.9);
-        backdrop-filter: blur(16px);
-        border: 1px solid var(--neon-cyan);
-        border-radius: 14px;
-        padding: 12px 20px;
-        box-shadow: 0 0 20px rgba(0,242,254,0.3);
+        inset: 0;
+        z-index: 99999;
+        background: rgba(5, 8, 20, 0.96);
+        backdrop-filter: blur(28px);
         display: flex;
         align-items: center;
-        gap: 16px;
+        justify-content: center;
+        padding: 24px;
+    }
+
+    .start-modal-box {
+        max-width: 520px;
+        width: 100%;
+        background: var(--glass-card);
+        border: 1px solid var(--neon-cyan);
+        border-radius: 28px;
+        padding: 38px 32px;
+        text-align: center;
+        box-shadow: 0 0 50px rgba(0, 242, 254, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .anti-cheat-hud-pill {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 1000;
+        background: rgba(13, 19, 42, 0.92);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--neon-cyan);
+        border-radius: 20px;
+        padding: 12px 22px;
+        box-shadow: 0 0 25px rgba(0, 242, 254, 0.35);
+        display: flex;
+        align-items: center;
+        gap: 18px;
         font-size: 13px;
     }
+
     .hud-stat {
         display: flex;
         flex-direction: column;
     }
+
     .hud-label {
         font-size: 10px;
         text-transform: uppercase;
         color: var(--text-dim);
+        letter-spacing: 0.8px;
     }
+
     .hud-val {
         font-weight: 800;
+        font-family: var(--font-mono);
         color: var(--neon-cyan);
     }
-    /* Matn nusxalashni taqiqlash */
+
     .unselectable {
         -webkit-user-select: none;
         -moz-user-select: none;
@@ -45,9 +73,27 @@
 {% endblock %}
 
 {% block content %}
-<div class="unselectable" style="display: flex; flex-direction: column; gap: 24px; max-width: 850px; margin: 0 auto;">
+<!-- FULLSCREEN BOSHLASH MODALI -->
+<div id="fullscreen-start-overlay">
+    <div class="start-modal-box">
+        <div style="font-size: 48px; margin-bottom: 14px;">🛡️</div>
+        <h2 style="font-size: 24px; font-weight: 900; color: #fff; margin-bottom: 10px;">
+            Qat'iy Kiber Anti-Cheat Tizimi
+        </h2>
+        <p style="font-size: 14px; color: var(--text-dim); line-height: 1.6; margin-bottom: 24px;">
+            Ushbu test <b>To'liq Ekran (Fullscreen)</b> rejimida o'tkaziladi. <br>
+            Oynadan chiqish, boshqa dasturga o'tish yoki to'liq ekrandan chiqish <b>3 martadan oshsa</b>, test avtomatik bekor qilinadi va barcha harakatlar bazaga yoziladi!
+        </p>
+
+        <button type="button" class="cyber-btn cyber-btn-primary" onclick="startFullscreenTest()" style="padding: 16px 36px; font-size: 15px; width: 100%;">
+            🚀 Testni Boshlash (To'liq Ekran)
+        </button>
+    </div>
+</div>
+
+<div class="unselectable" style="display: flex; flex-direction: column; gap: 24px; max-width: 860px; margin: 0 auto;">
     <!-- Test HUD & Timer Bar -->
-    <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+    <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; padding: 20px 28px;">
         <div>
             <h1 style="font-size: 20px; font-weight: 800; color: #fff;">{{ test.title }}</h1>
             <div style="font-size: 12px; color: var(--text-dim); margin-top: 4px;">
@@ -56,39 +102,37 @@
         </div>
 
         <!-- Timer -->
-        <div style="display: flex; align-items: center; gap: 10px; background: rgba(5,7,13,0.7); border: 1px solid var(--neon-primary); border-radius: 12px; padding: 8px 18px;">
-            <span style="font-size: 16px;">⏳</span>
+        <div style="display: flex; align-items: center; gap: 10px; background: rgba(5,7,13,0.7); border: 1px solid var(--neon-primary); border-radius: 14px; padding: 10px 20px;">
+            <span style="font-size: 18px;">⏳</span>
             <div>
                 <div style="font-size: 10px; text-transform: uppercase; color: var(--text-dim);">Qolgan Vaqt</div>
-                <div id="timer-display" style="font-size: 18px; font-weight: 900; color: var(--neon-cyan); font-family: monospace;">00:00</div>
+                <div id="timer-display" style="font-size: 20px; font-weight: 900; color: var(--neon-cyan); font-family: monospace;">00:00</div>
             </div>
         </div>
     </div>
 
     <!-- Savol Kartochkasi -->
-    <div id="question-card" class="glass-panel" style="padding: 32px; min-height: 320px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div id="question-card" class="glass-panel" style="padding: 34px; min-height: 340px; display: flex; flex-direction: column; justify-content: space-between;">
         <div>
-            <div id="q-type-badge" style="display: inline-block; font-size: 11px; font-weight: 800; text-transform: uppercase; padding: 3px 10px; border-radius: 6px; background: rgba(0,242,254,0.15); color: var(--neon-cyan); margin-bottom: 16px;">
+            <div id="q-type-badge" style="display: inline-block; font-size: 11px; font-weight: 800; text-transform: uppercase; padding: 4px 12px; border-radius: 8px; background: rgba(0,242,254,0.15); color: var(--neon-cyan); border: 1px solid rgba(0,242,254,0.3); margin-bottom: 18px;">
                 SINGLE
             </div>
-            <h2 id="q-text" style="font-size: 19px; font-weight: 700; color: #fff; line-height: 1.5; margin-bottom: 24px;">
+            <h2 id="q-text" style="font-size: 20px; font-weight: 700; color: #fff; line-height: 1.5; margin-bottom: 26px;">
                 Yuklanmoqda...
             </h2>
-            <div id="q-options-box" style="display: flex; flex-direction: column; gap: 12px;">
-                <!-- Variantlar dinamik chiqadi -->
-            </div>
+            <div id="q-options-box" style="display: flex; flex-direction: column; gap: 12px;"></div>
         </div>
 
         <!-- Navigatsiya Tugmalari -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 32px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.06);">
-            <button id="prev-btn" onclick="prevQuestion()" class="cyber-btn cyber-btn-glass" style="padding: 10px 20px;">
+            <button id="prev-btn" onclick="prevQuestion()" class="cyber-btn cyber-btn-glass" style="padding: 12px 24px;">
                 ◀ Oldingi
             </button>
-            <div style="display: flex; gap: 10px;">
-                <button id="next-btn" onclick="nextQuestion()" class="cyber-btn cyber-btn-glass" style="padding: 10px 20px;">
+            <div style="display: flex; gap: 12px;">
+                <button id="next-btn" onclick="nextQuestion()" class="cyber-btn cyber-btn-glass" style="padding: 12px 24px;">
                     Keyingi ▶
                 </button>
-                <button id="submit-btn" onclick="confirmSubmit()" class="cyber-btn cyber-btn-primary" style="padding: 10px 24px;">
+                <button id="submit-btn" onclick="confirmSubmit()" class="cyber-btn cyber-btn-primary" style="padding: 12px 28px;">
                     🏁 Yakunlash
                 </button>
             </div>
@@ -97,10 +141,10 @@
 </div>
 
 <!-- Anti-Cheat Monitoring HUD -->
-<div id="anti-cheat-hud">
+<div class="anti-cheat-hud-pill">
     <div class="hud-stat">
         <span class="hud-label">🛡️ Anti-Cheat</span>
-        <span class="hud-val" style="color: var(--neon-green);">FAOL</span>
+        <span class="hud-val" id="anti-cheat-status" style="color: var(--neon-green);">FAOL (FULLSCREEN)</span>
     </div>
     <div class="hud-stat">
         <span class="hud-label">Ogohlantirish</span>
@@ -118,8 +162,22 @@
     let cheatWarnings = 0;
     let timeLeft = (testData.time_limit_minutes || 30) * 60;
     let timerInterval = null;
+    let testStarted = false;
 
-    // Timer boshlash
+    function startFullscreenTest() {
+        const elem = document.documentElement;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen().catch(err => console.log('Fullscreen ruxsatsiz'));
+        } else if (elem.webkitRequestFullscreen) {
+            elem.webkitRequestFullscreen();
+        }
+
+        document.getElementById('fullscreen-start-overlay').style.display = 'none';
+        testStarted = true;
+        startTimer();
+        renderCurrentQuestion();
+    }
+
     function startTimer() {
         timerInterval = setInterval(() => {
             timeLeft--;
@@ -154,11 +212,11 @@
         }
 
         if (q.question_type === 'single' || q.question_type === 'multiple') {
-            opts.forEach((opt, idx) => {
+            opts.forEach((opt) => {
                 const isSelected = userAnswers[q.id] === opt;
                 const btn = document.createElement('div');
                 btn.style.padding = '14px 18px';
-                btn.style.borderRadius = '10px';
+                btn.style.borderRadius = '12px';
                 btn.style.border = isSelected ? '1px solid var(--neon-cyan)' : '1px solid var(--glass-border)';
                 btn.style.background = isSelected ? 'rgba(0, 242, 254, 0.15)' : 'rgba(13, 18, 30, 0.6)';
                 btn.style.color = '#fff';
@@ -178,36 +236,29 @@
             input.step = 'any';
             input.placeholder = 'Javobingizni raqamda kiriting...';
             input.value = userAnswers[q.id] || '';
-            input.style = 'width: 100%; padding: 14px; background: rgba(5,7,13,0.7); border: 1px solid var(--glass-border); border-radius: 10px; color: #fff; font-size: 15px; outline: none;';
+            input.style = 'width: 100%; padding: 14px; background: rgba(5,7,13,0.7); border: 1px solid var(--glass-border); border-radius: 12px; color: #fff; font-size: 15px; outline: none;';
             input.oninput = (e) => { userAnswers[q.id] = e.target.value; };
             optBox.appendChild(input);
         } else if (q.question_type === 'open_ai') {
             const area = document.createElement('textarea');
             area.rows = 4;
-            area.placeholder = 'Javobingizni batafsil bayon eting (Gemini AI tekshiradi)...';
+            area.placeholder = 'Javobingizni batafsil yozing (AI tekshiradi)...';
             area.value = userAnswers[q.id] || '';
-            area.style = 'width: 100%; padding: 14px; background: rgba(5,7,13,0.7); border: 1px solid var(--glass-border); border-radius: 10px; color: #fff; font-size: 14px; outline: none; resize: vertical;';
+            area.style = 'width: 100%; padding: 14px; background: rgba(5,7,13,0.7); border: 1px solid var(--glass-border); border-radius: 12px; color: #fff; font-size: 14px; outline: none; resize: vertical;';
             area.oninput = (e) => { userAnswers[q.id] = e.target.value; };
             optBox.appendChild(area);
         }
 
-        // Tugmalar holati
         document.getElementById('prev-btn').style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
         document.getElementById('next-btn').style.display = currentIndex === questions.length - 1 ? 'none' : 'inline-flex';
     }
 
     function prevQuestion() {
-        if (currentIndex > 0) {
-            currentIndex--;
-            renderCurrentQuestion();
-        }
+        if (currentIndex > 0) { currentIndex--; renderCurrentQuestion(); }
     }
 
     function nextQuestion() {
-        if (currentIndex < questions.length - 1) {
-            currentIndex++;
-            renderCurrentQuestion();
-        }
+        if (currentIndex < questions.length - 1) { currentIndex++; renderCurrentQuestion(); }
     }
 
     function confirmSubmit() {
@@ -226,6 +277,7 @@
             });
             const data = await res.json();
             if (res.ok && data.result_id) {
+                if (document.exitFullscreen) document.exitFullscreen().catch(()=>{});
                 window.location.href = `/results/${data.result_id}`;
             } else {
                 alert(data.detail || 'Javoblarni yuborishda xatolik yuz berdi');
@@ -235,35 +287,54 @@
         }
     }
 
-    // Anti-Cheat: Tab/Window blur hodisasi
-    window.addEventListener('blur', () => {
+    // Anti-Cheat Ogohlantirish Dvigateli
+    function recordCheatStrike(reason) {
+        if (!testStarted) return;
         cheatWarnings++;
-        document.getElementById('cheat-warnings-val').innerText = `${cheatWarnings} / 3`;
-        document.getElementById('cheat-warnings-val').style.color = '#f87171';
-        
-        // Serverga anti-cheat xabarnomasi yuborish
+        const warnEl = document.getElementById('cheat-warnings-val');
+        warnEl.innerText = `${cheatWarnings} / 3`;
+        warnEl.style.color = '#f87171';
+
+        // PostgreSQL quizer.anti_cheat_logs jadvaliga darhol yozish
         fetch(`/api/test/${testData.id}/anti-cheat`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ action: 'tab_switched', count: cheatWarnings })
-        }).catch(()=>{});
+            body: JSON.stringify({ action: reason, count: cheatWarnings })
+        }).catch(e => console.log('Log xatosi', e));
 
         if (cheatWarnings >= 3) {
-            alert("Diqqat! Siz 3 marta sinov ekranidan chiqdingiz. Qoidalarga ko'ra test avtomatik topshirilmoqda!");
+            alert("DIQQAT! Siz 3 marta qoidani buzdingiz (oynadan chiqdingiz yoki to'liq ekrandan voz kechdingiz). Test bekor qilinib yakunlanmoqda!");
             submitTest();
         } else {
-            alert(`Ogohlantirish! Ekranni almashtirish taqiqlanadi! (${cheatWarnings}/3)`);
+            alert(`OGOHLANTIRISH (${cheatWarnings}/3): ${reason === 'fullscreen_exit' ? "To'liq ekrandan chiqish taqiqlangan!" : "Oynani almashtirish (Tab switch) taqiqlanadi!"}`);
+        }
+    }
+
+    // 1. To'liq ekrandan chiqishni ushlash
+    document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement && testStarted) {
+            recordCheatStrike('fullscreen_exit');
         }
     });
 
-    // Anti-Cheat: Nusxa olishni bloklash
-    document.addEventListener('copy', (e) => {
-        e.preventDefault();
-        alert("Sinov davomida savollardan nusxa olish taqiqlangan!");
+    // 2. Tab/Brauzer oynasidan chiqish
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden && testStarted) {
+            recordCheatStrike('tab_switched');
+        }
     });
 
-    // Initsializatsiya
-    startTimer();
-    renderCurrentQuestion();
+    // 3. Oyna fokusini yo'qotish
+    window.addEventListener('blur', () => {
+        if (testStarted) {
+            recordCheatStrike('window_blur');
+        }
+    });
+
+    // 4. Nusxa ko'chirish taqiqi
+    document.addEventListener('copy', (e) => {
+        e.preventDefault();
+        alert("Sinov paytida savollardan nusxa olish taqiqlangan!");
+    });
 </script>
 {% endblock %}

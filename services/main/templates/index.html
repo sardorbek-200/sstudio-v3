@@ -320,8 +320,8 @@
     </p>
 
     <div class="hero-actions-cluster">
-        <a href="https://quizer.{{ domain }}" class="btn-cyber-primary">⚡ Quizer Testlariga Kirish</a>
-        <a href="https://sagent.{{ domain }}" class="btn-cyber-glass">🤖 SAgent AI bilan Suhbat</a>
+        <a href="https://quizer.{{ domain or 'sstudio.uz' }}" class="btn-cyber-primary">⚡ Quizer Testlariga Kirish</a>
+        <a href="https://sagent.{{ domain or 'sstudio.uz' }}" class="btn-cyber-glass">🤖 SAgent AI bilan Suhbat</a>
         <a href="/apps" class="btn-cyber-glass">🎯 Barcha Ilovalar</a>
     </div>
 </section>
@@ -371,7 +371,7 @@
                 jonli kiber-radar nazorati va shifrlangan <code>.squiz</code> test fayllari bilan imtihonlar o'tkazish.
             </p>
         </div>
-        <a href="https://quizer.{{ domain }}" class="card-link-btn">
+        <a href="https://quizer.{{ domain or 'sstudio.uz' }}" class="card-link-btn">
             <span>Quizerga O'tish</span>
             <span>→</span>
         </a>
@@ -390,7 +390,7 @@
                 Freemium uchun kuniga 50K token va dasturchilar uchun ochiq API.
             </p>
         </div>
-        <a href="https://sagent.{{ domain }}" class="card-link-btn">
+        <a href="https://sagent.{{ domain or 'sstudio.uz' }}" class="card-link-btn">
             <span>SAgent bilan Ishlash</span>
             <span>→</span>
         </a>
@@ -466,7 +466,7 @@
                 va qimmatbaho SCoin mukofotlari bilan katta sinov maydoni.
             </p>
         </div>
-        <a href="https://quizer.{{ domain }}/olympiads" class="card-link-btn">
+        <a href="https://quizer.{{ domain or 'sstudio.uz' }}/olympiads" class="card-link-btn">
             <span>Olimpiadalar Jadvali</span>
             <span>→</span>
         </a>

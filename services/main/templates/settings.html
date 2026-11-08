@@ -1,0 +1,362 @@
+{% extends "base.html" %}
+
+{% block title %}Sozlamalar — SStudio v3{% endblock %}
+
+{% block content %}
+<style>
+    .settings-container {
+        width: 100%;
+        max-width: 860px;
+        margin: 20px auto 100px auto;
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+    }
+
+    .settings-header {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .settings-title {
+        font-size: 36px;
+        font-weight: 900;
+        letter-spacing: -0.5px;
+        color: #ffffff;
+        margin-bottom: 8px;
+    }
+
+    .settings-subtitle {
+        color: var(--text-dim);
+        font-size: 14px;
+    }
+
+    /* Karta bloklari */
+    .settings-card {
+        background: var(--glass-card);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 30px;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 16px 45px rgba(0, 0, 0, 0.5), inset 0 1px 0 var(--specular-highlight);
+    }
+
+    .settings-card-title {
+        font-size: 18px;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .settings-card-desc {
+        font-size: 13px;
+        color: var(--text-dim);
+        margin-bottom: 22px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 18px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .form-group label {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--neon-cyan);
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 12px 16px;
+        background: rgba(5, 7, 13, 0.7);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        color: #ffffff;
+        font-size: 14px;
+        outline: none;
+        transition: all 0.25s ease;
+    }
+
+    .form-input:focus {
+        border-color: var(--neon-cyan);
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+    }
+
+    .form-input:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .btn-save {
+        padding: 13px 28px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--neon-violet), var(--neon-purple));
+        color: #ffffff;
+        font-weight: 800;
+        font-size: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        transition: all 0.25s ease;
+    }
+
+    .btn-save:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(168, 85, 247, 0.6);
+    }
+
+    /* Statistika Paneli */
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .stat-box {
+        background: rgba(8, 12, 28, 0.6);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 18px;
+        text-align: center;
+    }
+
+    .stat-box .val {
+        font-size: 26px;
+        font-weight: 900;
+        font-family: var(--font-mono);
+        color: var(--neon-cyan);
+        margin-top: 4px;
+    }
+
+    .stat-box .lbl {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        letter-spacing: 0.8px;
+    }
+
+    #toast-msg {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        padding: 14px 24px;
+        border-radius: 12px;
+        color: #fff;
+        font-weight: 700;
+        font-size: 13.5px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        display: none;
+        z-index: 4000;
+    }
+</style>
+
+<div class="settings-container">
+    <div class="settings-header">
+        <h1 class="settings-title">⚙️ Sozlamalar</h1>
+        <p class="settings-subtitle">Profil ma'lumotlari, xavfsizlik va kiber-hisob boshqaruvi</p>
+    </div>
+
+    <!-- Shaxsiy Statistika -->
+    <div class="stats-row">
+        <div class="stat-box">
+            <div class="lbl">sCoin Balans</div>
+            <div class="val">{{ "%.2f"|format(scoin or 0.0) }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="lbl">Maqom</div>
+            <div class="val" style="font-size: 18px; color: #a855f7;">{{ user.status|upper if user else 'ODDIY' }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="lbl">Foydalanuvchi ID</div>
+            <div class="val">#{{ profile.id if profile else '1' }}</div>
+        </div>
+    </div>
+
+    <!-- Profil Ma'lumotlari -->
+    <div class="settings-card">
+        <h2 class="settings-card-title">👤 Shaxsiy Ma'lumotlar</h2>
+        <p class="settings-card-desc">Ushbu ma'lumotlar platformadagi ochiq profilingiz va reytingda ko'rinadi</p>
+
+        <form id="profile-form" onsubmit="saveProfile(event)">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Foydalanuvchi nomi (@username)</label>
+                    <input type="text" class="form-input" value="{{ profile.username if profile else '' }}" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Ism</label>
+                    <input type="text" id="name" class="form-input" value="{{ profile.name if profile else '' }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Familiya</label>
+                    <input type="text" id="surname" class="form-input" value="{{ profile.surname if profile else '' }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Otasining ismi</label>
+                    <input type="text" id="father_name" class="form-input" value="{{ profile.father_name if profile and profile.father_name else '' }}">
+                </div>
+                <div class="form-group">
+                    <label>Viloyat</label>
+                    <input type="text" id="location_region" class="form-input" value="{{ profile.location_region if profile and profile.location_region else '' }}" placeholder="Masalan: Toshkent">
+                </div>
+                <div class="form-group">
+                    <label>Shahar / Tuman</label>
+                    <input type="text" id="location_city" class="form-input" value="{{ profile.location_city if profile and profile.location_city else '' }}" placeholder="Masalan: Chilonzor">
+                </div>
+                <div class="form-group">
+                    <label>Maktab / Ta'lim Muassasasi</label>
+                    <input type="text" id="school_raw" class="form-input" value="{{ profile.school_raw if profile and profile.school_raw else '' }}" placeholder="Masalan: 1-IDUM">
+                </div>
+                <div class="form-group">
+                    <label>Telefon raqam</label>
+                    <input type="tel" id="tel_number" class="form-input" value="{{ profile.tel_number if profile and profile.tel_number else '' }}" placeholder="+998901234567">
+                </div>
+                <div class="form-group">
+                    <label>Telegram Username</label>
+                    <input type="text" id="telegram_username" class="form-input" value="{{ profile.telegram_username if profile and profile.telegram_username else '' }}" placeholder="masalan: Sardorbek">
+                </div>
+                <div class="form-group">
+                    <label>GitHub Username</label>
+                    <input type="text" id="github_username" class="form-input" value="{{ profile.github_username if profile and profile.github_username else '' }}" placeholder="masalan: sardorbek-dev">
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 18px;">
+                <label>Shaxsiy Bio (Qisqacha o'zingiz haqingizda)</label>
+                <textarea id="bio" class="form-input" rows="3" placeholder="Qiziqishlaringiz va maqsadlaringiz...">{{ profile.bio if profile and profile.bio else '' }}</textarea>
+            </div>
+
+            <div style="margin-top: 24px; text-align: right;">
+                <button type="submit" class="btn-save" id="btn-save-profile">Saqlash</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Xavfsizlik & Parolni O'zgartirish -->
+    <div class="settings-card">
+        <h2 class="settings-card-title">🔒 Xavfsizlik va Parolni O'zgartirish</h2>
+        <p class="settings-card-desc">Hisobingizni himoya qilish uchun kuchli paroldan foydalaning</p>
+
+        <form id="password-form" onsubmit="changePassword(event)">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Joriy Parol</label>
+                    <input type="password" id="current_password" class="form-input" required placeholder="••••••••">
+                </div>
+                <div class="form-group">
+                    <label>Yangi Parol</label>
+                    <input type="password" id="new_password" class="form-input" minlength="6" required placeholder="Kamida 6 belgi">
+                </div>
+                <div class="form-group">
+                    <label>Yangi Parolni Qayta Kiriting</label>
+                    <input type="password" id="confirm_password" class="form-input" minlength="6" required placeholder="••••••••">
+                </div>
+            </div>
+
+            <div style="margin-top: 24px; text-align: right;">
+                <button type="submit" class="btn-save" id="btn-change-pass">Parolni Yangilash</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="toast-msg"></div>
+
+<script>
+    function showToast(msg, isSuccess = true) {
+        const toast = document.getElementById('toast-msg');
+        toast.innerText = msg;
+        toast.style.background = isSuccess ? '#10B981' : '#EF4444';
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 3500);
+    }
+
+    async function saveProfile(e) {
+        e.preventDefault();
+        const btn = document.getElementById('btn-save-profile');
+        btn.disabled = true;
+        btn.innerText = 'Saqlanmoqda...';
+
+        const payload = {
+            name: document.getElementById('name').value,
+            surname: document.getElementById('surname').value,
+            father_name: document.getElementById('father_name').value,
+            location_region: document.getElementById('location_region').value,
+            location_city: document.getElementById('location_city').value,
+            school_raw: document.getElementById('school_raw').value,
+            tel_number: document.getElementById('tel_number').value,
+            telegram_username: document.getElementById('telegram_username').value,
+            github_username: document.getElementById('github_username').value,
+            bio: document.getElementById('bio').value
+        };
+
+        try {
+            const res = await fetch('/api/settings/profile', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                showToast(data.message, true);
+            } else {
+                showToast(data.detail || 'Saqlashda xatolik!', false);
+            }
+        } catch(err) {
+            showToast('Tarmoq xatosi!', false);
+        } finally {
+            btn.disabled = false;
+            btn.innerText = 'Saqlash';
+        }
+    }
+
+    async function changePassword(e) {
+        e.preventDefault();
+        const curPass = document.getElementById('current_password').value;
+        const newPass = document.getElementById('new_password').value;
+        const confPass = document.getElementById('confirm_password').value;
+
+        if (newPass !== confPass) {
+            showToast('Yangi parollar bir-biriga mos kelmadi!', false);
+            return;
+        }
+
+        const btn = document.getElementById('btn-change-pass');
+        btn.disabled = true;
+        btn.innerText = 'Yangilanmoqda...';
+
+        try {
+            const res = await fetch('/api/settings/change-password', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ current_password: curPass, new_password: newPass })
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                showToast(data.message, true);
+                document.getElementById('password-form').reset();
+            } else {
+                showToast(data.detail || 'Parolni o\'zgartirishda xatolik!', false);
+            }
+        } catch(err) {
+            showToast('Tarmoq xatosi!', false);
+        } finally {
+            btn.disabled = false;
+            btn.innerText = 'Parolni Yangilash';
+        }
+    }
+</script>
+{% endblock %}

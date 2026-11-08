@@ -18,12 +18,20 @@ class TestMainPortalComponents(unittest.TestCase):
         self.assertIn("/apps", registered_paths)
         self.assertIn("/users", registered_paths)
         self.assertIn("/privacy", registered_paths)
+        self.assertIn("/terms", registered_paths)
+        self.assertIn("/wallet", registered_paths)
+        self.assertIn("/settings", registered_paths)
+        self.assertIn("/logout", registered_paths)
 
     def test_quizer_service_routes(self):
         """Quizer servisi marshrutlari to'g'ri ro'yxatdan o'tganini tekshirish"""
         quizer_paths = [route.path for route in quizer_app.routes]
         self.assertIn("/", quizer_paths)
         self.assertIn("/health", quizer_paths)
+        self.assertIn("/my-tests", quizer_paths)
+        self.assertIn("/test/{test_id}/monitoring", quizer_paths)
+        self.assertIn("/test/{test_id}/edit", quizer_paths)
+        self.assertIn("/ws/test/{test_id}/monitoring", quizer_paths)
 
     def test_index_template_rendering(self):
         """Bosh sahifa shabloni xatosiz render bo'lishi kerak"""
@@ -36,6 +44,26 @@ class TestMainPortalComponents(unittest.TestCase):
         template = self.env.get_template("privacy.html")
         rendered = template.render(domain="sstudio.uz", user=None)
         self.assertIn("SCoin", rendered)
+
+    def test_wallet_and_settings_templates(self):
+        """Wallet va Settings sahifalari muvaffaqiyatli render bo'lishi kerak"""
+        wallet_tpl = self.env.get_template("wallet.html")
+        wallet_out = wallet_tpl.render(
+            domain="sstudio.uz",
+            user={"id": 1, "username": "testuser", "name": "Test", "surname": "User", "status": "freemium"},
+            scoin=50.0,
+            stats={"total_received": 100.0, "total_sent": 50.0},
+            history=[]
+        )
+        self.assertIn("Hamyon", wallet_out)
+        self.assertIn("P2P", wallet_out)
+
+        settings_tpl = self.env.get_template("settings.html")
+        settings_out = settings_tpl.render(
+            domain="sstudio.uz",
+            user={"id": 1, "username": "testuser", "name": "Test", "surname": "User", "status": "freemium"}
+        )
+        self.assertIn("Sozlamalar", settings_out)
 
 
 if __name__ == "__main__":

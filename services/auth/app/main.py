@@ -29,6 +29,8 @@ app = FastAPI(title="SStudio Auth Service", version="3.0.0")
 
 # Templates
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+templates.env.globals["domain"] = settings.BASE_DOMAIN or "sstudio.uz"
+templates.env.globals["base_domain"] = settings.BASE_DOMAIN or "sstudio.uz"
 
 
 def get_token_hash(token: str) -> str:
@@ -117,7 +119,7 @@ async def api_register(
         name=req.name,
         surname=req.surname,
         father_name=req.father_name,
-        birthday=req.birthday,
+        birthday=req.birthday or date(2008, 1, 1),
         location_region=req.location_region,
         location_city=req.location_city,
         school_raw=req.school_raw,

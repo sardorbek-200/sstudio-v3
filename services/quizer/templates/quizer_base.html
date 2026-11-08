@@ -435,19 +435,21 @@
                         <div class="dropdown-username">@{{ user.username }}</div>
                         <span class="dropdown-status">{{ user.status }}</span>
                     </div>
-                    <a href="https://{{ domain }}/user/{{ user.id }}" class="dropdown-link">👤 Profilim</a>
+                    <a href="https://{{ domain or 'sstudio.uz' }}/user/{{ user.id }}" class="dropdown-link">👤 Profilim</a>
+                    <a href="/my-tests" class="dropdown-link">📊 Mening Testlarim & Radar</a>
                     <a href="/create" class="dropdown-link">➕ Yangi Test</a>
-                    <a href="https://shop.{{ domain }}" class="dropdown-link">💎 Shop & Wallet</a>
-                    <a href="https://{{ domain }}/apps" class="dropdown-link">🎯 Barcha Ilovalar</a>
-                    <a href="https://auth.{{ domain }}/logout" class="dropdown-link logout">🚪 Chiqish</a>
+                    <a href="https://shop.{{ domain or 'sstudio.uz' }}" class="dropdown-link">💎 Shop & Wallet</a>
+                    <a href="https://{{ domain or 'sstudio.uz' }}/apps" class="dropdown-link">🎯 Barcha Ilovalar</a>
+                    <a href="https://{{ domain or 'sstudio.uz' }}/settings" class="dropdown-link">⚙️ Sozlamalar</a>
+                    <a href="https://auth.{{ domain or 'sstudio.uz' }}/logout" class="dropdown-link logout">🚪 Chiqish</a>
                 {% else %}
                     <div class="dropdown-header">
                         <div class="dropdown-name">SStudio Xush kelibsiz</div>
                         <div class="dropdown-username">Tizimga kiring</div>
                     </div>
-                    <a href="https://auth.{{ domain }}/login" class="dropdown-link">🔑 Kirish (Log in)</a>
-                    <a href="https://auth.{{ domain }}/register" class="dropdown-link">✨ Ro'yxatdan o'tish</a>
-                    <a href="https://{{ domain }}/apps" class="dropdown-link">🎯 Barcha Ilovalar</a>
+                    <a href="https://auth.{{ domain or 'sstudio.uz' }}/login" class="dropdown-link">🔑 Kirish (Log in)</a>
+                    <a href="https://auth.{{ domain or 'sstudio.uz' }}/register" class="dropdown-link">✨ Ro'yxatdan o'tish</a>
+                    <a href="https://{{ domain or 'sstudio.uz' }}/apps" class="dropdown-link">🎯 Barcha Ilovalar</a>
                 {% endif %}
             </div>
         </div>
@@ -459,7 +461,7 @@
 
     <!-- MENYUBAR V3 (PASTKI SUZUVCHI CYBER DOCK) -->
     <nav class="menyubar-v3-dock" aria-label="Asosiy Menyubar">
-        <a href="https://{{ domain }}" class="dock-item">
+        <a href="https://{{ domain or 'sstudio.uz' }}" class="dock-item">
             <span class="dock-item-icon">🏠</span>
             <span class="dock-item-label">Asosiy</span>
         </a>
@@ -467,19 +469,19 @@
             <span class="dock-item-icon">⚡</span>
             <span class="dock-item-label">Quizer</span>
         </a>
-        <a href="https://sagent.{{ domain }}" class="dock-item">
+        <a href="https://sagent.{{ domain or 'sstudio.uz' }}" class="dock-item">
             <span class="dock-item-icon">🤖</span>
             <span class="dock-item-label">SAgent</span>
         </a>
-        <a href="https://{{ domain }}/apps" class="dock-item">
+        <a href="https://{{ domain or 'sstudio.uz' }}/apps" class="dock-item">
             <span class="dock-item-icon">🎯</span>
             <span class="dock-item-label">Ilovalar</span>
         </a>
-        <a href="https://{{ domain }}/users" class="dock-item">
+        <a href="https://{{ domain or 'sstudio.uz' }}/users" class="dock-item">
             <span class="dock-item-icon">🏆</span>
             <span class="dock-item-label">Reyting</span>
         </a>
-        <a href="https://{{ domain }}/wallet" class="dock-item">
+        <a href="https://{{ domain or 'sstudio.uz' }}/wallet" class="dock-item">
             <span class="dock-item-icon">💎</span>
             <span class="dock-item-label">Hamyon</span>
         </a>
@@ -488,9 +490,9 @@
     <footer class="footer">
         <div>© 2026 SSTUDIO QUIZER. CYBER EDUCATION ECOSYSTEM.</div>
         <div>
-            <a href="https://{{ domain }}/privacy">Maxfiylik</a>
-            <a href="https://{{ domain }}/terms">Shartlar</a>
-            <a href="https://{{ domain }}/connect">Bog'lanish</a>
+            <a href="https://{{ domain or 'sstudio.uz' }}/privacy">Maxfiylik</a>
+            <a href="https://{{ domain or 'sstudio.uz' }}/terms">Shartlar</a>
+            <a href="https://{{ domain or 'sstudio.uz' }}/connect">Bog'lanish</a>
         </div>
     </footer>
 

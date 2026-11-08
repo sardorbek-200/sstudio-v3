@@ -537,8 +537,8 @@
 
         <!-- Tezkor Stats / Navigatsiya -->
         <div class="nav-stats-bar">
-            <a href="https://quizer.{{ domain }}" class="nav-stat-chip">⚡ Quizer Testlar</a>
-            <a href="https://sagent.{{ domain }}" class="nav-stat-chip">🤖 SAgent AI</a>
+            <a href="https://quizer.{{ domain or 'sstudio.uz' }}" class="nav-stat-chip">⚡ Quizer Testlar</a>
+            <a href="https://sagent.{{ domain or 'sstudio.uz' }}" class="nav-stat-chip">🤖 SAgent AI</a>
             <a href="/wallet" class="nav-stat-chip">💎 Hamyon</a>
         </div>
 
@@ -569,10 +569,12 @@
                         </div>
                     </div>
                     <a href="/user/{{ user.id }}" class="dropdown-link">👤 Profil & Kiber-Dashboard</a>
-                    <a href="/wallet" class="dropdown-link">💎 SCoin & Tariflar</a>
+                    <a href="https://quizer.{{ domain or 'sstudio.uz' }}/my-tests" class="dropdown-link">📊 Mening Testlarim & Radar</a>
+                    <a href="/wallet" class="dropdown-link">💎 SCoin Hamyon</a>
                     <a href="/storage" class="dropdown-link">☁️ SStorage Xotira (40MB)</a>
-                    <a href="/users" class="dropdown-link">🏆 Maktablar Reytingi</a>
-                    <a href="https://auth.{{ domain }}/logout" class="dropdown-link logout">🚪 Xavfsiz Chiqish</a>
+                    <a href="/schools" class="dropdown-link">🏆 Maktablar Reytingi</a>
+                    <a href="/settings" class="dropdown-link">⚙️ Sozlamalar</a>
+                    <a href="/logout" class="dropdown-link logout">🚪 Xavfsiz Chiqish</a>
                 </div>
             {% else %}
                 <button class="profile-trigger-btn" type="button">
@@ -586,8 +588,8 @@
                         <div class="dropdown-fullname">SStudio Kiber-Ekotizim</div>
                         <div class="dropdown-handle">Profilga kiring</div>
                     </div>
-                    <a href="https://auth.{{ domain }}/login" class="dropdown-link" style="color: var(--neon-cyan);">🔑 Kirish (Sign In)</a>
-                    <a href="https://auth.{{ domain }}/register" class="dropdown-link" style="color: #ffffff; background: rgba(99, 102, 241, 0.2);">✨ Ro'yxatdan o'tish</a>
+                    <a href="https://auth.{{ domain or 'sstudio.uz' }}/login" class="dropdown-link" style="color: var(--neon-cyan);">🔑 Kirish (Sign In)</a>
+                    <a href="https://auth.{{ domain or 'sstudio.uz' }}/register" class="dropdown-link" style="color: #ffffff; background: rgba(99, 102, 241, 0.2);">✨ Ro'yxatdan o'tish</a>
                     <a href="/apps" class="dropdown-link">🎯 Barcha Ilovalar</a>
                     <a href="/faq" class="dropdown-link">❓ Yordam va FAQ</a>
                 </div>
@@ -608,11 +610,11 @@
             <span class="dock-item-icon">🏠</span>
             <span class="dock-item-label">Asosiy</span>
         </a>
-        <a href="https://quizer.{{ domain }}" class="dock-item {% if active_page == 'quizer' %}active{% endif %}">
+        <a href="https://quizer.{{ domain or 'sstudio.uz' }}" class="dock-item {% if active_page == 'quizer' %}active{% endif %}">
             <span class="dock-item-icon">⚡</span>
             <span class="dock-item-label">Quizer</span>
         </a>
-        <a href="https://sagent.{{ domain }}" class="dock-item {% if active_page == 'sagent' %}active{% endif %}">
+        <a href="https://sagent.{{ domain or 'sstudio.uz' }}" class="dock-item {% if active_page == 'sagent' %}active{% endif %}">
             <span class="dock-item-icon">🤖</span>
             <span class="dock-item-label">SAgent</span>
         </a>

@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}SStudio — Kiber-Maxfiylik Siyosati (Privacy Policy){% endblock %}
+{% block title %}SStudio — Maxfiylik va Xavfsizlik Eslatmasi{% endblock %}
 
 {% block content %}
 <style>
     .legal-doc-container {
-        max-width: 960px;
+        max-width: 920px;
         margin: 0 auto;
-        padding: 40px 30px 80px;
+        padding: 40px 32px 70px;
         background: var(--glass-card);
         border: 1px solid var(--glass-border);
         border-radius: 28px;
@@ -19,13 +19,14 @@
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         padding-bottom: 24px;
         margin-bottom: 30px;
+        text-align: center;
     }
 
     .legal-badge {
         display: inline-block;
-        padding: 4px 12px;
+        padding: 4px 14px;
         border-radius: 12px;
-        background: rgba(99, 102, 241, 0.2);
+        background: rgba(0, 242, 254, 0.15);
         border: 1px solid rgba(0, 242, 254, 0.4);
         color: var(--neon-cyan);
         font-size: 11px;
@@ -40,7 +41,7 @@
         font-weight: 900;
         letter-spacing: -0.5px;
         color: #ffffff;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
     }
 
     .legal-meta {
@@ -58,24 +59,19 @@
         font-size: 20px;
         font-weight: 800;
         color: #ffffff;
-        margin: 36px 0 14px;
+        margin: 32px 0 14px;
         padding-bottom: 6px;
-        border-bottom: 1px solid rgba(99, 102, 241, 0.2);
-    }
-
-    .legal-body h3 {
-        font-size: 16px;
-        font-weight: 700;
-        color: var(--neon-cyan);
-        margin: 20px 0 8px;
+        border-bottom: 1px solid rgba(0, 242, 254, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
     .legal-body p {
         margin-bottom: 14px;
-        text-align: justify;
     }
 
-    .legal-body ul, .legal-body ol {
+    .legal-body ul {
         margin: 10px 0 18px 24px;
     }
 
@@ -83,77 +79,65 @@
         margin-bottom: 8px;
     }
 
-    .legal-info-box {
-        padding: 16px 20px;
-        border-radius: 14px;
+    .friendly-box {
+        padding: 20px 24px;
+        border-radius: 18px;
         background: rgba(0, 242, 254, 0.08);
         border: 1px solid rgba(0, 242, 254, 0.3);
-        color: var(--text-secondary);
-        margin: 20px 0;
-        font-size: 13.5px;
+        color: #ffffff;
+        margin: 24px 0;
+        font-size: 14.5px;
+        line-height: 1.7;
     }
 </style>
 
 <div class="legal-doc-container">
     <div class="legal-header">
-        <span class="legal-badge">MAXFIYLIK VA AXBOROT XAVFSIZLIGI</span>
-        <h1 class="legal-title">SStudio Maxfiylik Siyosati (Privacy Policy)</h1>
+        <span class="legal-badge">🔒 XAVFSIZ TA'LIMIY HUDUD</span>
+        <h1 class="legal-title">Maxfiylik va Xavfsizlik</h1>
         <div class="legal-meta">
-            Kuchga kirish sanasi: 2026-yil 1-yanvar | Oxirgi tahrir: 2026-yil 8-noyabr | Versiya: 3.0.0-PRIVACY-CORE
+            O'quvchilar va foydalanuvchilar ma'lumotlarini asrash tamoyillari
         </div>
     </div>
 
     <div class="legal-body">
 
-        <div class="legal-info-box">
-            Mazkur Maxfiylik Siyosati SStudio platformasida (<code>sstudio.uz</code>, <code>auth.sstudio.uz</code>, <code>quizer.sstudio.uz</code>, <code>sagent.sstudio.uz</code>, <code>shop.sstudio.uz</code>) 
-            foydalanuvchilarning shaxsga doir ma'lumotlarini to'plash, saqlash, qayta ishlash va himoya qilish tartibini belgilaydi. Ushbu hujjat 
-            <b>O'zbekiston Respublikasining 2019-yil 2-iyuldagi O'RQ-547-son "Shaxsga doir ma'lumotlar to'g'risida"gi Qonuni</b> talablariga to'liq muvofiq holda ishlab chiqilgan.
+        <div class="friendly-box">
+            🛡️ <b>Biz sizning shaxsiy xavfsizligingizni qadrlaymiz!</b><br>
+            SStudio — bu maktab o'quvchilari va ustozlar uchun ochiq ta'lim platformasi. 
+            Biz foydalanuvchilarning ma'lumotlarini hech qachon uchinchi shaxslarga bermaymiz va hech qanday reklama tarmoqlariga sotmaymiz.
         </div>
 
-        <h2>1. TO'PLANADIGAN SHAXSGA DOIR MA'LUMOTLAR</h2>
-        <p>1.1. <b>Ro'yxatdan o'tish ma'lumotlari:</b> Foydalanuvchining ismi, familiyasi, otasining ismi (ixtiyoriy), foydalanuvchi nomi (username), shifrlangan parol xeshi, telefon raqami, elektron pochta manzili (Gmail).</p>
-        <p>1.2. <b>Hududiy va ta'limiy ma'lumotlar:</b> Yashash viloyati, tumani, ta'lim muassasasi (maktab, litsey, universitet yoki o'quv markazi) nomi.</p>
-        <p>1.3. <b>Anti-Cheat va Telemetriya ma'lumotlari:</b> Quizer va Kiber-Olimpiada testlari davomida brauzer oynasining holati (fokusdan chiqish, tab-switch soni, to'liq ekran rejimidan chiqish sekundlari), mijozning IP manzili, foydalanilayotgan brauzer turi va qurilmaning raqamli izi (Device Fingerprint).</p>
-        <p>1.4. <b>Fayllar va Xotira ma'lumotlari:</b> SStorage bulutiga yuklangan darsliklar, PDF konspektlar, SAgent orqali generatsiya qilingan Word/Slayd fayllari va ularning hajm ko'rsatkichlari.</p>
-        <p>1.5. <b>Moliyaviy ma'lumotlar:</b> Foydalanuvchi yuklagan to'lov kvitansiyalari rasmlari (chek skrinshoti), to'lov sanasi, summasi, SCoin balansining o'zgarish tarixi.</p>
-
-        <h2>2. MA'LUMOTLARNI QAYTA ISHLASH MAQSADLARI</h2>
-        <p>Biz foydalanuvchi ma'lumotlarini faqat quyidagi qonuniy va ta'limiy maqsadlarda qayta ishlaymiz:</p>
+        <h2>1. QANDAY MA'LUMOTLARNI SAQLAYMIZ?</h2>
+        <p>Platformada qulay o'qishingiz uchun faqat minimal kerakli ma'lumotlar saqlanadi:</p>
         <ul>
-            <li>Foydalanuvchiga SStudio kiber-ekotizimi xizmatlaridan to'siqsiz foydalanish imkonini yaratish;</li>
-            <li>Quizer testlarida akademik halollikni va xolis baholashni ta'minlash (Anti-Cheat algoritmlari orqali);</li>
-            <li>SAgent sun'iy intellekti orqali so'ralgan konspekt, slayd va test savollarini foydalanuvchi xohishiga mos tarzda tayyorlash;</li>
-            <li>Respublika, viloyat va tuman miqyosida maktablar va o'quvchilarning umumiy reytingini xolis hisoblash;</li>
-            <li>Hisob xavfsizligini ta'minlash (2FA tasdiqlash, ruxsatsiz kirishlarni aniqlash va Cloudflare Turnstile orqali botlardan himoyalash);</li>
-            <li>Hamyon hisobini to'ldirish va tariflarni faollashtirish.</li>
+            <li><b>Profil ma'lumotlari:</b> Siz kiritgan Ism, Familiya, Username va qaysi maktab/tumanda o'qishingiz (reyting uchun);</li>
+            <li><b>Test natijalari:</b> Quizer orqali ishlagan testlaringiz ballari va to'plagan tajriba ochkolaringiz (XP);</li>
+            <li><b>SCoin va Kiber-Moliya:</b> Foydalanuvchining SCoin balansi va barcha ichki amallari PostgreSQL xavfsiz bazasida saqlanadi;</li>
+            <li><b>Shaxsiy xotirangiz (SStorage):</b> O'zingiz darsliklar va konspektlar uchun yuklagan fayllaringiz (har bir foydalanuvchiga 40 MB);</li>
+            <li><b>Xavfsizlik:</b> Parollaringiz ochiq holda saqlanmaydi — ular zamonaviy <code>Argon2</code> algoritmi bilan to'liq shifrlangan.</li>
         </ul>
 
-        <h2>3. ANTI-CHEAT LOGLARI VA AKADEMIK HALOLLIK HIMOYASI</h2>
-        <p>3.1. Foydalanuvchi test jarayonida uning brauzer faolligi (oynadan chiqishlar soni va vaqti) test yaratuvchi o'qituvchi va tizim ma'muri uchun ochiq hisobot sifatida qayd etilishiga to'liq rozilik beradi.</p>
-        <p>3.2. Anti-cheat loglari uchinchi shaxslarga tijoriy maqsadlarda sotilmaydi va faqat test natijasining haqiqiyligini isbotlash uchun audit sifatida saqlanadi.</p>
-
-        <h2>4. COOKIE VA YAGONA KIBER-SESSIYA (SSO)</h2>
-        <p>4.1. SStudio subdomenlar aro qulay kiber-navigatsiyani ta'minlash maqsadida xavfsiz <code>HttpOnly</code>, <code>Secure</code> va <code>SameSite=Lax</code> xususiyatlariga ega bo'lgan <code>.sstudio.uz</code> domenli sessiya kukilaridan (Cookies) foydalanadi.</p>
-        <p>4.2. Ushbu kukilar foydalanuvchining shaxsiy maxfiy ma'lumotlarini o'z ichiga olmaydi, balki faqat kiber-identifikator (Session UUID) orqali tizimga kirganlik holatini tasdiqlaydi.</p>
-
-        <h2>5. MA'LUMOTLARNI SAQLASH VA XAVFSIZLIK CHORALARI</h2>
-        <p>5.1. Barcha shaxsiy parollar bir tomonlama kriptografik algoritmlar (Bcrypt/Argon2) orqali xeshlangan holda saqlanadi. SStudio xodimlari yoki ma'murlari foydalanuvchining ochiq parolini ko'ra olmaydi.</p>
-        <p>5.2. Ma'lumotlar bazasi zaxira nusxalari (Backups) xavfsiz serverda saqlanadi va ruxsatsiz kirishdan qat'iy himoyalangan.</p>
-        <p>5.3. SStudio foydalanuvchilar ma'lumotlarini O'zbekiston Respublikasi qonunlarida belgilangan hollar (sud yoki huquq-tartibot idoralarining qonuniy rasmiy talablari)dan tashqari hech qanday uchinchi shaxsga oshkor qilmaydi va taqdim etmaydi.</p>
-
-        <h2>6. FOYDALANUVCHINING HUQUQLARI</h2>
-        <p>Foydalanuvchi O'zbekiston Respublikasining "Shaxsga doir ma'lumotlar to'g'risida"gi Qonuniga muvofiq quyidagi huquqlarga ega:</p>
+        <h2>2. MA'LUMOTLARDAN QANDAY FOYDALANILADI?</h2>
+        <p>Barcha ma'lumotlar faqat ta'limiy jarayonni qulaylashtirish uchun xizmat qiladi:</p>
         <ul>
-            <li>O'zining shaxsiy ma'lumotlari qanday saqlanayotgani va qayta ishlanayotgani haqida axborot olish;</li>
-            <li>O'z profil sozlamalari orqali ma'lumotlarini yangilash, to'ldirish yoki tahrirlash;</li>
-            <li>O'z kiber-hisobini va unga biriktirilgan barcha ma'lumotlarni platformadan to'liq o'chirishni (Delete Account) talab qilish;</li>
-            <li>Maxfiylik siyosatiga kiritilgan har qanday o'zgartirishlar bilan tanishish.</li>
+            <li>Ismingiz va maktabingiz — platformaning do'stona reyting doskasida ko'rinadi;</li>
+            <li>Test natijalaringiz — o'z bilimingiz qanchalik oshganini ko'rishingiz uchun shaxsiy profilingizda jamlanadi;</li>
+            <li>Biz hech qanday spamlash xabarlari yoki keraksiz reklamalar yubormaymiz.</li>
         </ul>
 
-        <h2>7. BOG'LANISH VA MUROJAATLAR</h2>
-        <p>Maxfiylik siyosati, shaxsiy ma'lumotlarni o'chirish yoki o'zgartirish bo'yicha har qanday murojaatlarni quyidagi manzilga yo'llashingiz mumkin:</p>
-        <p>Elektron pochta: <b>privacy@sstudio.uz</b> | Telegram: <b>@sstudiouz_bot</b></p>
+        <h2>3. ANTI-CHEAT VA QURILMALAR NAZORATI</h2>
+        <p>3.1. Test topshirish jarayonida test haqqoniy o'tishini ta'minlash uchun brauzerning to'liq ekran rejimi va oyna almashtirishlari soni hisoblab boriladi.</p>
+        <p>3.2. Bu ma'lumotlar faqat test muallifi va o'qituvchiga testning qay darajada xolis topshirilganini bilish uchun ko'rsatiladi.</p>
+
+        <h2>4. AKKAUNTNI BOSHQARISH VA O'CHIRISH</h2>
+        <p>Siz o'z profilingizdagi ma'lumotlarni istalgan vaqtda o'zgartirishingiz yoki hisobingizni o'chirishni so'rashingiz mumkin. Barcha ma'lumotlaringiz platformadan to'liq olib tashlanadi.</p>
+
+        <h2>5. SAVOLLAR BO'YICHA ALOQA</h2>
+        <p>Xavfsizlik yoki ma'lumotlar bilan bog'liq har qanday savolingiz bo'lsa, bizga yozing:</p>
+        <div class="friendly-box" style="text-align: center;">
+            Telegram: <b>@sstudiouz_bot</b> | E-pochta: <b>support@sstudio.uz</b>
+        </div>
 
     </div>
 </div>

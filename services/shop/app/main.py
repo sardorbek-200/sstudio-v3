@@ -19,6 +19,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 app = FastAPI(title="SStudio Shop & Wallet Service", version="3.0.0")
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+templates.env.globals["domain"] = settings.BASE_DOMAIN or "sstudio.uz"
+templates.env.globals["base_domain"] = settings.BASE_DOMAIN or "sstudio.uz"
 
 UPLOAD_DIR = BASE_DIR / "static" / "receipts"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)

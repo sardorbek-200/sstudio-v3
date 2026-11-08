@@ -1,350 +1,1097 @@
 {% extends "base.html" %}
 
-{% block title %}Hamyon va Kiber-Tariflar — SStudio{% endblock %}
+{% block title %}Hamyon va Kiber-Moliya — SStudio{% endblock %}
 
 {% block content %}
 <style>
-    .wallet-hero {
-        background: var(--glass-card);
-        border: 1px solid var(--glass-border);
+    .wallet-container {
+        width: 100%;
+        max-width: 920px;
+        margin: 20px auto 100px auto;
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+    }
+
+    /* Virtual Cyber Card */
+    .virtual-card {
+        background: linear-gradient(135deg, rgba(123, 44, 191, 0.45) 0%, rgba(90, 0, 198, 0.3) 50%, rgba(8, 12, 28, 0.8) 100%);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(0, 242, 254, 0.35);
         border-radius: 28px;
-        padding: 36px;
+        padding: 32px;
+        box-shadow: 0 16px 45px rgba(0, 0, 0, 0.65), 0 0 30px rgba(0, 242, 254, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .virtual-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 50px rgba(90, 0, 198, 0.45), 0 0 30px rgba(0, 242, 254, 0.3);
+    }
+
+    .card-top {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        flex-wrap: wrap;
-        gap: 24px;
-        backdrop-filter: blur(24px);
-        box-shadow: 0 16px 45px rgba(0, 0, 0, 0.65), 0 0 30px rgba(0, 242, 254, 0.15), inset 0 1px 0 var(--specular-highlight);
-        margin-bottom: 40px;
     }
 
-    .balance-title {
-        font-size: 11px;
+    .card-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1.25rem;
         font-weight: 800;
+        letter-spacing: 1.5px;
+        color: #ffffff;
+    }
+
+    .chip-icon {
+        width: 48px;
+        height: 36px;
+        background: linear-gradient(135deg, #FFE066, #D4AF37);
+        border-radius: 8px;
+        position: relative;
+        border: 1px solid rgba(0,0,0,0.25);
+        box-shadow: inset 0 0 6px rgba(0,0,0,0.4), 0 0 12px rgba(255, 224, 102, 0.4);
+    }
+
+    .balance-label {
+        font-size: 0.85rem;
         text-transform: uppercase;
         letter-spacing: 1.5px;
         color: var(--neon-cyan);
         margin-bottom: 6px;
-    }
-
-    .balance-amount {
-        font-size: 48px;
-        font-weight: 900;
-        color: #ffffff;
-        font-family: var(--font-mono);
-        line-height: 1.1;
-        display: flex;
-        align-items: baseline;
-        gap: 12px;
-    }
-
-    .balance-currency {
-        font-size: 20px;
-        color: var(--neon-cyan);
         font-weight: 700;
     }
 
-    .wallet-actions {
+    .balance-value {
+        font-size: 3.2rem;
+        font-weight: 900;
+        color: #FFFFFF;
         display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-    }
-
-    .btn-wallet-action {
-        padding: 12px 24px;
-        border-radius: 12px;
-        font-size: 13px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-        text-decoration: none;
-        cursor: pointer;
-        transition: all 0.25s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .btn-wallet-primary {
-        background: linear-gradient(135deg, var(--neon-violet), var(--neon-purple));
-        color: #ffffff;
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
-    }
-
-    .btn-wallet-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
-    }
-
-    .btn-wallet-glass {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid var(--glass-border);
-        color: #ffffff;
-    }
-
-    .btn-wallet-glass:hover {
-        border-color: var(--neon-cyan);
-        color: var(--neon-cyan);
-    }
-
-    /* Gibrid To'lov / Chek Yuklash */
-    .payment-modal-card {
-        background: var(--glass-card);
-        border: 1px solid var(--glass-border);
-        border-radius: 24px;
-        padding: 30px;
-        margin-bottom: 40px;
-        backdrop-filter: blur(20px);
-    }
-
-    .card-info-box {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 18px 24px;
-        background: rgba(8, 12, 28, 0.9);
-        border: 1px solid rgba(0, 242, 254, 0.3);
-        border-radius: 16px;
-        margin-bottom: 20px;
-        flex-wrap: wrap;
-        gap: 12px;
-    }
-
-    .card-num-text {
-        font-size: 20px;
-        font-weight: 800;
-        color: #ffffff;
+        align-items: baseline;
+        gap: 14px;
         font-family: var(--font-mono);
-        letter-spacing: 2px;
+        text-shadow: 0 0 25px rgba(0, 242, 254, 0.6);
+        line-height: 1;
     }
 
-    /* 30+ Tariflar Grid */
-    .plans-header {
-        text-align: center;
-        margin-bottom: 30px;
+    .scoin-symbol {
+        font-size: 1.4rem;
+        background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 900;
     }
 
-    .plans-grid {
+    .card-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        padding-top: 18px;
+        flex-wrap: wrap;
+        gap: 14px;
+    }
+
+    .card-holder .name {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #ffffff;
+    }
+
+    .stats-row {
+        display: flex;
+        gap: 10px;
+    }
+
+    .stat-pill {
+        padding: 6px 14px;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        font-family: var(--font-mono);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .stat-pill.in {
+        background: rgba(74, 222, 128, 0.15);
+        color: #4ade80;
+        border: 1px solid rgba(74, 222, 128, 0.3);
+    }
+
+    .stat-pill.out {
+        background: rgba(248, 113, 113, 0.15);
+        color: #f87171;
+        border: 1px solid rgba(248, 113, 113, 0.3);
+    }
+
+    /* Actions Grid */
+    .action-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 24px;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 18px;
     }
 
-    .plan-card {
+    .action-card {
         background: var(--glass-card);
         border: 1px solid var(--glass-border);
-        border-radius: 22px;
-        padding: 28px;
+        border-radius: 20px;
+        padding: 22px;
         display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        cursor: pointer;
         backdrop-filter: blur(20px);
-        position: relative;
         transition: all 0.3s ease;
     }
 
-    .plan-card:hover {
-        transform: translateY(-6px);
+    .action-card:hover {
+        transform: translateY(-4px);
         border-color: var(--neon-cyan);
-        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(0, 242, 254, 0.25);
+        box-shadow: 0 12px 30px rgba(0, 242, 254, 0.2);
     }
 
-    .plan-badge {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        padding: 4px 10px;
-        border-radius: 12px;
-        font-size: 10px;
-        font-weight: 800;
-        text-transform: uppercase;
-        background: rgba(0, 242, 254, 0.15);
-        color: var(--neon-cyan);
-        border: 1px solid rgba(0, 242, 254, 0.4);
+    .action-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+        background: rgba(0, 242, 254, 0.12);
+        border: 1px solid rgba(0, 242, 254, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        flex-shrink: 0;
     }
 
-    .plan-name {
-        font-size: 20px;
+    .action-info h4 {
+        font-size: 16px;
         font-weight: 800;
         color: #ffffff;
-        margin-bottom: 6px;
+        margin-bottom: 4px;
     }
 
-    .plan-price {
-        font-size: 28px;
-        font-weight: 900;
-        color: var(--neon-cyan);
-        font-family: var(--font-mono);
-        margin-bottom: 16px;
-    }
-
-    .plan-features-list {
-        list-style: none;
-        margin-bottom: 24px;
-        font-size: 13px;
+    .action-info p {
+        font-size: 12px;
         color: var(--text-dim);
     }
 
-    .plan-features-list li {
-        margin-bottom: 8px;
+    /* Form Panellar */
+    .form-panel {
+        background: var(--glass-card);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 28px;
+        backdrop-filter: blur(20px);
+        display: none;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 22px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .form-header h3 {
+        font-size: 18px;
+        font-weight: 800;
+        color: #ffffff;
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        color: var(--text-dim);
+        font-size: 24px;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+
+    .close-btn:hover { color: #ffffff; }
+
+    .input-group {
+        margin-bottom: 18px;
+        position: relative;
+    }
+
+    .input-group label {
+        display: block;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text-dim);
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+    }
+
+    .input-field {
+        width: 100%;
+        padding: 13px 16px;
+        background: rgba(5, 7, 13, 0.8);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        color: #ffffff;
+        font-size: 14px;
+        outline: none;
+        transition: border 0.3s ease;
+    }
+
+    .input-field:focus {
+        border-color: var(--neon-cyan);
+    }
+
+    .quick-chips {
+        display: flex;
+        gap: 8px;
+        margin-top: 8px;
+        flex-wrap: wrap;
+    }
+
+    .chip-btn {
+        padding: 6px 12px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid var(--glass-border);
+        color: var(--text-secondary);
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .chip-btn:hover {
+        background: rgba(0, 242, 254, 0.15);
+        color: var(--neon-cyan);
+        border-color: var(--neon-cyan);
+    }
+
+    .autocomplete-list {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #0d1222;
+        border: 1px solid var(--neon-cyan);
+        border-radius: 10px;
+        margin-top: 4px;
+        max-height: 180px;
+        overflow-y: auto;
+        z-index: 100;
+        display: none;
+    }
+
+    .autocomplete-item {
+        padding: 10px 16px;
+        cursor: pointer;
+        color: #ffffff;
+        font-size: 13px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .autocomplete-item:hover {
+        background: rgba(0, 242, 254, 0.15);
+        color: var(--neon-cyan);
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 14px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--neon-violet), var(--neon-purple));
+        color: #ffffff;
+        font-weight: 800;
+        font-size: 14px;
+        border: 1px solid rgba(255,255,255,0.25);
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        transition: all 0.25s ease;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(168, 85, 247, 0.6);
+    }
+
+    /* Amallar Tarixi */
+    .history-section {
+        background: var(--glass-card);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 26px;
+        backdrop-filter: blur(20px);
+    }
+
+    .history-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+    }
+
+    .history-header h3 {
+        font-size: 18px;
+        font-weight: 800;
+        color: #ffffff;
+    }
+
+    .history-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .history-item {
+        background: rgba(5, 7, 13, 0.6);
+        border: 1px solid var(--glass-border);
+        border-radius: 14px;
+        padding: 14px 18px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .history-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .history-type-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: 900;
+    }
+
+    .history-type-icon.in {
+        background: rgba(74, 222, 128, 0.15);
+        color: #4ade80;
+        border: 1px solid rgba(74, 222, 128, 0.3);
+    }
+
+    .history-type-icon.out {
+        background: rgba(248, 113, 113, 0.15);
+        color: #f87171;
+        border: 1px solid rgba(248, 113, 113, 0.3);
+    }
+
+    .history-desc {
+        font-size: 14px;
+        font-weight: 600;
+        color: #ffffff;
+    }
+
+    .history-date {
+        font-size: 11px;
+        color: var(--text-dim);
+        margin-top: 2px;
+    }
+
+    .history-amount {
+        font-size: 15px;
+        font-weight: 800;
+        font-family: var(--font-mono);
+    }
+
+    .history-amount.in { color: #4ade80; }
+    .history-amount.out { color: #f87171; }
+
+    /* Teacher Wallet Kvotalar */
+    .teacher-section {
+        background: var(--glass-card);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 26px;
+        backdrop-filter: blur(20px);
+    }
+
+    .teacher-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .teacher-header h3 {
+        font-size: 18px;
+        font-weight: 800;
+        color: #ffffff;
         display: flex;
         align-items: center;
         gap: 8px;
     }
 
-    .plan-features-list li::before {
-        content: "✦";
+    .quotas-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+    }
+
+    .quota-card {
+        background: rgba(5, 7, 13, 0.6);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .quota-card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .quota-icon {
+        font-size: 24px;
+    }
+
+    .quota-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #ffffff;
+    }
+
+    .quota-desc {
+        font-size: 11px;
+        color: var(--text-dim);
+        margin-top: 2px;
+    }
+
+    .quota-balance {
+        font-size: 22px;
+        font-weight: 900;
+        font-family: var(--font-mono);
         color: var(--neon-cyan);
-        font-size: 10px;
+    }
+
+    /* Modal Overlay (Spinner) */
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(5, 7, 13, 0.85);
+        backdrop-filter: blur(14px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 3000;
+        padding: 20px;
+    }
+
+    .spinner-card {
+        background: #0d1222;
+        border: 1px solid var(--neon-cyan);
+        border-radius: 28px;
+        padding: 28px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+        max-width: 380px;
+        width: 100%;
+        box-shadow: 0 0 50px rgba(0, 242, 254, 0.35);
+        position: relative;
+    }
+
+    .wheel-container {
+        position: relative;
+        width: 260px;
+        height: 260px;
+        margin: 10px 0;
+    }
+
+    #wheelCanvas {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        box-shadow: 0 0 25px rgba(0, 242, 254, 0.4);
+        transition: transform 5s cubic-bezier(0.15, 0.99, 0.18, 1);
+    }
+
+    .wheel-arrow {
+        position: absolute;
+        top: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 12px solid transparent;
+        border-right: 12px solid transparent;
+        border-top: 20px solid #FFD700;
+        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6));
+        z-index: 10;
+    }
+
+    .wheel-center-btn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #FFD700, #FFA500);
+        color: #0d1222;
+        font-weight: 900;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 3px solid #FFF;
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+        cursor: pointer;
+        z-index: 5;
+        font-size: 13px;
+    }
+
+    /* Toast */
+    #wallet-toast {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        padding: 14px 24px;
+        border-radius: 12px;
+        color: #fff;
+        font-weight: 700;
+        font-size: 13.5px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        display: none;
+        z-index: 4000;
     }
 </style>
 
-<!-- Hamyon Bosh Card -->
-<div class="wallet-hero">
-    <div>
-        <div class="balance-title">SCoin Kiber-Balans</div>
-        <div class="balance-amount">
-            <span>{{ wallet.scoin_balance if wallet else '120.00' }}</span>
-            <span class="balance-currency">SCoin</span>
+<div class="wallet-container">
+
+    <!-- Virtual Cyber Card -->
+    <div class="virtual-card">
+        <div class="card-top">
+            <div class="card-brand">
+                <span style="font-size: 24px;">💎</span>
+                <span>SSTUDIO WALLET</span>
+            </div>
+            <div class="chip-icon"></div>
         </div>
-        <div style="font-size: 12px; color: var(--text-dim); margin-top: 8px;">
-            SAgent AI Tokenlari: <b>37,500 / 50,000</b> (Bugungi qoldiq)
+
+        <div>
+            <div class="balance-label">Jami sCoin Balans</div>
+            <div class="balance-value">
+                <span id="userBalance">{{ "%.2f"|format(scoin) }}</span>
+                <span class="scoin-symbol">sCoin</span>
+            </div>
+        </div>
+
+        <div class="card-bottom">
+            <div class="card-holder">
+                <div class="balance-label">Hisob Egasi</div>
+                <div class="name">@{{ username }}</div>
+            </div>
+            <div class="stats-row">
+                <div class="stat-pill in">
+                    <span>▲ +{{ "%.2f"|format(total_received or 0.0) }}</span>
+                </div>
+                <div class="stat-pill out">
+                    <span>▼ -{{ "%.2f"|format(total_sent or 0.0) }}</span>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="wallet-actions">
-        <a href="#topup-section" class="btn-wallet-action btn-wallet-primary">📥 Hisobni To'ldirish</a>
-        <a href="https://shop.{{ domain }}/wheel" class="btn-wallet-action btn-wallet-glass">🎡 Omad Charxi</a>
+    <!-- Tezkor Amallar Qatori -->
+    <div class="action-grid">
+        <div class="action-card" onclick="toggleTransferPanel()">
+            <div class="action-icon">💸</div>
+            <div class="action-info">
+                <h4>Pul O'tkazish</h4>
+                <p>Foydalanuvchiga sCoin jo'natish (P2P)</p>
+            </div>
+        </div>
+
+        <div class="action-card" onclick="toggleTopupPanel()">
+            <div class="action-icon">💳</div>
+            <div class="action-info">
+                <h4>sCoin Sotib Olish</h4>
+                <p>Karta orqali balansni to'ldirish</p>
+            </div>
+        </div>
+
+        <div class="action-card" onclick="openSpinnerModal()">
+            <div class="action-icon">🎰</div>
+            <div class="action-info">
+                <h4>Omad Charxi</h4>
+                <p>Har 24 soatda bepul sCoin yuting!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- P2P sCoin O'tkazish Paneli -->
+    <div id="transferPanel" class="form-panel">
+        <div class="form-header">
+            <h3>💸 Foydalanuvchiga sCoin O'tkazish</h3>
+            <button class="close-btn" onclick="toggleTransferPanel()">&times;</button>
+        </div>
+        <form id="transferForm" onsubmit="handleTransfer(event)">
+            <div class="input-group">
+                <label for="recipientInput">Qabul qiluvchi username</label>
+                <input type="text" id="recipientInput" class="input-field" placeholder="Masalan: Sardorbek" autocomplete="off" required oninput="handleUserSearch(this.value)">
+                <div id="autocompleteList" class="autocomplete-list"></div>
+            </div>
+
+            <div class="input-group">
+                <label for="amountInput">Summa (sCoin)</label>
+                <input type="number" id="amountInput" class="input-field" placeholder="100" min="1" step="any" required>
+                <div class="quick-chips">
+                    <button type="button" class="chip-btn" onclick="setAmount(10)">+10</button>
+                    <button type="button" class="chip-btn" onclick="setAmount(50)">+50</button>
+                    <button type="button" class="chip-btn" onclick="setAmount(100)">+100</button>
+                    <button type="button" class="chip-btn" onclick="setAmount(500)">+500</button>
+                    <button type="button" class="chip-btn" onclick="setAmount({{ scoin }})">Maksimal</button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="descInput">Izoh (ixtiyoriy)</label>
+                <input type="text" id="descInput" class="input-field" placeholder="Masalan: Test uchun rahmat">
+            </div>
+
+            <button type="submit" class="btn-submit" id="sendBtn">O'tkazmani Tasdiqlash</button>
+        </form>
+    </div>
+
+    <!-- sCoin To'ldirish Paneli -->
+    <div id="topupPanel" class="form-panel">
+        <div class="form-header">
+            <h3>💳 sCoin Balansini To'ldirish</h3>
+            <button class="close-btn" onclick="toggleTopupPanel()">&times;</button>
+        </div>
+
+        <div style="background: rgba(8, 12, 28, 0.9); border: 1px solid rgba(0, 242, 254, 0.3); border-radius: 16px; padding: 18px 24px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div>
+                <div style="font-size: 11px; color: var(--text-dim); text-transform: uppercase;">Rasmiy To'lov Kartasi</div>
+                <div style="font-size: 20px; font-weight: 800; font-family: var(--font-mono); letter-spacing: 2px;">8600 •••• •••• 1234</div>
+                <div style="font-size: 12px; color: var(--neon-cyan); margin-top: 2px;">Sardorbek K. (SStudio Asoschisi)</div>
+            </div>
+            <button type="button" class="chip-btn" onclick="copyCard()" style="padding: 10px 18px; font-size: 13px;">📋 Nusxa Olish</button>
+        </div>
+
+        <p style="font-size: 13px; color: var(--text-dim); margin-bottom: 16px;">
+            Kurs: <b>1,000 so'm = 1 sCoin</b>. Kartaga o'tkazma qilib, chekni yuklang:
+        </p>
+
+        <form id="receiptUploadForm" onsubmit="handleReceiptUpload(event)">
+            <div class="input-group">
+                <label for="receiptAmount">To'langan Summa (UZS)</label>
+                <input type="number" id="receiptAmount" class="input-field" placeholder="10000" min="1000" required>
+            </div>
+
+            <div class="input-group">
+                <label>To'lov Cheki Skrinshoti</label>
+                <input type="file" id="receiptFileInput" accept="image/*" class="input-field" required>
+            </div>
+
+            <button type="submit" class="btn-submit" id="btnUploadReceipt">🚀 Chekni Yuborish</button>
+        </form>
+    </div>
+
+    <!-- Amallar Tarixi -->
+    <div class="history-section">
+        <div class="history-header">
+            <h3>📋 Amallar Tarixi</h3>
+            <span style="font-size: 12px; color: var(--text-dim);">Oxirgi tranzaksiyalar</span>
+        </div>
+
+        <div class="history-list">
+            {% if history_items %}
+                {% for item in history_items %}
+                <div class="history-item">
+                    <div class="history-left">
+                        <div class="history-type-icon {% if item.is_incoming %}in{% else %}out{% endif %}">
+                            {% if item.is_incoming %}▲{% else %}▼{% endif %}
+                        </div>
+                        <div>
+                            <div class="history-desc">{{ item.description }}</div>
+                            <div class="history-date">{{ item.date }}</div>
+                        </div>
+                    </div>
+                    <div class="history-amount {% if item.is_incoming %}in{% else %}out{% endif %}">
+                        {% if item.is_incoming %}+{% else %}-{% endif %}{{ "%.2f"|format(item.amount) }} sCoin
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div style="text-align: center; padding: 36px 20px; color: var(--text-dim); font-size: 14px;">
+                    Hozircha hamyonda amallar tarixi mavjud emas.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- O'qituvchi Hamyoni & Kvotalar -->
+    <div class="teacher-section">
+        <div class="teacher-header">
+            <h3>🎓 O'qituvchi Hamyoni (Teacher Tools & Kvotalar)</h3>
+            <span style="font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 8px; background: rgba(99, 102, 241, 0.2); color: var(--neon-cyan); border: 1px solid rgba(99, 102, 241, 0.4);">Faol Kvotalar</span>
+        </div>
+
+        <div class="quotas-grid">
+            <div class="quota-card">
+                <div class="quota-card-top">
+                    <span class="quota-icon">📝</span>
+                    <span style="font-size: 10px; color: var(--text-dim);">200 UZS / savol</span>
+                </div>
+                <div>
+                    <div class="quota-title">STest Savollar Kvotasi</div>
+                    <div class="quota-desc">AI bilan testlar tuzish</div>
+                </div>
+                <div class="quota-balance">{{ stest_quota }} ta</div>
+            </div>
+
+            <div class="quota-card">
+                <div class="quota-card-top">
+                    <span class="quota-icon">📚</span>
+                    <span style="font-size: 10px; color: var(--text-dim);">1 000 UZS / ma'ruza</span>
+                </div>
+                <div>
+                    <div class="quota-title">SMavzu Konspektlar</div>
+                    <div class="quota-desc">Slayd va konspektlar</div>
+                </div>
+                <div class="quota-balance">{{ smavzu_quota }} ta</div>
+            </div>
+
+            <div class="quota-card">
+                <div class="quota-card-top">
+                    <span class="quota-icon">⚡</span>
+                    <span style="font-size: 10px; color: var(--text-dim);">4 000 UZS / test</span>
+                </div>
+                <div>
+                    <div class="quota-title">Quizer Jonli Sinovlar</div>
+                    <div class="quota-desc">Anti-cheat imtihonlar</div>
+                </div>
+                <div class="quota-balance">{{ quizer_quota }} ta</div>
+            </div>
+
+            <div class="quota-card">
+                <div class="quota-card-top">
+                    <span class="quota-icon">☁️</span>
+                    <button type="button" class="chip-btn" onclick="promptUpgradeStorage()" style="padding: 3px 8px; font-size: 10px;">Kengaytirish</button>
+                </div>
+                <div>
+                    <div class="quota-title">SStorage Disk Xotirasi</div>
+                    <div class="quota-desc">Darsliklar va konspektlar</div>
+                </div>
+                <div class="quota-balance" id="storageQuotaVal">{{ storage_quota_mb }} MB</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Kunlik Bonus Spinner Modali -->
+<div id="spinnerModal" class="modal-overlay">
+    <div class="spinner-card">
+        <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+            <h3 style="color: #FFF; font-size: 17px; font-weight: 800;">🎰 Omad Charxi</h3>
+            <button class="close-btn" onclick="closeSpinnerModal()">&times;</button>
+        </div>
+
+        <div class="wheel-container">
+            <div class="wheel-arrow"></div>
+            <canvas id="wheelCanvas" width="260" height="260"></canvas>
+            <div class="wheel-center-btn" id="spinCenterBtn" onclick="spinWheel()">SPIN</div>
+        </div>
+
+        <p style="font-size: 12.5px; color: var(--text-dim); text-align: center;" id="spinnerText">
+            Har 24 soatda g'ildirakni bir marta bepul aylantirib 5 dan 500 sCoin gacha yutishingiz mumkin!
+        </p>
+
+        <button class="btn-submit" id="spinStartBtn" onclick="spinWheel()">Aylantirish 🚀</button>
     </div>
 </div>
 
-<!-- Gibrid To'lov (Karta + Chek) -->
-<section id="topup-section" class="payment-modal-card">
-    <h2 style="font-size: 22px; font-weight: 800; margin-bottom: 8px; color: #ffffff;">
-        💳 Karta Orqali To'lov Qilish (Gibrid OCR Tizimi)
-    </h2>
-    <p style="font-size: 13.5px; color: var(--text-dim); margin-bottom: 20px;">
-        Quyidagi bank kartasiga to'lov qiling va chek skrinshotini yuklang. 
-        Chekni birinchi bo'lib <b>Gemini Flash AI</b> avtomatik o'qiydi, so'ngra Admin tasdiqlashi bilan hisobingizga SCoin tushadi.
-    </p>
-
-    <div class="card-info-box">
-        <div>
-            <div style="font-size: 11px; color: var(--text-dim); text-transform: uppercase;">Rasmiy To'lov Kartasi</div>
-            <div class="card-num-text">8600 •••• •••• 1234</div>
-            <div style="font-size: 12px; color: var(--neon-cyan); margin-top: 2px;">Sardorbek K. (SStudio Ta'lim)</div>
-        </div>
-        <button class="btn-wallet-action btn-wallet-glass" onclick="copyCard()">📋 Nusxa Olish</button>
-    </div>
-
-    <form id="receipt-upload-form" style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
-        <input type="file" id="receipt-file" accept="image/*" required style="display: none;">
-        <button type="button" class="btn-wallet-action btn-wallet-glass" onclick="document.getElementById('receipt-file').click()">
-            📎 Chek Rasmini Tanlash
-        </button>
-        <span id="selected-file-name" style="font-size: 13px; color: var(--text-dim);">Fayl tanlanmadi</span>
-        <button type="submit" class="btn-wallet-action btn-wallet-primary" id="btn-upload-receipt">
-            🚀 Chekni Yuborish (AI Tekshiruvi)
-        </button>
-    </form>
-    <div id="receipt-status" style="margin-top: 14px; font-size: 13px; display: none;"></div>
-</section>
-
-<!-- 30+ Tariflar -->
-<div class="plans-header">
-    <span style="font-size: 11px; font-weight: 800; color: var(--neon-cyan); letter-spacing: 1.5px; text-transform: uppercase;">KIBER-TARIFLAR</span>
-    <h2 style="font-size: 32px; font-weight: 900; color: #ffffff;">O'quvchi va O'qituvchi Paketlari</h2>
-</div>
-
-<div class="plans-grid">
-    <!-- Tarif 1: Freemium -->
-    <div class="plan-card">
-        <span class="plan-badge">BEPUL</span>
-        <div>
-            <h3 class="plan-name">Boshlang'ich Kiber</h3>
-            <div class="plan-price">0 UZS</div>
-            <ul class="plan-features-list">
-                <li>Kuniga 50,000 SAgent token</li>
-                <li>40 MB SStorage xotira</li>
-                <li>Quizer barcha ochiq testlar</li>
-                <li>2 kunda 1 marta Omad Charxi</li>
-            </ul>
-        </div>
-        <button class="btn-wallet-action btn-wallet-glass" style="width: 100%; text-align: center;">Joriy Tarif</button>
-    </div>
-
-    <!-- Tarif 2: Ustoz Pro -->
-    <div class="plan-card" style="border-color: rgba(0, 242, 254, 0.4); box-shadow: 0 0 25px rgba(0, 242, 254, 0.15);">
-        <span class="plan-badge" style="background: rgba(99, 102, 241, 0.3);">ENG MASHHUR</span>
-        <div>
-            <h3 class="plan-name">Ustoz Pro Kiber</h3>
-            <div class="plan-price">49,000 UZS <span style="font-size: 13px; color: var(--text-dim);">/oy</span></div>
-            <ul class="plan-features-list">
-                <li>Kuniga 500,000 SAgent token</li>
-                <li>2 GB SStorage xotira</li>
-                <li>Cheksiz PIN-kodli testlar</li>
-                <li>Jonli Kiber-Radar (Live Proctoring)</li>
-                <li>Eksklyuziv Neon Avatar Ramkasi</li>
-            </ul>
-        </div>
-        <button class="btn-wallet-action btn-wallet-primary" style="width: 100%; text-align: center;">Faollashtirish</button>
-    </div>
-
-    <!-- Tarif 3: Maktab / Markaz -->
-    <div class="plan-card">
-        <span class="plan-badge">KORPORATIV</span>
-        <div>
-            <h3 class="plan-name">Maktab Kiber-Hub</h3>
-            <div class="plan-price">199,000 UZS <span style="font-size: 13px; color: var(--text-dim);">/oy</span></div>
-            <ul class="plan-features-list">
-                <li>Cheksiz SAgent tokenlari</li>
-                <li>10 GB umumiy maktab xotirasi</li>
-                <li>Maktablar reytingida VIP ustuvorlik</li>
-                <li>Rasmiy Kiber-Olimpiadalar o'tkazish</li>
-                <li>Maxsus API integratsiya huquqi</li>
-            </ul>
-        </div>
-        <button class="btn-wallet-action btn-wallet-glass" style="width: 100%; text-align: center;">Ulanish</button>
-    </div>
-</div>
+<div id="wallet-toast"></div>
 
 <script>
-    function copyCard() {
-        navigator.clipboard.writeText("8600123456789012");
-        alert("Karta raqami nusxalandi!");
+    function showToast(msg, isSuccess = true) {
+        const toast = document.getElementById('wallet-toast');
+        toast.innerText = msg;
+        toast.style.background = isSuccess ? '#10B981' : '#EF4444';
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 3500);
     }
 
-    document.getElementById('receipt-file').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            document.getElementById('selected-file-name').textContent = file.name;
-        }
-    });
+    function toggleTransferPanel() {
+        const p = document.getElementById('transferPanel');
+        p.style.display = p.style.display === 'block' ? 'none' : 'block';
+        if (p.style.display === 'block') document.getElementById('recipientInput').focus();
+    }
 
-    document.getElementById('receipt-upload-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const statusBox = document.getElementById('receipt-status');
-        const uploadBtn = document.getElementById('btn-upload-receipt');
-        const fileInput = document.getElementById('receipt-file');
+    function toggleTopupPanel() {
+        const p = document.getElementById('topupPanel');
+        p.style.display = p.style.display === 'block' ? 'none' : 'block';
+    }
 
-        if (!fileInput.files.length) {
-            alert("Iltimos, avval chek rasmini tanlang!");
+    function setAmount(val) {
+        document.getElementById('amountInput').value = val;
+    }
+
+    function copyCard() {
+        navigator.clipboard.writeText('8600123456789012');
+        showToast('Karta raqami nusxalandi!', true);
+    }
+
+    // Foydalanuvchi qidirish
+    let searchTimeout = null;
+    async function handleUserSearch(val) {
+        clearTimeout(searchTimeout);
+        const list = document.getElementById('autocompleteList');
+        if (!val || val.length < 1) {
+            list.style.display = 'none';
             return;
         }
 
-        uploadBtn.disabled = true;
-        uploadBtn.textContent = "AI tekshirmoqda...";
-        statusBox.style.display = 'block';
-        statusBox.style.color = '#00f2fe';
-        statusBox.textContent = "⏳ Chek qabul qilindi. Gemini Flash OCR tizimi to'lov rekvizitlarini tekshirmoqda...";
+        searchTimeout = setTimeout(async () => {
+            try {
+                const res = await fetch(`/api/wallet/search-users?q=${encodeURIComponent(val)}`);
+                const data = await res.json();
+                list.innerHTML = '';
+                if (data.users && data.users.length > 0) {
+                    data.users.forEach(u => {
+                        const div = document.createElement('div');
+                        div.className = 'autocomplete-item';
+                        div.innerText = `@${u}`;
+                        div.onclick = () => {
+                            document.getElementById('recipientInput').value = u;
+                            list.style.display = 'none';
+                        };
+                        list.appendChild(div);
+                    });
+                    list.style.display = 'block';
+                } else {
+                    list.style.display = 'none';
+                }
+            } catch(e) { list.style.display = 'none'; }
+        }, 250);
+    }
 
-        setTimeout(() => {
-            statusBox.style.color = '#10b981';
-            statusBox.textContent = "✅ Chek muvaffaqiyatli qabul qilindi va AI tomonidan tasdiqlandi! Admin 5 daqiqa ichida balansga o'tkazadi.";
-            uploadBtn.textContent = "Yuborildi ✓";
-        }, 1500);
-    });
+    // P2P Transfer yuborish
+    async function handleTransfer(e) {
+        e.preventDefault();
+        const btn = document.getElementById('sendBtn');
+        btn.disabled = true;
+        btn.innerText = 'Yuborilmoqda...';
+
+        const payload = {
+            recipient: document.getElementById('recipientInput').value,
+            amount: parseFloat(document.getElementById('amountInput').value),
+            description: document.getElementById('descInput').value
+        };
+
+        try {
+            const res = await fetch('/api/wallet/transfer', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                showToast(data.message, true);
+                document.getElementById('userBalance').innerText = parseFloat(data.new_balance).toFixed(2);
+                document.getElementById('transferForm').reset();
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                showToast(data.detail || data.message || 'Xatolik yuz berdi!', false);
+            }
+        } catch(err) {
+            showToast('Tarmoq xatosi!', false);
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "O'tkazmani Tasdiqlash";
+        }
+    }
+
+    // Chek yuklash
+    async function handleReceiptUpload(e) {
+        e.preventDefault();
+        const btn = document.getElementById('btnUploadReceipt');
+        btn.disabled = true;
+        btn.innerText = 'Yuklanmoqda...';
+
+        const formData = new FormData();
+        formData.append('amount_uzs', document.getElementById('receiptAmount').value);
+        formData.append('receipt_file', document.getElementById('receiptFileInput').files[0]);
+
+        try {
+            const res = await fetch('/api/wallet/topup/receipt', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                showToast(data.message, true);
+                toggleTopupPanel();
+                document.getElementById('receiptUploadForm').reset();
+            } else {
+                showToast(data.detail || 'Chekni yuklashda xatolik!', false);
+            }
+        } catch(err) {
+            showToast('Tarmoq xatosi!', false);
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "🚀 Chekni Yuborish";
+        }
+    }
+
+    // SStorage kengaytirish
+    async function promptUpgradeStorage() {
+        const choice = prompt("SStorage xotirasini tanlang:\n1) 300 MB — 10,000 sCoin\n2) 600 MB — 40,000 sCoin\n3) 1 GB — 60,000 sCoin\n(1, 2 yoki 3 ni yozing):");
+        let plan = '';
+        if (choice === '1') plan = '300mb';
+        else if (choice === '2') plan = '600mb';
+        else if (choice === '3') plan = '1gb';
+        else return;
+
+        try {
+            const res = await fetch('/api/wallet/buy-storage-quota', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ plan })
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                showToast(data.message, true);
+                document.getElementById('userBalance').innerText = parseFloat(data.new_balance).toFixed(2);
+                document.getElementById('storageQuotaVal').innerText = `${data.new_quota_mb} MB`;
+            } else {
+                showToast(data.detail || 'Xatolik yuz berdi', false);
+            }
+        } catch(e) {
+            showToast('Tarmoq xatosi', false);
+        }
+    }
+
+    // --- SPINNER OMAD CHARXI LOGIKASI ---
+    const slices = [
+        { label: "5 sCoin", color: "#00F2FE" },
+        { label: "10 sCoin", color: "#4FACFE" },
+        { label: "25 sCoin", color: "#6366F1" },
+        { label: "50 sCoin", color: "#A855F7" },
+        { label: "100 sCoin", color: "#EC4899" },
+        { label: "150 sCoin", color: "#F43F5E" },
+        { label: "250 sCoin", color: "#E0AAFF" },
+        { label: "500 sCoin", color: "#FFD700" }
+    ];
+
+    let currentRotation = 0;
+    let isSpinning = false;
+
+    function drawWheel() {
+        const canvas = document.getElementById('wheelCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const numSlices = slices.length;
+        const sliceAngle = (2 * Math.PI) / numSlices;
+        const radius = canvas.width / 2;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < numSlices; i++) {
+            const angle = i * sliceAngle;
+            ctx.beginPath();
+            ctx.fillStyle = slices[i].color;
+            ctx.moveTo(radius, radius);
+            ctx.arc(radius, radius, radius, angle, angle + sliceAngle);
+            ctx.closePath();
+            ctx.fill();
+
+            // Matn
+            ctx.save();
+            ctx.translate(radius, radius);
+            ctx.rotate(angle + sliceAngle / 2);
+            ctx.textAlign = "right";
+            ctx.fillStyle = "#0d1222";
+            ctx.font = "bold 11px sans-serif";
+            ctx.fillText(slices[i].label, radius - 15, 4);
+            ctx.restore();
+        }
+    }
+
+    function openSpinnerModal() {
+        document.getElementById('spinnerModal').style.display = 'flex';
+        drawWheel();
+    }
+
+    function closeSpinnerModal() {
+        if (!isSpinning) document.getElementById('spinnerModal').style.display = 'none';
+    }
+
+    async function spinWheel() {
+        if (isSpinning) return;
+        const startBtn = document.getElementById('spinStartBtn');
+        const centerBtn = document.getElementById('spinCenterBtn');
+        startBtn.disabled = true;
+        centerBtn.style.pointerEvents = 'none';
+
+        try {
+            const res = await fetch('/api/wallet/spin', { method: 'POST' });
+            const data = await res.json();
+
+            if (!res.ok || !data.success) {
+                showToast(data.detail || 'Bugun bonus olib bo\'lgansiz!', false);
+                startBtn.disabled = false;
+                centerBtn.style.pointerEvents = 'auto';
+                return;
+            }
+
+            isSpinning = true;
+            const sliceIndex = data.slice_index; // 0..7
+            const numSlices = slices.length;
+            const sliceDegrees = 360 / numSlices;
+
+            const targetSliceCenter = (sliceIndex * sliceDegrees) + (sliceDegrees / 2);
+            const desiredFinalAngle = 270 - targetSliceCenter;
+            const extraRotations = 360 * 5;
+            const finalDeg = currentRotation + extraRotations + ((desiredFinalAngle - (currentRotation % 360) + 360) % 360);
+
+            currentRotation = finalDeg;
+            const canvas = document.getElementById('wheelCanvas');
+            canvas.style.transform = `rotate(${finalDeg}deg)`;
+
+            setTimeout(() => {
+                isSpinning = false;
+                showToast(data.message, true);
+                document.getElementById('userBalance').innerText = parseFloat(data.new_balance).toFixed(2);
+                startBtn.disabled = false;
+                centerBtn.style.pointerEvents = 'auto';
+                setTimeout(() => location.reload(), 2000);
+            }, 5200);
+
+        } catch(e) {
+            showToast('Tarmoq xatosi!', false);
+            startBtn.disabled = false;
+            centerBtn.style.pointerEvents = 'auto';
+        }
+    }
 </script>
 {% endblock %}

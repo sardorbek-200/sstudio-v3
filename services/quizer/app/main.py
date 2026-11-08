@@ -2,11 +2,12 @@ import json
 from pathlib import Path
 from typing import Optional
 from datetime import datetime, timezone
-from fastapi import FastAPI, Request, HTTPException, Depends, Response
+from fastapi import FastAPI, Request, HTTPException, Depends, Response, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
-from sqlalchemy import select
+from sqlalchemy import select, func, desc
+from sqlalchemy.orm import selectinload
 
 from shared.config import settings
 from shared.database import get_db_context
@@ -19,6 +20,39 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 app = FastAPI(title="SStudio Quizer Service", version="3.0.0")
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+templates.env.globals["domain"] = settings.BASE_DOMAIN or "sstudio.uz"
+templates.env.globals["base_domain"] = settings.BASE_DOMAIN or "sstudio.uz"
+
+
+# --- WebSocket Jonli Monitoring Manager ---
+class MonitoringConnectionManager:
+    def __init__(self):
+        self.active_connections: dict[int, set[WebSocket]] = {}
+
+    async def connect(self, test_id: int, websocket: WebSocket):
+        await websocket.accept()
+        if test_id not in self.active_connections:
+            self.active_connections[test_id] = set()
+        self.active_connections[test_id].add(websocket)
+
+    def disconnect(self, test_id: int, websocket: WebSocket):
+        if test_id in self.active_connections:
+            self.active_connections[test_id].discard(websocket)
+            if not self.active_connections[test_id]:
+                del self.active_connections[test_id]
+
+    async def broadcast(self, test_id: int, message: dict):
+        if test_id in self.active_connections:
+            dead = set()
+            for connection in self.active_connections[test_id]:
+                try:
+                    await connection.send_json(message)
+                except Exception:
+                    dead.add(connection)
+            for d in dead:
+                self.active_connections[test_id].discard(d)
+
+monitoring_manager = MonitoringConnectionManager()
 
 
 # PIN xatolarini hisoblash xotirasi (IP yoki User bazasida: {ip: {'fails': int, 'locked_until': timestamp}})
@@ -112,6 +146,293 @@ async def quizer_home(request: Request):
     )
 
 
+@app.get("/olympiads", response_class=HTMLResponse)
+async def olympiads_page(request: Request):
+    """Rasmiy Kiber-Olimpiadalar Sahifasi"""
+    token = request.cookies.get("sstudio_token")
+    user_payload = decode_access_token(token) if token else None
+
+    return templates.TemplateResponse(
+        request=request,
+        name="olympiads.html",
+        context={"user": user_payload, "domain": settings.BASE_DOMAIN}
+    )
+
+
+# --- 2.1 Mening Testlarim & Jonli Monitoring ---
+@app.get("/my-tests", response_class=HTMLResponse)
+async def my_tests_page(request: Request):
+    token = request.cookies.get("sstudio_token")
+    user_payload = decode_access_token(token) if token else None
+    user_id = int(user_payload.get("sub")) if user_payload and user_payload.get("sub") else 1
+
+    my_tests = []
+    try:
+        async with get_db_context() as db:
+            result = await db.execute(
+                select(Test)
+                .options(selectinload(Test.questions), selectinload(Test.results))
+                .filter(Test.author_id == user_id)
+                .order_by(desc(Test.created_at))
+            )
+            db_tests = result.scalars().all()
+            for t in db_tests:
+                my_tests.append({
+                    "id": t.id,
+                    "title": t.title,
+                    "description": t.description,
+                    "pin_code": t.pin_code,
+                    "time_limit_minutes": t.time_limit_minutes,
+                    "is_published": t.is_published,
+                    "question_count": len(t.questions) if t.questions else 0,
+                    "participants_count": len(t.results) if t.results else 0
+                })
+    except Exception as e:
+        my_tests = []
+
+    return templates.TemplateResponse(
+        request=request,
+        name="my_tests.html",
+        context={"user": user_payload, "my_tests": my_tests, "domain": settings.BASE_DOMAIN}
+    )
+
+
+@app.get("/test/{test_id}/monitoring", response_class=HTMLResponse)
+async def test_monitoring_page(test_id: int, request: Request):
+    token = request.cookies.get("sstudio_token")
+    user_payload = decode_access_token(token) if token else None
+
+    test_data = {"id": test_id, "title": "Test", "pin_code": "----", "is_published": True}
+    results_list = []
+    violations_list = []
+    avg_score = 0.0
+
+    try:
+        async with get_db_context() as db:
+            t_res = await db.execute(select(Test).filter(Test.id == test_id))
+            db_test = t_res.scalars().first()
+            if db_test:
+                test_data = {
+                    "id": db_test.id,
+                    "title": db_test.title,
+                    "pin_code": db_test.pin_code,
+                    "is_published": db_test.is_published
+                }
+
+            r_res = await db.execute(
+                select(TestResult, User)
+                .join(User, TestResult.user_id == User.id)
+                .filter(TestResult.test_id == test_id)
+                .order_by(desc(TestResult.completed_at))
+            )
+            for res_item, u_item in r_res.all():
+                v_count_res = await db.execute(
+                    select(func.count(AntiCheatLog.id))
+                    .filter(AntiCheatLog.test_id == test_id, AntiCheatLog.user_id == u_item.id)
+                )
+                v_count = v_count_res.scalar_one_or_none() or 0
+                results_list.append({
+                    "student_name": f"{u_item.name} {u_item.surname}",
+                    "username": u_item.username,
+                    "score": round(res_item.score, 1),
+                    "warning_count": v_count,
+                    "date": res_item.completed_at.strftime("%d.%m.%Y %H:%M") if res_item.completed_at else ""
+                })
+
+            if results_list:
+                avg_score = round(sum(r["score"] for r in results_list) / len(results_list), 1)
+
+            v_res = await db.execute(
+                select(AntiCheatLog, User)
+                .join(User, AntiCheatLog.user_id == User.id)
+                .filter(AntiCheatLog.test_id == test_id)
+                .order_by(desc(AntiCheatLog.timestamp))
+                .limit(50)
+            )
+            for log_item, u_item in v_res.all():
+                violations_list.append({
+                    "time": log_item.timestamp.strftime("%H:%M:%S") if log_item.timestamp else "",
+                    "username": u_item.username,
+                    "action": log_item.action,
+                    "count": log_item.warning_count
+                })
+    except Exception:
+        pass
+
+    return templates.TemplateResponse(
+        request=request,
+        name="test_monitoring.html",
+        context={
+            "user": user_payload,
+            "test": test_data,
+            "results": results_list,
+            "violations": violations_list,
+            "avg_score": avg_score,
+            "domain": settings.BASE_DOMAIN
+        }
+    )
+
+
+async def get_test_stats_data(test_id: int):
+    results_list = []
+    violations_list = []
+    avg_score = 0.0
+
+    try:
+        async with get_db_context() as db:
+            r_res = await db.execute(
+                select(TestResult, User)
+                .join(User, TestResult.user_id == User.id)
+                .filter(TestResult.test_id == test_id)
+                .order_by(desc(TestResult.completed_at))
+            )
+            for res_item, u_item in r_res.all():
+                v_count_res = await db.execute(
+                    select(func.count(AntiCheatLog.id))
+                    .filter(AntiCheatLog.test_id == test_id, AntiCheatLog.user_id == u_item.id)
+                )
+                v_count = v_count_res.scalar_one_or_none() or 0
+                results_list.append({
+                    "student_name": f"{u_item.name} {u_item.surname}",
+                    "username": u_item.username,
+                    "score": round(res_item.score, 1),
+                    "warning_count": v_count,
+                    "date": res_item.completed_at.strftime("%d.%m.%Y %H:%M") if res_item.completed_at else ""
+                })
+
+            if results_list:
+                avg_score = round(sum(r["score"] for r in results_list) / len(results_list), 1)
+
+            v_res = await db.execute(
+                select(AntiCheatLog, User)
+                .join(User, AntiCheatLog.user_id == User.id)
+                .filter(AntiCheatLog.test_id == test_id)
+                .order_by(desc(AntiCheatLog.timestamp))
+                .limit(50)
+            )
+            for log_item, u_item in v_res.all():
+                violations_list.append({
+                    "time": log_item.timestamp.strftime("%H:%M:%S") if log_item.timestamp else "",
+                    "username": u_item.username,
+                    "action": log_item.action,
+                    "count": log_item.warning_count
+                })
+    except Exception:
+        pass
+
+    return {
+        "participants_count": len(results_list),
+        "avg_score": avg_score,
+        "violations_count": len(violations_list),
+        "results": results_list,
+        "violations": violations_list
+    }
+
+
+@app.get("/api/test/{test_id}/live-stats")
+async def test_live_stats(test_id: int):
+    return await get_test_stats_data(test_id)
+
+
+@app.websocket("/ws/test/{test_id}/monitoring")
+async def ws_test_monitoring(websocket: WebSocket, test_id: int):
+    """Real-vaqtda Jonli Proctoring & Radar WebSocket kanali"""
+    await monitoring_manager.connect(test_id, websocket)
+    try:
+        stats = await get_test_stats_data(test_id)
+        await websocket.send_json({"type": "init", "data": stats})
+        while True:
+            msg = await websocket.receive_text()
+            if msg == "ping":
+                await websocket.send_text("pong")
+    except WebSocketDisconnect:
+        monitoring_manager.disconnect(test_id, websocket)
+    except Exception:
+        monitoring_manager.disconnect(test_id, websocket)
+
+
+@app.post("/api/test/{test_id}/toggle-status")
+async def toggle_test_status(test_id: int, request: Request):
+    """Testni yakunlash (yopish) yoki qayta ochish"""
+    try:
+        async with get_db_context() as db:
+            result = await db.execute(select(Test).filter(Test.id == test_id))
+            db_test = result.scalars().first()
+            if not db_test:
+                raise HTTPException(status_code=404, detail="Test topilmadi!")
+
+            db_test.is_published = not db_test.is_published
+            await db.commit()
+            return {"success": True, "is_published": db_test.is_published}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/test/{test_id}/edit", response_class=HTMLResponse)
+async def edit_test_page(test_id: int, request: Request):
+    token = request.cookies.get("sstudio_token")
+    user_payload = decode_access_token(token) if token else None
+
+    test_obj = {"id": test_id, "title": "", "description": "", "time_limit_minutes": 30, "pin_code": ""}
+    questions_list = []
+
+    try:
+        async with get_db_context() as db:
+            result = await db.execute(
+                select(Test).options(selectinload(Test.questions)).filter(Test.id == test_id)
+            )
+            db_test = result.scalars().first()
+            if db_test:
+                test_obj = {
+                    "id": db_test.id,
+                    "title": db_test.title,
+                    "description": db_test.description,
+                    "time_limit_minutes": db_test.time_limit_minutes,
+                    "pin_code": db_test.pin_code
+                }
+                questions_list = [
+                    {"id": q.id, "question_text": q.question_text, "question_type": q.question_type}
+                    for q in db_test.questions
+                ] if db_test.questions else []
+    except Exception:
+        pass
+
+    return templates.TemplateResponse(
+        request=request,
+        name="test_edit.html",
+        context={"user": user_payload, "test": test_obj, "questions": questions_list, "domain": settings.BASE_DOMAIN}
+    )
+
+
+@app.post("/api/test/{test_id}/update")
+async def update_test(test_id: int, request: Request):
+    data = await request.json()
+    try:
+        async with get_db_context() as db:
+            result = await db.execute(select(Test).options(selectinload(Test.questions)).filter(Test.id == test_id))
+            db_test = result.scalars().first()
+            if not db_test:
+                raise HTTPException(status_code=404, detail="Test topilmadi!")
+
+            if "title" in data: db_test.title = str(data["title"]).strip()
+            if "description" in data: db_test.description = str(data["description"]).strip()
+            if "time_limit_minutes" in data: db_test.time_limit_minutes = int(data["time_limit_minutes"])
+            if "pin_code" in data: db_test.pin_code = str(data["pin_code"]).strip() if data["pin_code"] else None
+
+            # Savollar matnlarini yangilash
+            if "questions" in data and db_test.questions:
+                q_map = {str(q.id): q for q in db_test.questions}
+                for item in data["questions"]:
+                    qid = str(item.get("id"))
+                    if qid in q_map and "text" in item:
+                        q_map[qid].question_text = str(item["text"]).strip()
+
+            await db.commit()
+            return {"success": True, "message": "Test yangilandi!"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
 @app.get("/create", response_class=HTMLResponse)
 async def create_test_page(request: Request):
     token = request.cookies.get("sstudio_token")
@@ -180,19 +501,29 @@ async def verify_pin(req: PinVerifyRequest, request: Request):
         )
 
     # PIN ni tekshirish
-    target_id = req.test_id or 3
+    target_id = req.test_id
     is_valid = False
 
     try:
         async with get_db_context() as db:
-            result = await db.execute(select(Test).filter(Test.id == target_id))
-            db_test = result.scalars().first()
-            if db_test and db_test.pin_code == req.pin:
-                is_valid = True
-    except Exception:
-        # Mock PIN tekshiruv
+            if req.test_id:
+                result = await db.execute(select(Test).filter(Test.id == int(req.test_id)))
+                db_test = result.scalars().first()
+                if db_test and str(db_test.pin_code).strip() == str(req.pin).strip():
+                    is_valid = True
+                    target_id = db_test.id
+            else:
+                # Agar test_id berilmagan bo'lsa (umumiy PIN kiritilganda), shu PIN ga ega bo'lgan faol testni qidirish!
+                result = await db.execute(select(Test).filter(Test.pin_code == str(req.pin).strip()).order_by(Test.created_at.desc()))
+                db_test = result.scalars().first()
+                if db_test:
+                    is_valid = True
+                    target_id = db_test.id
+    except Exception as e:
+        # Fallback
         if req.pin in ["7788", "1234", "0000"]:
             is_valid = True
+            target_id = 3
 
     if not is_valid:
         client_data["fails"] += 1
@@ -366,6 +697,24 @@ async def submit_test_answers(test_id: int, req: TestSubmitRequest, request: Req
             )
             db.add(result_entry)
             await db.commit()
+
+            # WebSocket Jonli Monitoringga xabar uzatish
+            try:
+                stats = await get_test_stats_data(test_id)
+                await monitoring_manager.broadcast(test_id, {
+                    "type": "student_submitted",
+                    "stats": stats,
+                    "data": {
+                        "student_name": f"{user_payload.get('name','')} {user_payload.get('surname','')}".strip() if user_payload else "O'quvchi",
+                        "username": user_payload.get("username", "user") if user_payload else "user",
+                        "score": score,
+                        "warning_count": req.warnings,
+                        "date": datetime.now(timezone.utc).strftime("%d.%m.%Y %H:%M")
+                    }
+                })
+            except Exception:
+                pass
+
             return {"success": True, "result_id": result_entry.id}
     except Exception:
         return {"success": True, "result_id": 101}
@@ -377,20 +726,38 @@ async def log_anti_cheat(test_id: int, request: Request):
     action = body.get("action", "unknown")
     count = body.get("count", 1)
 
+    token = request.cookies.get("sstudio_token")
+    user_payload = decode_access_token(token) if token else None
+    user_id = int(user_payload.get("sub")) if user_payload and user_payload.get("sub") else 1
+
     try:
         async with get_db_context() as db:
             log = AntiCheatLog(
                 test_id=test_id,
-                user_id=1,
+                user_id=user_id,
                 action=action,
                 warning_count=count
             )
             db.add(log)
             await db.commit()
+
+            # WebSocket Jonli Monitoringga Real-vaqtda ogohlantirish uzatish
+            try:
+                await monitoring_manager.broadcast(test_id, {
+                    "type": "anti_cheat_violation",
+                    "data": {
+                        "time": datetime.now(timezone.utc).strftime("%H:%M:%S"),
+                        "username": user_payload.get("username", f"user_{user_id}") if user_payload else f"user_{user_id}",
+                        "action": action,
+                        "count": count
+                    }
+                })
+            except Exception:
+                pass
     except Exception:
         pass
 
-    return {"status": "recorded"}
+    return {"status": "recorded", "action": action, "count": count}
 
 
 @app.get("/results/{result_id}", response_class=HTMLResponse)

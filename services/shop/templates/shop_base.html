@@ -330,15 +330,16 @@
                     <a href="/wheel" class="dropdown-link">🎡 Omad G'ildiragi</a>
                     <a href="/plans" class="dropdown-link">⭐ Obuna Rejalari</a>
                     <a href="/topup" class="dropdown-link">📥 Chek Yuklash</a>
-                    <a href="https://quizer.{{ domain }}" class="dropdown-link">⚡ Quizer</a>
-                    <a href="https://auth.{{ domain }}/logout" class="dropdown-link logout">🚪 Chiqish</a>
+                    <a href="https://quizer.{{ domain or 'sstudio.uz' }}" class="dropdown-link">⚡ Quizer</a>
+                    <a href="https://{{ domain or 'sstudio.uz' }}/settings" class="dropdown-link">⚙️ Sozlamalar</a>
+                    <a href="https://auth.{{ domain or 'sstudio.uz' }}/logout" class="dropdown-link logout">🚪 Chiqish</a>
                 {% else %}
                     <div class="dropdown-header">
                         <div class="dropdown-name">SStudio Shop</div>
                         <div class="dropdown-username">Tizimga kiring</div>
                     </div>
-                    <a href="https://auth.{{ domain }}/login" class="dropdown-link">🔑 Kirish (Log in)</a>
-                    <a href="https://auth.{{ domain }}/register" class="dropdown-link">✨ Ro'yxatdan o'tish</a>
+                    <a href="https://auth.{{ domain or 'sstudio.uz' }}/login" class="dropdown-link">🔑 Kirish (Log in)</a>
+                    <a href="https://auth.{{ domain or 'sstudio.uz' }}/register" class="dropdown-link">✨ Ro'yxatdan o'tish</a>
                 {% endif %}
             </div>
         </div>
@@ -351,9 +352,9 @@
     <footer class="footer">
         <div>© 2026 SSTUDIO SHOP & WALLET. ALL RIGHTS RESERVED.</div>
         <div>
-            <a href="https://{{ domain }}/privacy">Maxfiylik</a>
-            <a href="https://{{ domain }}/terms">Shartlar</a>
-            <a href="https://{{ domain }}/connect">Bog'lanish</a>
+            <a href="https://{{ domain or 'sstudio.uz' }}/privacy">Maxfiylik</a>
+            <a href="https://{{ domain or 'sstudio.uz' }}/terms">Shartlar</a>
+            <a href="https://{{ domain or 'sstudio.uz' }}/connect">Bog'lanish</a>
         </div>
     </footer>
 

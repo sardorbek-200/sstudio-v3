@@ -236,10 +236,10 @@
                     <div style="font-size: 14px; font-weight: 800; color: #fff;">Super Admin</div>
                     <div style="font-size: 11px; color: var(--neon-red);">admin.sstudio.uz</div>
                 </div>
-                <a href="https://{{ domain }}" class="dropdown-link">🌐 Asosiy Sayt</a>
-                <a href="https://quizer.{{ domain }}" class="dropdown-link">⚡ Quizer</a>
-                <a href="https://shop.{{ domain }}" class="dropdown-link">💎 Shop</a>
-                <a href="https://auth.{{ domain }}/logout" class="dropdown-link" style="color: #f87171;">🚪 Chiqish</a>
+                <a href="https://{{ domain or 'sstudio.uz' }}" class="dropdown-link">🌐 Asosiy Sayt</a>
+                <a href="https://quizer.{{ domain or 'sstudio.uz' }}" class="dropdown-link">⚡ Quizer</a>
+                <a href="https://shop.{{ domain or 'sstudio.uz' }}" class="dropdown-link">💎 Shop</a>
+                <a href="https://auth.{{ domain or 'sstudio.uz' }}/logout" class="dropdown-link" style="color: #f87171;">🚪 Chiqish</a>
             </div>
         </div>
     </header>

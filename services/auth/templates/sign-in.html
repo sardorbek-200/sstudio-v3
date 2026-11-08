@@ -305,7 +305,7 @@
 
     <div class="auth-container">
         <div class="auth-header">
-            <a href="https://{{ domain }}" class="brand-link">
+            <a href="https://{{ domain or 'sstudio.uz' }}" class="brand-link">
                 <img src="/favicon.png" alt="SStudio Logo" class="brand-emblem">
             </a>
             <h1 class="auth-title">Tizimga Kirish</h1>
@@ -386,7 +386,7 @@
 
                 const data = await res.json();
                 if (res.ok) {
-                    window.location.href = data.redirect || 'https://{{ domain }}';
+                    window.location.href = data.redirect || 'https://{{ domain or 'sstudio.uz' }}';
                 } else {
                     errorBox.textContent = data.detail || "Kirishda xatolik yuz berdi.";
                     errorBox.style.display = 'block';

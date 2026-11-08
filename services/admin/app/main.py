@@ -19,6 +19,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 app = FastAPI(title="SStudio Admin Service", version="3.0.0")
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+templates.env.globals["domain"] = settings.BASE_DOMAIN or "sstudio.uz"
+templates.env.globals["base_domain"] = settings.BASE_DOMAIN or "sstudio.uz"
 
 
 class ReceiptActionRequest(BaseModel):
