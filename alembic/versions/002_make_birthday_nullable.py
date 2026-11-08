@@ -1,7 +1,7 @@
 """make birthday nullable in auth.users
 
-Revision ID: 002
-Revises: 001
+Revision ID: 002_birthday_nullable
+Revises: 001_initial
 Create Date: 2026-11-08 20:50:00.000000
 
 """
@@ -10,8 +10,8 @@ from alembic import op
 import sqlalchemy as sa
 
 
-revision: str = '002'
-down_revision: Union[str, None] = '001'
+revision: str = '002_birthday_nullable'
+down_revision: Union[str, None] = '001_initial'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
