@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SStudio — Kirish</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="/favicon.png">
     <!-- Cloudflare Turnstile Script -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <style>
@@ -26,6 +28,13 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+        }
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus {
+            -webkit-text-fill-color: #fff;
+            -webkit-box-shadow: 0 0 0px 1000px #0f172a inset;
+            transition: background-color 5000s ease-in-out 0s;
         }
         .auth-card {
             background: var(--card-bg);
@@ -112,6 +121,9 @@
             <button class="lang-btn">EN</button>
         </div>
         <div class="header">
+            <a href="https://{{ domain }}" style="display: inline-block; text-decoration: none; margin-bottom: 12px;">
+                <img src="/favicon.png" alt="SStudio Logo" style="width: 52px; height: 52px; border-radius: 12px; filter: drop-shadow(0 0 12px rgba(99, 102, 241, 0.6));">
+            </a>
             <h1>SStudio</h1>
             <p>Yagona ta'lim platformasiga xush kelibsiz</p>
         </div>

@@ -7,7 +7,12 @@ from alembic import context
 
 from shared.config import settings
 from shared.database import Base
-import models.auth  # Modellarni ro'yxatga olish
+
+# Barcha modellarni ro'yxatdan o'tkazish
+import models.auth
+import models.quizer
+import models.shop
+import models.admin
 
 config = context.config
 

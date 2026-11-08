@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 from shared.config import settings
@@ -36,3 +37,13 @@ async def get_db_context():
             yield session
         finally:
             await session.close()
+
+
+async def init_db_schemas():
+    """PostgreSQL dagi auth, quizer, shop, admin schemalari mavjudligini kafolatlaydi"""
+    async with engine.begin() as conn:
+        await conn.execute(text("CREATE SCHEMA IF NOT EXISTS auth;"))
+        await conn.execute(text("CREATE SCHEMA IF NOT EXISTS quizer;"))
+        await conn.execute(text("CREATE SCHEMA IF NOT EXISTS shop;"))
+        await conn.execute(text("CREATE SCHEMA IF NOT EXISTS admin;"))
+

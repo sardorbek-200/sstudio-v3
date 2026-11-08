@@ -2,8 +2,8 @@ import json
 from pathlib import Path
 from typing import Optional
 from datetime import datetime, timezone
-from fastapi import FastAPI, Request, HTTPException, Depends
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi import FastAPI, Request, HTTPException, Depends, Response
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from sqlalchemy import select
@@ -19,6 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 app = FastAPI(title="SStudio Quizer Service", version="3.0.0")
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+
 
 # PIN xatolarini hisoblash xotirasi (IP yoki User bazasida: {ip: {'fails': int, 'locked_until': timestamp}})
 PIN_ATTEMPTS = {}
