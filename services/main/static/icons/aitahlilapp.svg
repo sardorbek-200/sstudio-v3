@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5" />
+      <stop offset="50%" stop-color="#7c3aed" />
+      <stop offset="100%" stop-color="#db2777" />
+    </linearGradient>
+    <linearGradient id="brainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#e0e7ff" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  
+  <!-- Rounded Base Background -->
+  <rect width="200" height="200" rx="46" fill="url(#bgGrad)" />
+  
+  <!-- Glowing subtle inner pulse -->
+  <circle cx="100" cy="95" r="55" fill="#ffffff" opacity="0.1" filter="url(#glow)"/>
+
+  <!-- Analytics Chart Bars -->
+  <rect x="52" y="118" width="14" height="28" rx="4" fill="#ffffff" opacity="0.8" />
+  <rect x="74" y="104" width="14" height="42" rx="4" fill="#ffffff" opacity="0.9" />
+  <rect x="96" y="90" width="14" height="56" rx="4" fill="#ffffff" />
+  <rect x="118" y="76" width="14" height="70" rx="4" fill="#38bdf8" />
+  <rect x="140" y="62" width="14" height="84" rx="4" fill="#fbbf24" />
+
+  <!-- AI Brain / Sparkle Nodes -->
+  <circle cx="100" cy="56" r="6" fill="#ffffff" />
+  <circle cx="68" cy="70" r="5" fill="#a5b4fc" />
+  <circle cx="132" cy="70" r="5" fill="#a5b4fc" />
+
+  <path d="M68 70 Q 100 45 132 70" stroke="#ffffff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-dasharray="4,3" opacity="0.8" />
+  <path d="M100 56 L 100 85" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.7" />
+
+  <!-- Upward Trend Arrow -->
+  <path d="M 52 110 Q 95 85 148 55" stroke="#fbbf24" stroke-width="4" fill="none" stroke-linecap="round" />
+  <polygon points="152,52 140,54 148,64" fill="#fbbf24" />
+</svg>

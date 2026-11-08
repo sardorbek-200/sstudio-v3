@@ -19,7 +19,7 @@ rm -f /etc/nginx/sites-enabled/*coming* /etc/nginx/sites-enabled/default 2>/dev/
 nginx -t && systemctl reload nginx
 
 # 2. DNS mavjudligini avtomatik tekshirish
-ALL_DOMAINS="sstudio.uz www.sstudio.uz auth.sstudio.uz quizer.sstudio.uz shop.sstudio.uz admin.sstudio.uz"
+ALL_DOMAINS="sstudio.uz www.sstudio.uz auth.sstudio.uz quizer.sstudio.uz shop.sstudio.uz sagent.sstudio.uz admin.sstudio.uz"
 VALID_DOMAINS=()
 
 echo "--- DNS A recordlar tekshirilmoqda ---"

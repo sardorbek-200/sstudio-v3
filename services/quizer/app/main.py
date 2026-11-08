@@ -245,6 +245,23 @@ async def save_new_test(req: TestCreateRequest, request: Request):
         return {"success": True, "test_id": 999}
 
 
+@app.post("/api/import-squiz")
+async def api_import_squiz(request: Request):
+    """Shifrlangan .squiz test faylini ochadi va savollar ro'yxatini qaytaradi"""
+    from services.sagent.app.tools import import_squiz_file
+    form = await request.form()
+    file = form.get("file")
+    if not file:
+        raise HTTPException(status_code=400, detail="Fayl yuklanmadi.")
+    file_bytes = await file.read()
+    try:
+        test_data = import_squiz_file(file_bytes)
+        return {"success": True, "data": test_data}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+
 @app.get("/test/{test_id}", response_class=HTMLResponse)
 async def take_test_page(test_id: int, request: Request, pin: Optional[str] = None):
     token = request.cookies.get("sstudio_token")

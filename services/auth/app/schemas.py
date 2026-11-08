@@ -9,7 +9,7 @@ class RegisterRequest(BaseModel):
     name: str = Field(..., min_length=2, max_length=100)
     surname: str = Field(..., min_length=2, max_length=100)
     father_name: Optional[str] = None
-    birthday: date
+    birthday: Optional[date] = None
 
     # Joylashuv
     location_region: Optional[str] = None

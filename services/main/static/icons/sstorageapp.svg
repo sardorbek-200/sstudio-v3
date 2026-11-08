@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <radialGradient id="storageCyberGlow" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.85"/>
+      <stop offset="35%" stop-color="#8b5cf6" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#050814" stop-opacity="1"/>
+    </radialGradient>
+    <linearGradient id="cyberNeonBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f2fe"/>
+      <stop offset="100%" stop-color="#4facfe"/>
+    </linearGradient>
+    <linearGradient id="cyberNeonPurple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+    <linearGradient id="cyberVaultCore" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+    <filter id="cyberGlowFilter" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Cyber Portal Background -->
+  <rect width="512" height="512" rx="100" fill="url(#storageCyberGlow)"/>
+  <rect width="506" height="506" x="3" y="3" rx="98" fill="none" stroke="#00f2fe" stroke-width="4" stroke-opacity="0.6"/>
+
+  <!-- Orbital Cyber Rings -->
+  <circle cx="256" cy="256" r="185" fill="none" stroke="#6366f1" stroke-width="2" stroke-opacity="0.3" stroke-dasharray="14 8"/>
+  <circle cx="256" cy="256" r="135" fill="none" stroke="#00f2fe" stroke-width="2.5" stroke-opacity="0.4" stroke-dasharray="20 10"/>
+
+  <!-- Cloud Base Polygon Grid -->
+  <g filter="url(#cyberGlowFilter)">
+    <!-- Futuristic Cloud Silhouette -->
+    <path d="M190 340 H335 C382 340 420 302 420 255 C420 212 388 176 346 171 C337 114 288 70 228 70 C175 70 130 105 116 154 C76 166 48 203 48 248 C48 299 89 340 140 340 Z" 
+          fill="rgba(15, 23, 42, 0.75)" stroke="url(#cyberNeonBlue)" stroke-width="6"/>
+
+    <!-- Inner Data Waves / Memory Lines -->
+    <path d="M140 250 Q200 210 256 250 T372 250" fill="none" stroke="url(#cyberNeonPurple)" stroke-width="4" stroke-linecap="round"/>
+    <path d="M160 280 Q210 250 256 280 T352 280" fill="none" stroke="url(#cyberVaultCore)" stroke-width="3.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Glowing Central Data Cube / Core Vault -->
+  <g transform="translate(256, 260)" filter="url(#cyberGlowFilter)">
+    <!-- Outer hexagon vault -->
+    <polygon points="0,-48 42,-24 42,24 0,48 -42,24 -42,-24" fill="rgba(6, 182, 212, 0.2)" stroke="url(#cyberNeonBlue)" stroke-width="4"/>
+    <!-- Inner glowing chip -->
+    <polygon points="0,-26 23,-13 23,13 0,26 -23,13 -23,-13" fill="url(#cyberVaultCore)"/>
+    <!-- Central pulse dot -->
+    <circle cx="0" cy="0" r="6" fill="#ffffff"/>
+  </g>
+
+  <!-- Upload / Download Cyber Arrows -->
+  <g filter="url(#cyberGlowFilter)">
+    <path d="M256 360 L256 425 M235 405 L256 425 L277 405" fill="none" stroke="#00f2fe" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="256" cy="425" r="4" fill="#00f2fe"/>
+  </g>
+
+  <!-- Brand Tech Tag: "SStorage" Monogram -->
+  <text x="256" y="475" font-family="'Inter', sans-serif" font-weight="900" font-size="28" fill="#ffffff" letter-spacing="4" text-anchor="middle" opacity="0.95">SSTORAGE</text>
+</svg>

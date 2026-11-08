@@ -21,7 +21,7 @@ class User(Base):
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     surname: Mapped[str] = mapped_column(String(100), nullable=False)
     father_name: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
-    birthday: Mapped[date] = mapped_column(Date, nullable=False)
+    birthday: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
 
     # Joylashuv
     location_region: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)

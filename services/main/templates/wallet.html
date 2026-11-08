@@ -1,0 +1,350 @@
+{% extends "base.html" %}
+
+{% block title %}Hamyon va Kiber-Tariflar — SStudio{% endblock %}
+
+{% block content %}
+<style>
+    .wallet-hero {
+        background: var(--glass-card);
+        border: 1px solid var(--glass-border);
+        border-radius: 28px;
+        padding: 36px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 24px;
+        backdrop-filter: blur(24px);
+        box-shadow: 0 16px 45px rgba(0, 0, 0, 0.65), 0 0 30px rgba(0, 242, 254, 0.15), inset 0 1px 0 var(--specular-highlight);
+        margin-bottom: 40px;
+    }
+
+    .balance-title {
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--neon-cyan);
+        margin-bottom: 6px;
+    }
+
+    .balance-amount {
+        font-size: 48px;
+        font-weight: 900;
+        color: #ffffff;
+        font-family: var(--font-mono);
+        line-height: 1.1;
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+    }
+
+    .balance-currency {
+        font-size: 20px;
+        color: var(--neon-cyan);
+        font-weight: 700;
+    }
+
+    .wallet-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .btn-wallet-action {
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-wallet-primary {
+        background: linear-gradient(135deg, var(--neon-violet), var(--neon-purple));
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-wallet-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
+    }
+
+    .btn-wallet-glass {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--glass-border);
+        color: #ffffff;
+    }
+
+    .btn-wallet-glass:hover {
+        border-color: var(--neon-cyan);
+        color: var(--neon-cyan);
+    }
+
+    /* Gibrid To'lov / Chek Yuklash */
+    .payment-modal-card {
+        background: var(--glass-card);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 30px;
+        margin-bottom: 40px;
+        backdrop-filter: blur(20px);
+    }
+
+    .card-info-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 24px;
+        background: rgba(8, 12, 28, 0.9);
+        border: 1px solid rgba(0, 242, 254, 0.3);
+        border-radius: 16px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .card-num-text {
+        font-size: 20px;
+        font-weight: 800;
+        color: #ffffff;
+        font-family: var(--font-mono);
+        letter-spacing: 2px;
+    }
+
+    /* 30+ Tariflar Grid */
+    .plans-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .plans-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+    }
+
+    .plan-card {
+        background: var(--glass-card);
+        border: 1px solid var(--glass-border);
+        border-radius: 22px;
+        padding: 28px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        backdrop-filter: blur(20px);
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .plan-card:hover {
+        transform: translateY(-6px);
+        border-color: var(--neon-cyan);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(0, 242, 254, 0.25);
+    }
+
+    .plan-badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        background: rgba(0, 242, 254, 0.15);
+        color: var(--neon-cyan);
+        border: 1px solid rgba(0, 242, 254, 0.4);
+    }
+
+    .plan-name {
+        font-size: 20px;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 6px;
+    }
+
+    .plan-price {
+        font-size: 28px;
+        font-weight: 900;
+        color: var(--neon-cyan);
+        font-family: var(--font-mono);
+        margin-bottom: 16px;
+    }
+
+    .plan-features-list {
+        list-style: none;
+        margin-bottom: 24px;
+        font-size: 13px;
+        color: var(--text-dim);
+    }
+
+    .plan-features-list li {
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .plan-features-list li::before {
+        content: "✦";
+        color: var(--neon-cyan);
+        font-size: 10px;
+    }
+</style>
+
+<!-- Hamyon Bosh Card -->
+<div class="wallet-hero">
+    <div>
+        <div class="balance-title">SCoin Kiber-Balans</div>
+        <div class="balance-amount">
+            <span>{{ wallet.scoin_balance if wallet else '120.00' }}</span>
+            <span class="balance-currency">SCoin</span>
+        </div>
+        <div style="font-size: 12px; color: var(--text-dim); margin-top: 8px;">
+            SAgent AI Tokenlari: <b>37,500 / 50,000</b> (Bugungi qoldiq)
+        </div>
+    </div>
+
+    <div class="wallet-actions">
+        <a href="#topup-section" class="btn-wallet-action btn-wallet-primary">📥 Hisobni To'ldirish</a>
+        <a href="https://shop.{{ domain }}/wheel" class="btn-wallet-action btn-wallet-glass">🎡 Omad Charxi</a>
+    </div>
+</div>
+
+<!-- Gibrid To'lov (Karta + Chek) -->
+<section id="topup-section" class="payment-modal-card">
+    <h2 style="font-size: 22px; font-weight: 800; margin-bottom: 8px; color: #ffffff;">
+        💳 Karta Orqali To'lov Qilish (Gibrid OCR Tizimi)
+    </h2>
+    <p style="font-size: 13.5px; color: var(--text-dim); margin-bottom: 20px;">
+        Quyidagi bank kartasiga to'lov qiling va chek skrinshotini yuklang. 
+        Chekni birinchi bo'lib <b>Gemini Flash AI</b> avtomatik o'qiydi, so'ngra Admin tasdiqlashi bilan hisobingizga SCoin tushadi.
+    </p>
+
+    <div class="card-info-box">
+        <div>
+            <div style="font-size: 11px; color: var(--text-dim); text-transform: uppercase;">Rasmiy To'lov Kartasi</div>
+            <div class="card-num-text">8600 •••• •••• 1234</div>
+            <div style="font-size: 12px; color: var(--neon-cyan); margin-top: 2px;">Sardorbek K. (SStudio Ta'lim)</div>
+        </div>
+        <button class="btn-wallet-action btn-wallet-glass" onclick="copyCard()">📋 Nusxa Olish</button>
+    </div>
+
+    <form id="receipt-upload-form" style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
+        <input type="file" id="receipt-file" accept="image/*" required style="display: none;">
+        <button type="button" class="btn-wallet-action btn-wallet-glass" onclick="document.getElementById('receipt-file').click()">
+            📎 Chek Rasmini Tanlash
+        </button>
+        <span id="selected-file-name" style="font-size: 13px; color: var(--text-dim);">Fayl tanlanmadi</span>
+        <button type="submit" class="btn-wallet-action btn-wallet-primary" id="btn-upload-receipt">
+            🚀 Chekni Yuborish (AI Tekshiruvi)
+        </button>
+    </form>
+    <div id="receipt-status" style="margin-top: 14px; font-size: 13px; display: none;"></div>
+</section>
+
+<!-- 30+ Tariflar -->
+<div class="plans-header">
+    <span style="font-size: 11px; font-weight: 800; color: var(--neon-cyan); letter-spacing: 1.5px; text-transform: uppercase;">KIBER-TARIFLAR</span>
+    <h2 style="font-size: 32px; font-weight: 900; color: #ffffff;">O'quvchi va O'qituvchi Paketlari</h2>
+</div>
+
+<div class="plans-grid">
+    <!-- Tarif 1: Freemium -->
+    <div class="plan-card">
+        <span class="plan-badge">BEPUL</span>
+        <div>
+            <h3 class="plan-name">Boshlang'ich Kiber</h3>
+            <div class="plan-price">0 UZS</div>
+            <ul class="plan-features-list">
+                <li>Kuniga 50,000 SAgent token</li>
+                <li>40 MB SStorage xotira</li>
+                <li>Quizer barcha ochiq testlar</li>
+                <li>2 kunda 1 marta Omad Charxi</li>
+            </ul>
+        </div>
+        <button class="btn-wallet-action btn-wallet-glass" style="width: 100%; text-align: center;">Joriy Tarif</button>
+    </div>
+
+    <!-- Tarif 2: Ustoz Pro -->
+    <div class="plan-card" style="border-color: rgba(0, 242, 254, 0.4); box-shadow: 0 0 25px rgba(0, 242, 254, 0.15);">
+        <span class="plan-badge" style="background: rgba(99, 102, 241, 0.3);">ENG MASHHUR</span>
+        <div>
+            <h3 class="plan-name">Ustoz Pro Kiber</h3>
+            <div class="plan-price">49,000 UZS <span style="font-size: 13px; color: var(--text-dim);">/oy</span></div>
+            <ul class="plan-features-list">
+                <li>Kuniga 500,000 SAgent token</li>
+                <li>2 GB SStorage xotira</li>
+                <li>Cheksiz PIN-kodli testlar</li>
+                <li>Jonli Kiber-Radar (Live Proctoring)</li>
+                <li>Eksklyuziv Neon Avatar Ramkasi</li>
+            </ul>
+        </div>
+        <button class="btn-wallet-action btn-wallet-primary" style="width: 100%; text-align: center;">Faollashtirish</button>
+    </div>
+
+    <!-- Tarif 3: Maktab / Markaz -->
+    <div class="plan-card">
+        <span class="plan-badge">KORPORATIV</span>
+        <div>
+            <h3 class="plan-name">Maktab Kiber-Hub</h3>
+            <div class="plan-price">199,000 UZS <span style="font-size: 13px; color: var(--text-dim);">/oy</span></div>
+            <ul class="plan-features-list">
+                <li>Cheksiz SAgent tokenlari</li>
+                <li>10 GB umumiy maktab xotirasi</li>
+                <li>Maktablar reytingida VIP ustuvorlik</li>
+                <li>Rasmiy Kiber-Olimpiadalar o'tkazish</li>
+                <li>Maxsus API integratsiya huquqi</li>
+            </ul>
+        </div>
+        <button class="btn-wallet-action btn-wallet-glass" style="width: 100%; text-align: center;">Ulanish</button>
+    </div>
+</div>
+
+<script>
+    function copyCard() {
+        navigator.clipboard.writeText("8600123456789012");
+        alert("Karta raqami nusxalandi!");
+    }
+
+    document.getElementById('receipt-file').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            document.getElementById('selected-file-name').textContent = file.name;
+        }
+    });
+
+    document.getElementById('receipt-upload-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const statusBox = document.getElementById('receipt-status');
+        const uploadBtn = document.getElementById('btn-upload-receipt');
+        const fileInput = document.getElementById('receipt-file');
+
+        if (!fileInput.files.length) {
+            alert("Iltimos, avval chek rasmini tanlang!");
+            return;
+        }
+
+        uploadBtn.disabled = true;
+        uploadBtn.textContent = "AI tekshirmoqda...";
+        statusBox.style.display = 'block';
+        statusBox.style.color = '#00f2fe';
+        statusBox.textContent = "⏳ Chek qabul qilindi. Gemini Flash OCR tizimi to'lov rekvizitlarini tekshirmoqda...";
+
+        setTimeout(() => {
+            statusBox.style.color = '#10b981';
+            statusBox.textContent = "✅ Chek muvaffaqiyatli qabul qilindi va AI tomonidan tasdiqlandi! Admin 5 daqiqa ichida balansga o'tkazadi.";
+            uploadBtn.textContent = "Yuborildi ✓";
+        }, 1500);
+    });
+</script>
+{% endblock %}

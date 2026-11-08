@@ -1,18 +1,194 @@
 {% extends "base.html" %}
 
-{% block title %}Foydalanish Shartlari — SStudio{% endblock %}
+{% block title %}SStudio — Kiber-Yuridik Foydalanish Shartlari (Terms of Service){% endblock %}
 
 {% block content %}
-<div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 36px; max-width: 800px; margin: 0 auto; line-height: 1.7;">
-    <h1 style="font-size: 28px; margin-bottom: 20px;">Foydalanish Shartlari</h1>
-    
-    <h3 style="margin: 20px 0 10px; color: #fff;">1. Umumiy Qoidalar</h3>
-    <p style="color: var(--text-muted);">SStudio platformasidan ro'yxatdan o'tgan har bir foydalanuvchi ta'limiy etika va o'zaro hurmat qoidalariga rioya qilishi shart.</p>
+<style>
+    .legal-doc-container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 40px 30px 80px;
+        background: var(--glass-card);
+        border: 1px solid var(--glass-border);
+        border-radius: 28px;
+        backdrop-filter: blur(24px);
+        box-shadow: 0 16px 45px rgba(0, 0, 0, 0.65), inset 0 1px 0 var(--specular-highlight);
+    }
 
-    <h3 style="margin: 20px 0 10px; color: #fff;">2. Anti-Cheat va Test Qoidalari</h3>
-    <p style="color: var(--text-muted);">Test jarayonida g'irromlik qilish, brauzer oynasini ruxsatsiz almashtirish yoki begona vositalardan foydalanish qat'iyan taqiqlanadi. 3 marta qoidabuzarlik aniqlanganda test topshirish cheklanadi.</p>
+    .legal-header {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 24px;
+        margin-bottom: 30px;
+    }
 
-    <h3 style="margin: 20px 0 10px; color: #fff;">3. Tariflar va Xizmatlar</h3>
-    <p style="color: var(--text-muted);">Har bir sotib olingan tarif paketi 30 kun muddat davomida amal qiladi. Muddat yakunlangach, hisob avtomatik tarzda bepul (Freemium) paketiga qaytadi.</p>
+    .legal-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        background: rgba(99, 102, 241, 0.2);
+        border: 1px solid rgba(0, 242, 254, 0.4);
+        color: var(--neon-cyan);
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 12px;
+    }
+
+    .legal-title {
+        font-size: 32px;
+        font-weight: 900;
+        letter-spacing: -0.5px;
+        color: #ffffff;
+        margin-bottom: 8px;
+    }
+
+    .legal-meta {
+        font-size: 13px;
+        color: var(--text-dim);
+    }
+
+    .legal-body {
+        font-size: 14.5px;
+        line-height: 1.85;
+        color: var(--text-secondary);
+    }
+
+    .legal-body h2 {
+        font-size: 20px;
+        font-weight: 800;
+        color: #ffffff;
+        margin: 36px 0 14px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .legal-body h3 {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--neon-cyan);
+        margin: 20px 0 8px;
+    }
+
+    .legal-body p {
+        margin-bottom: 14px;
+        text-align: justify;
+    }
+
+    .legal-body ul, .legal-body ol {
+        margin: 10px 0 18px 24px;
+    }
+
+    .legal-body li {
+        margin-bottom: 8px;
+    }
+
+    .legal-warning-box {
+        padding: 16px 20px;
+        border-radius: 14px;
+        background: rgba(239, 68, 68, 0.12);
+        border: 1px solid rgba(239, 68, 68, 0.35);
+        color: #fca5a5;
+        margin: 20px 0;
+        font-size: 13.5px;
+    }
+
+    .legal-info-box {
+        padding: 16px 20px;
+        border-radius: 14px;
+        background: rgba(0, 242, 254, 0.08);
+        border: 1px solid rgba(0, 242, 254, 0.3);
+        color: var(--text-secondary);
+        margin: 20px 0;
+        font-size: 13.5px;
+    }
+</style>
+
+<div class="legal-doc-container">
+    <div class="legal-header">
+        <span class="legal-badge">RASMIY HUJJAT • YURIDIK KAFOLAT</span>
+        <h1 class="legal-title">SStudio Foydalanish Shartlari (Terms of Service)</h1>
+        <div class="legal-meta">
+            Kuchga kirish sanasi: 2026-yil 1-yanvar | Oxirgi tahrir: 2026-yil 8-noyabr | Versiya: 3.0.0-LEGAL-CORE
+        </div>
+    </div>
+
+    <div class="legal-body">
+
+        <div class="legal-info-box">
+            <b>DIQQAT BILAN O'QIB CHIQING:</b> Ushbu hujjat SStudio kiber-ta'lim platformasi (keyingi o'rinlarda "Platforma", "Biz", "SStudio") 
+            va har qanday jismoniy yoki yuridik shaxs (keyingi o'rinlarda "Foydalanuvchi", "Siz") o'rtasidagi yuridik kuchga ega bo'lgan ommaviy ofertadir. 
+            Platformada ro'yxatdan o'tish, kiber-ekotizim xizmatlaridan (Quizer, SAgent, SStorage, S-Shop, Reyting) foydalanish mazkur Shartlarni to'liq, 
+            so'zsiz va qaytarib olinmaydigan tarzda qabul qilganingizni anglatadi.
+        </div>
+
+        <h2>1. UMUMIY QOIDALAR VA ATAMALAR</h2>
+        <p>1.1. <b>SStudio Kiber-Ekotizimi</b> — ko'p modulli elektron ta'lim, sun'iy intellekt orqali test va konspektlar generatsiyasi, anti-cheat imtihon nazorati hamda respublika maktablari reytingini birlashtirgan avtomatlashtirilgan dasturiy majmuadir.</p>
+        <p>1.2. <b>Quizer</b> — elektron test sinovlarini tuzish, shifrlangan <code>.squiz</code> formatida saqlash, testlarni o'tkazish va Anti-Cheat algoritmlari yordamida akademik halollikni ta'minlovchi xizmat.</p>
+        <p>1.3. <b>SAgent</b> — Gemini ko'p modalli sun'iy intellekt modellari rotatsiyasida ishlovchi, matn, Word (.docx), PowerPoint (.pptx) va testlar ishlab chiqaruvchi markaziy kiber-agent.</p>
+        <p>1.4. <b>SStorage</b> — har bir foydalanuvchiga taqdim etiladigan shaxsiy 40 MB hajmdagi darslik va ta'limiy fayllarni saqlash xotirasi.</p>
+        <p>1.5. <b>SCoin</b> — platforma ichidagi yutuqlar, faollik va ta'limiy xizmatlar (Omad charxi, qo'shimcha AI kvotalari) uchun mo'ljallangan virtual hisob birligi. SCoin real pul vositasi hisoblanmaydi va naqd pulga almashtirilmaydi.</p>
+
+        <h2>2. RO'YXATDAN O'TISH, KIBER-SHAXSIYAT VA XAVFSIZLIK</h2>
+        <p>2.1. Foydalanuvchi ro'yxatdan o'tishda o'zining haqiqiy, to'g'ri va amaldagi ma'lumotlarini (Ism, Familiya, joylashuv, ta'lim muassasasi) kiritish majburiyatini oladi.</p>
+        <p>2.2. Bitta jismoniy shaxs faqat bitta asosiy kiber-hisobga ega bo'lishi mumkin. Qasddan soxta (feyk) hisoblar yaratish, boshqa shaxs nomidan ro'yxatdan o'tish yoki bitta testda sun'iy ball to'plash maqsadida bir nechta akkaunt ochish qat'iyan taqiqlanadi.</p>
+        <p>2.3. Foydalanuvchi o'z login va parolini, shuningdek Telegram/GitHub orqali 2FA kirish kodlarini uchinchi shaxslarga bermaslik uchun shaxsan javobgardir. Foydalanuvchi hisobi orqali amalga oshirilgan barcha harakatlar bevosita uning o'zi tomonidan bajarilgan deb hisoblanadi.</p>
+        <p>2.4. SStudio ma'muriyati shubhali, tajovuzkor yoki xavfsizlikka tahdid soluvchi har qanday akkauntni ogohlantirishsiz vaqtinchalik yoki butunlay bloklash (BAN) huquqini o'zida saqlab qoladi.</p>
+
+        <h2>3. QUIZER VA QAT'IY ANTI-CHEAT NAZORATI ROZILIGI</h2>
+        <p>3.1. Foydalanuvchi Quizer platformasida test yoki Kiber-Olimpiada topshirishni boshlash orqali quyidagi Anti-Cheat nazorati choralariga to'liq va ixtiyoriy rozilik bildiradi:</p>
+        <ul>
+            <li>Test o'tish jarayonida brauzerni <b>To'liq Ekran (Fullscreen)</b> rejimiga o'tkazish;</li>
+            <li>Brauzer oynasidan chiqib ketish (Tab switch, boshqa ilovalarga o'tish, oynani minimallashtirish) harakatlarini sekundma-sekund va soni bilan serverda qayd etilishi;</li>
+            <li>Test oynasida matn nusxalash (Copy/Paste), sichqonchaning o'ng tugmasi kontekst menyusi va brauzer dasturchilar paneli (Inspect Element) cheklanishi;</li>
+            <li>Ruxsat etilgan 3 ta ogohlantirishdan so'ng test avtomatik ravishda nol (0) yoki joriy yechilgan ball bilan yakunlanishi;</li>
+            <li>Ushbu qoidabuzarlik faktlari <code>anti_cheat_logs</code> ma'lumotlar bazasida o'qituvchi va ma'muriyat uchun hisobot sifatida saqlanishi.</li>
+        </ul>
+        <p>3.2. Rasmiy Kiber-Olimpiadalar vaqtida Device Fingerprint (qurilmaning noyob raqamli izi) tekshiriladi. Bitta akkauntga boshqa qurilmadan parallel ulanish aniqlanganda ikkala sessiya darhol bekor qilinadi va natija bekor hisoblanadi.</p>
+
+        <h2>4. SUN'IY INTELLEKT (SAGENT) MAS'ULIYATINI CHEKLASH</h2>
+        <div class="legal-warning-box">
+            <b>AI BILDIRISHNOMASI VA MAS'ULIYAT CHEKLOVI:</b> SAgent yirik til modellari (Gemini LLM) asosida ishlaydi. Sun'iy intellekt insoniy xatolar, noaniqliklar yoki faktik adashishlarga yo'l qo'yishi mumkin. 
+            SStudio SAgent tomonidan generatsiya qilingan ilmiy ma'lumotlar, test javoblari, darslik konspektlari yoki kodlarning mutlaq 100% to'g'riligiga kafolat bermaydi. Foydalanuvchi ushbu ma'lumotlarni mustaqil tekshirib olishga mas'uldir.
+        </div>
+        <p>4.1. SAgent orqali noqonuniy, ekstremistik, axloqsiz, zo'ravonlikni targ'ib qiluvchi yoki uchinchi shaxslarning mualliflik huquqini buzuvchi buyruqlarni yuborish taqiqlanadi.</p>
+        <p>4.2. Freemium foydalanuvchilar uchun belgilangan kunlik 50,000 token limiti har 24 soatda yangilanadi. Limit tugagach, xizmat keyingi kungacha to'xtatiladi yoki pulli tarifga o'tish talab etiladi.</p>
+
+        <h2>5. DASTURCHILAR PUBLIC API FOYDALANISH SHARTLARI</h2>
+        <p>5.1. Dasturchilar uchun taqdim etiladigan <code>api.sstudio.uz</code> / SAgent API kalitlari (`sk_live_...`) faqat qonuniy ta'limiy va integratsion maqsadlarda ishlatilishi lozim.</p>
+        <p>5.2. Freemium rejimida API so'rovlar chegarasi daqiqasiga maksimal 10 ta so'rov va 20,000 token bilan cheklanadi. Dasturiy ta'minot orqali sun'iy yuklama (DDoS), spamlash yoki himoya chegaralarini aylanib o'tish urinishlari aniqlansa, API-kalit zudlik bilan bekor qilinadi va IP manzil bloklanadi.</p>
+
+        <h2>6. MAKTABLAR REYTINGI VA SHAFFAVLIK</h2>
+        <p>6.1. Platformada foydalanuvchilar ishlagan testlar statistikasi asosida O'zbekiston Respublikasi maktablari, litseylari va universitetlarining ommaviy reytingi yuritiladi.</p>
+        <p>6.2. Foydalanuvchi o'zining ta'lim muassasasi nomini kiritganida, ushbu nom Gemini AI orqali yagona davlat ta'lim klassifikatoriga muvofiqlashtirilishiga va umumiy liderbordda ko'rsatilishiga rozilik beradi.</p>
+        <p>6.3. O'quvchining jamoat doskasidagi (Public Board) reyting o'rni, to'plagan ballari va erishgan kiber-unvonlari barcha platforma ishtirokchilari uchun ochiq hisoblanadi.</p>
+
+        <h2>7. TO'LOVLAR, TARIFLAR VA HAMYON QOIDALARI</h2>
+        <p>7.1. SStudio dagi pulli tariflar va xizmatlar foydalanuvchi xohishiga ko'ra tanlanadi. <code>sstudio.uz/wallet</code> orqali taqdim etiladigan 30+ tariflar narxi va shartlari Admin paneli tomonidan yangilanib boriladi.</p>
+        <p>7.2. Gibrid to'lov tartibida foydalanuvchi ko'rsatilgan bank kartasiga mablag' o'tkazib, uning to'lov chekini (kvitansiyasini) yuklaydi. Kvitansiya Gemini Flash OCR intellektual tizimi va moderatorlar tomonidan tekshiriladi.</p>
+        <p>7.3. Soxta, o'zgartirilgan yoki ilgari ishlatilgan kvitansiyalarni yuklash firibgarlik deb baholanadi va tegishli foydalanuvchi hisobi darhol butunlay o'chiriladi hamda huquq-tartibot idoralariga ma'lumot berilishi mumkin.</p>
+        <p>7.4. To'langan mablag'lar raqamli xizmat (AI tokenlar, obuna imkoniyatlari) to'liq taqdim etilgandan so'ng qaytarilmaydi (Non-refundable digital service).</p>
+
+        <h2>8. INTELLEKTUAL MULK VA MUALLIFLIK HUQUQLARI</h2>
+        <p>8.1. SStudio logotipi, kiber-grafikasi, 3D kristal nishonlari, dasturiy kodi, <code>.squiz</code> fayl formati va sayt dizayni SStudio jamoasining mutlaq intellektual mulki hisoblanadi.</p>
+        <p>8.2. Platforma dizayni, elementlari yoki server logikasini noqonuniy ko'chirish, dekompilyatsiya qilish, teskari muhandislik (reverse engineering) qilish O'zbekiston Respublikasining Fuqarolik va Jinoyat kodekslariga binoan ta'qib qilinadi.</p>
+
+        <h2>9. NIZOLARNI HAL QILISH VA QONUNCHILIK</h2>
+        <p>9.1. Ushbu Shartlar O'zbekiston Respublikasi amaldagi qonunchiligi bilan tartibga solinadi va talqin qilinadi.</p>
+        <p>9.2. Foydalanuvchi va Platforma o'rtasida kelib chiqadigan har qanday nizo va kelishmovchiliklar dastlab rasmiy muzokaralar va yozma murojaatlar orqali (30 kalendar kuni ichida) hal etiladi.</p>
+        <p>9.3. Kelishuvga erishilmagan taqdirda, nizo SStudio ro'yxatdan o'tgan hudud bo'yicha tegishli O'zbekiston Respublikasi fuqarolik/iqtisodiy sudlarida ko'rib chiqiladi.</p>
+
+        <h2>10. SHARTLARNI O'ZGARTIRISH TARTIBI</h2>
+        <p>10.1. SStudio ma'muriyati mazkur Foydalanish Shartlarini istalgan vaqtda bir tomonlama yangilash yoki o'zgartirish huquqiga ega.</p>
+        <p>10.2. Shartlarning yangi tahriri ushbu sahifada e'lon qilingan paytdan boshlab kuchga kiradi. Platformadan foydalanishda davom etish yangilangan shartlarni to'liq qabul qilganingizni tasdiqlaydi.</p>
+
+        <div class="legal-info-box" style="margin-top: 30px; text-align: center;">
+            Savollar yoki yuridik murojaatlar uchun: <b>support@sstudio.uz</b> | Telegram: <b>@sstudiouz_bot</b>
+        </div>
+
+    </div>
 </div>
 {% endblock %}

@@ -84,8 +84,20 @@ async def apps_catalog(request: Request):
     return templates.TemplateResponse(
         request=request,
         name="apps.html",
-        context={"user": user, "domain": settings.BASE_DOMAIN}
+        context={"user": user, "domain": settings.BASE_DOMAIN, "active_page": "apps"}
     )
+
+
+# --- 3.1 Hamyon va Kiber-Tariflar (/wallet) ---
+@app.get("/wallet", response_class=HTMLResponse)
+async def wallet_page(request: Request):
+    user = await get_current_user_optional(request)
+    return templates.TemplateResponse(
+        request=request,
+        name="wallet.html",
+        context={"user": user, "domain": settings.BASE_DOMAIN, "active_page": "wallet"}
+    )
+
 
 
 # --- 4. Foydalanuvchilar va Reyting (/users) ---

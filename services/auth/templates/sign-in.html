@@ -3,206 +3,401 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SStudio — Kirish</title>
+    <title>SStudio — Kiber Kirish (Sign In)</title>
+    
     <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="shortcut icon" type="image/png" href="/favicon.png">
-    <!-- Cloudflare Turnstile Script -->
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
     <style>
         :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --bg: #0f172a;
-            --card-bg: #1e293b;
-            --text: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
-            --radius: 12px;
+            --bg-cosmic: #050814;
+            --glass-card: rgba(13, 19, 42, 0.78);
+            --glass-border: rgba(99, 102, 241, 0.3);
+            --glass-border-focus: rgba(0, 242, 254, 0.65);
+            --neon-cyan: #00f2fe;
+            --neon-violet: #6366f1;
+            --neon-purple: #a855f7;
+            --text-main: #ffffff;
+            --text-dim: #94a3b8;
+            --text-muted: #64748b;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Plus Jakarta Sans", sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Dark Autofill Fix - Oq dog'larni butunlay yo'q qilish */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus {
+            -webkit-text-fill-color: #ffffff !important;
+            -webkit-box-shadow: 0 0 0px 1000px #090e24 inset !important;
+            transition: background-color 5000s ease-in-out 0s !important;
+            caret-color: var(--neon-cyan) !important;
+        }
+
         body {
-            background-color: var(--bg);
-            color: var(--text);
+            background-color: var(--bg-cosmic);
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 24px 16px;
+            position: relative;
+            overflow-x: hidden;
         }
-        input:-webkit-autofill,
-        input:-webkit-autofill:hover, 
-        input:-webkit-autofill:focus {
-            -webkit-text-fill-color: #fff;
-            -webkit-box-shadow: 0 0 0px 1000px #0f172a inset;
-            transition: background-color 5000s ease-in-out 0s;
+
+        /* Kosmik Nurlar */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -15%;
+            left: 20%;
+            width: 60vw;
+            height: 60vw;
+            max-width: 700px;
+            max-height: 700px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.16) 0%, rgba(0, 242, 254, 0.08) 40%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            pointer-events: none;
         }
-        .auth-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -10%;
+            right: 15%;
+            width: 50vw;
+            height: 50vw;
+            max-width: 600px;
+            max-height: 600px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.14) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(85px);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .auth-container {
             width: 100%;
-            max-width: 420px;
-            padding: 32px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            max-width: 440px;
+            background: var(--glass-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 38px 32px;
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 30px rgba(99, 102, 241, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+            position: relative;
+            z-index: 10;
         }
-        .header { text-align: center; margin-bottom: 28px; }
-        .header h1 { font-size: 26px; font-weight: 700; margin-bottom: 8px; color: #fff; }
-        .header p { color: var(--text-muted); font-size: 14px; }
-        .lang-switch { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 15px; }
-        .lang-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 12px; }
-        .lang-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-        .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 500; color: var(--text-muted); }
-        .form-group input {
-            width: 100%;
-            padding: 12px 14px;
-            background: #0f172a;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: #fff;
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.2s;
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 26px;
         }
-        .form-group input:focus { border-color: var(--primary); }
-        .turnstile-container { margin: 16px 0; display: flex; justify-content: center; }
-        .btn-submit {
-            width: 100%;
-            padding: 12px;
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s;
+
+        .brand-link {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            margin-bottom: 14px;
         }
-        .btn-submit:hover { background: var(--primary-hover); }
-        .divider {
+
+        .brand-emblem {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 15px rgba(0, 242, 254, 0.6));
+            transition: transform 0.3s ease;
+        }
+
+        .brand-link:hover .brand-emblem {
+            transform: scale(1.08) rotate(4deg);
+        }
+
+        .auth-title {
+            font-size: 26px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 40%, var(--neon-cyan) 80%, var(--neon-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 6px;
+        }
+
+        .auth-subtitle {
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+            position: relative;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-dim);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-wrapper {
+            position: relative;
             display: flex;
             align-items: center;
-            text-align: center;
-            margin: 24px 0;
-            color: var(--text-muted);
-            font-size: 12px;
         }
-        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--border); }
-        .divider span { padding: 0 10px; }
-        .social-btns { display: flex; flex-direction: column; gap: 10px; }
-        .social-btn {
+
+        .cyber-input {
+            width: 100%;
+            padding: 13px 14px;
+            background: #090e24;
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 500;
+            outline: none;
+            transition: all 0.25s ease;
+        }
+
+        .cyber-input:focus {
+            border-color: var(--glass-border-focus);
+            box-shadow: 0 0 18px rgba(0, 242, 254, 0.25);
+        }
+
+        .toggle-password-btn {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            width: 100%;
-            padding: 10px;
-            background: #0f172a;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: #fff;
-            font-size: 13px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background 0.2s;
+            transition: color 0.2s;
         }
-        .social-btn:hover { background: #1a2234; }
-        .social-btn.telegram { border-color: #229ED9; color: #229ED9; }
-        .footer-link { text-align: center; margin-top: 24px; font-size: 13px; color: var(--text-muted); }
-        .footer-link a { color: var(--primary); text-decoration: none; font-weight: 500; }
-        .error-msg { background: #ef444422; border: 1px solid #ef4444; color: #fca5a5; padding: 10px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; display: none; }
+
+        .toggle-password-btn:hover {
+            color: var(--neon-cyan);
+        }
+
+        .btn-cyber-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--neon-violet), var(--neon-purple));
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(99, 102, 241, 0.4);
+            transition: all 0.25s ease;
+            margin-top: 8px;
+        }
+
+        .btn-cyber-submit:hover {
+            box-shadow: 0 0 35px rgba(168, 85, 247, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .social-divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 24px 0 18px;
+            color: var(--text-muted);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .social-divider::before, .social-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .social-divider span {
+            padding: 0 10px;
+        }
+
+        .oauth-cluster {
+            display: flex;
+            gap: 12px;
+        }
+
+        .oauth-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .oauth-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--neon-cyan);
+            color: #ffffff;
+        }
+
+        .error-alert-box {
+            padding: 12px 16px;
+            border-radius: 12px;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+            font-size: 13px;
+            margin-bottom: 18px;
+            display: none;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+
+        .auth-footer a {
+            color: var(--neon-cyan);
+            text-decoration: none;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
-    <div class="auth-card">
-        <div class="lang-switch">
-            <button class="lang-btn active">UZ</button>
-            <button class="lang-btn">RU</button>
-            <button class="lang-btn">EN</button>
-        </div>
-        <div class="header">
-            <a href="https://{{ domain }}" style="display: inline-block; text-decoration: none; margin-bottom: 12px;">
-                <img src="/favicon.png" alt="SStudio Logo" style="width: 52px; height: 52px; border-radius: 12px; filter: drop-shadow(0 0 12px rgba(99, 102, 241, 0.6));">
+
+    <div class="auth-container">
+        <div class="auth-header">
+            <a href="https://{{ domain }}" class="brand-link">
+                <img src="/favicon.png" alt="SStudio Logo" class="brand-emblem">
             </a>
-            <h1>SStudio</h1>
-            <p>Yagona ta'lim platformasiga xush kelibsiz</p>
+            <h1 class="auth-title">Tizimga Kirish</h1>
+            <p class="auth-subtitle">Kiber-shaxsiyatingizga xavfsiz ulanish</p>
         </div>
 
-        <div id="error-box" class="error-msg"></div>
+        <div id="error-alert" class="error-alert-box"></div>
 
-        <form id="login-form">
-            <div class="form-group">
-                <label>Username yoki Email</label>
-                <input type="text" id="username" required placeholder="sardorbek">
-            </div>
-            <div class="form-group">
-                <label>Parol</label>
-                <input type="password" id="password" required placeholder="••••••••">
+        <form id="cyber-login-form">
+            <div class="input-group">
+                <label class="input-label">Username yoki Email</label>
+                <input type="text" id="username_or_email" class="cyber-input" placeholder="sardor_cyber" required>
             </div>
 
-            <!-- Cloudflare Turnstile Bot Himoyasi -->
-            {% if turnstile_site_key %}
-            <div class="turnstile-container">
+            <div class="input-group">
+                <label class="input-label">Parol</label>
+                <div class="input-wrapper">
+                    <input type="password" id="password" class="cyber-input" placeholder="••••••••" required>
+                    <button type="button" class="toggle-password-btn" onclick="togglePass('password')">👁️</button>
+                </div>
+            </div>
+
+            <!-- Cloudflare Turnstile -->
+            <div style="display: flex; justify-content: center; margin: 14px 0;">
                 <div class="cf-turnstile" data-sitekey="{{ turnstile_site_key }}" data-theme="dark"></div>
             </div>
-            {% endif %}
 
-            <button type="submit" class="btn-submit">Tizimga kirish</button>
+            <button type="submit" class="btn-cyber-submit" id="submit-btn">Kiber Tizimga Kirish →</button>
         </form>
 
-        <div class="divider"><span>YOKI</span></div>
-
-        <div class="social-btns">
-            <a href="/github/login" class="social-btn">
-                <span>GitHub orqali kirish</span>
-            </a>
-            <button type="button" class="social-btn telegram" onclick="alert('Telegram bot tez kunda ishga tushadi!')">
-                <span>Telegram orqali tasdiqlash</span>
-            </button>
+        <div class="social-divider">
+            <span>YOKI TEZKOR KIRISH</span>
         </div>
 
-        <div class="footer-link">
-            Akkauntingiz yo'qmi? <a href="/register">Ro'yxatdan o'tish</a>
+        <div class="oauth-cluster">
+            <a href="https://github.com/login/oauth/authorize" class="oauth-btn">
+                <span>🐙</span> GitHub
+            </a>
+            <a href="https://t.me/sstudiouz_bot" class="oauth-btn">
+                <span>✈️</span> Telegram Bot
+            </a>
+        </div>
+
+        <div class="auth-footer">
+            Hisobingiz yo'qmi? <a href="/register">Ro'yxatdan o'tish ✦</a>
         </div>
     </div>
 
     <script>
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const errBox = document.getElementById('error-box');
-            errBox.style.display = 'none';
+        function togglePass(id) {
+            const input = document.getElementById(id);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
 
-            // Turnstile tokenini olish
-            let turnstileResponse = null;
-            if (window.turnstile && typeof window.turnstile.getResponse === 'function') {
-                try { turnstileResponse = window.turnstile.getResponse(); } catch(e) {}
-            }
-            if (!turnstileResponse) {
-                turnstileResponse = document.querySelector('[name="cf-turnstile-response"]')?.value || null;
-            }
+        document.getElementById('cyber-login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const errorBox = document.getElementById('error-alert');
+            const submitBtn = document.getElementById('submit-btn');
+            errorBox.style.display = 'none';
+
+            const turnstileResponse = document.querySelector('[name="cf-turnstile-response"]')?.value || "TEST_DEV";
 
             const payload = {
-                username_or_email: document.getElementById('username').value,
+                username_or_email: document.getElementById('username_or_email').value.trim(),
                 password: document.getElementById('password').value,
                 cf_turnstile_response: turnstileResponse
             };
 
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Tekshirilmoqda...";
+
             try {
-                const res = await fetch('/api/login', {
+                const res = await fetch('/login', {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
+
                 const data = await res.json();
-                if (!res.ok) {
-                    errBox.innerText = data.detail || 'Kirishda xatolik yuz berdi';
-                    errBox.style.display = 'block';
+                if (res.ok) {
+                    window.location.href = data.redirect || 'https://{{ domain }}';
                 } else {
-                    window.location.href = 'https://sstudio.uz';
+                    errorBox.textContent = data.detail || "Kirishda xatolik yuz berdi.";
+                    errorBox.style.display = 'block';
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = "Kiber Tizimga Kirish →";
                 }
             } catch (err) {
-                errBox.innerText = 'Server bilan aloqa uzildi';
-                errBox.style.display = 'block';
+                errorBox.textContent = "Server bilan bog'lanishda xatolik. Qaytadan urinib ko'ring.";
+                errorBox.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Kiber Tizimga Kirish →";
             }
         });
     </script>

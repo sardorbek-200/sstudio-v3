@@ -8,7 +8,7 @@ User=root
 WorkingDirectory=/root/app/v3
 Environment="PATH=/root/app/v3/.venv/bin"
 EnvironmentFile=-/root/app/v3/.env
-ExecStart=/root/app/v3/.venv/bin/uvicorn services.shop.app.main:app --host 127.0.0.1 --port 8006 --workers 2
+ExecStart=/root/app/v3/.venv/bin/uvicorn services.shop.app.main:app --host 127.0.0.1 --port 8003 --workers 2
 Restart=always
 RestartSec=5
 StandardOutput=journal

@@ -3,137 +3,306 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}SStudio — Cyber Education Platform{% endblock %}</title>
-    <link rel="icon" type="image/png" href="/static/favicon.png">
+    <title>{% block title %}SStudio — Kiber Ta'lim Ekotizimi{% endblock %}</title>
+    
+    <!-- Yagona Kiber Favicon (Nginx /root/app/v3/favicon.png) -->
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="/favicon.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --bg: #05070d;
-            --glass-bg: rgba(13, 18, 30, 0.65);
-            --glass-card: rgba(18, 24, 41, 0.55);
-            --glass-border: rgba(99, 102, 241, 0.2);
-            --glass-hover: rgba(99, 102, 241, 0.35);
-            --neon-primary: #6366f1;
+            --bg-cosmic: #050814;
+            --bg-deep: #080c1d;
+            --glass-surface: rgba(12, 17, 36, 0.72);
+            --glass-card: rgba(16, 23, 48, 0.62);
+            --glass-card-hover: rgba(22, 32, 66, 0.78);
+            --glass-border: rgba(99, 102, 241, 0.22);
+            --glass-border-bright: rgba(0, 242, 254, 0.45);
+            --specular-highlight: rgba(255, 255, 255, 0.12);
+            
             --neon-cyan: #00f2fe;
+            --neon-blue: #38bdf8;
+            --neon-violet: #6366f1;
             --neon-purple: #a855f7;
-            --text-main: #f8fafc;
+            --neon-emerald: #10b981;
+            
+            --text-primary: #ffffff;
+            --text-secondary: #cbd5e1;
             --text-dim: #94a3b8;
+            --text-muted: #64748b;
+            
+            --font-main: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-mono: "JetBrains Mono", monospace;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "JetBrains Mono", monospace;
+            font-family: var(--font-main);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Dark Autofill Fix - Oq dog'lar butunlay yo'q qilinadi */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus,
+        textarea:-webkit-autofill,
+        select:-webkit-autofill {
+            -webkit-text-fill-color: #ffffff !important;
+            -webkit-box-shadow: 0 0 0px 1000px #090e23 inset !important;
+            transition: background-color 5000s ease-in-out 0s !important;
+            caret-color: var(--neon-cyan) !important;
         }
 
         body {
-            background-color: var(--bg);
-            background-image: 
-                radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.12) 0%, transparent 40%),
-                radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.1) 0%, transparent 40%);
-            color: var(--text-main);
+            background-color: var(--bg-cosmic);
+            color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
+            position: relative;
+            background-attachment: fixed;
         }
 
-        /* Cyber Glass Navbar */
-        .navbar {
+        /* Tirik Kosmik Aurora Mesh Aura */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -20%;
+            left: 10%;
+            width: 70vw;
+            height: 70vw;
+            max-width: 900px;
+            max-height: 900px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.14) 0%, rgba(0, 242, 254, 0.08) 40%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            pointer-events: none;
+            animation: cosmicFloat 18s ease-in-out infinite alternate;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -15%;
+            right: 5%;
+            width: 60vw;
+            height: 60vw;
+            max-width: 800px;
+            max-height: 800px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, rgba(99, 102, 241, 0.06) 50%, transparent 75%);
+            border-radius: 50%;
+            filter: blur(90px);
+            z-index: -1;
+            pointer-events: none;
+            animation: cosmicFloatReverse 22s ease-in-out infinite alternate;
+        }
+
+        @keyframes cosmicFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(6%, 8%) scale(1.08); }
+            100% { transform: translate(-4%, 12%) scale(0.95); }
+        }
+
+        @keyframes cosmicFloatReverse {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-8%, -6%) scale(1.1); }
+            100% { transform: translate(5%, -10%) scale(0.92); }
+        }
+
+        /* Yuqori Kiber-Navbar */
+        .cyber-navbar {
             position: sticky;
             top: 0;
-            z-index: 1000;
+            z-index: 999;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 14px 36px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            padding: 12px 32px;
+            background: var(--glass-surface);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border-bottom: 1px solid var(--glass-border);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 35px rgba(0, 0, 0, 0.6), inset 0 1px 0 var(--specular-highlight);
         }
 
-        /* Brand Logo with Favicon */
-        .brand {
-            font-size: 22px;
-            font-weight: 900;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            text-decoration: none;
-            color: #fff;
+        .brand-cluster {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
+            text-decoration: none;
             position: relative;
         }
 
-        .brand-logo-img {
-            width: 34px;
-            height: 34px;
-            border-radius: 8px;
-            object-fit: cover;
-            filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.6));
-            transition: transform 0.3s ease;
+        .brand-emblem-wrap {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .brand:hover .brand-logo-img {
-            transform: scale(1.08) rotate(4deg);
+        .brand-emblem {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 12px rgba(0, 242, 254, 0.6));
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .brand span {
-            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-primary), var(--neon-purple));
+        .brand-cluster:hover .brand-emblem {
+            transform: scale(1.12) rotate(4deg);
+            filter: drop-shadow(0 0 18px rgba(99, 102, 241, 0.8));
+        }
+
+        .brand-title-wrap {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-title {
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 40%, var(--neon-cyan) 80%, var(--neon-violet) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.4));
+            line-height: 1.1;
         }
 
-        /* Avatar & Dropdown Container */
+        .brand-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--neon-emerald);
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .status-dot-pulse {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--neon-emerald);
+            box-shadow: 0 0 8px var(--neon-emerald);
+            animation: pulseGlow 2s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+        }
+
+        /* Nav Quick Stats */
+        .nav-stats-bar {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .nav-stat-chip {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        .nav-stat-chip:hover {
+            border-color: var(--neon-cyan);
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+            transform: translateY(-1px);
+        }
+
+        /* Profile Dropdown Container */
         .profile-container {
             position: relative;
         }
 
-        .avatar-trigger {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background: var(--glass-card);
-            border: 2px solid var(--neon-primary);
-            box-shadow: 0 0 14px rgba(99, 102, 241, 0.35);
+        .profile-trigger-btn {
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 10px;
+            padding: 4px 12px 4px 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
             cursor: pointer;
             transition: all 0.3s ease;
-            position: relative;
             outline: none;
         }
 
-        .avatar-trigger:hover, .profile-container.active .avatar-trigger {
-            box-shadow: 0 0 22px rgba(0, 242, 254, 0.6);
+        .profile-trigger-btn:hover, .profile-container.active .profile-trigger-btn {
             border-color: var(--neon-cyan);
-            transform: scale(1.05);
+            box-shadow: 0 0 18px rgba(0, 242, 254, 0.35);
+            transform: scale(1.02);
         }
 
-        .avatar-icon {
-            font-size: 16px;
+        .avatar-circle {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-violet), var(--neon-purple));
+            color: #ffffff;
             font-weight: 800;
-            color: #fff;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 12px rgba(99, 102, 241, 0.5);
+            overflow: hidden;
         }
 
-        /* Glassmorphic Dropdown Menu */
-        .glass-dropdown {
+        .avatar-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-label-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #ffffff;
+            max-width: 120px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Dropdown Oynasi */
+        .cyber-dropdown {
             position: absolute;
             right: 0;
-            top: 54px;
-            width: 260px;
-            background: rgba(11, 15, 28, 0.88);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
+            top: 50px;
+            width: 270px;
+            background: rgba(10, 14, 30, 0.94);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
             border: 1px solid var(--glass-border);
-            border-radius: 16px;
+            border-radius: 18px;
             padding: 16px;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7), 0 0 15px rgba(99, 102, 241, 0.15);
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.75), 0 0 25px rgba(99, 102, 241, 0.15), inset 0 1px 0 var(--specular-highlight);
             opacity: 0;
             visibility: hidden;
             transform: translateY(-8px) scale(0.96);
@@ -141,53 +310,49 @@
             z-index: 1001;
         }
 
-        /* Desktop Hover Trigger */
-        @media (hover: hover) and (pointer: fine) {
-            .profile-container:hover .glass-dropdown {
-                opacity: 1;
-                visibility: visible;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        /* Mobile Click / Active Trigger */
-        .profile-container.active .glass-dropdown {
+        .profile-container:hover .cyber-dropdown,
+        .profile-container.active .cyber-dropdown {
             opacity: 1;
             visibility: visible;
             transform: translateY(0) scale(1);
         }
 
-        .dropdown-header {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        .dropdown-user-info {
             padding-bottom: 12px;
             margin-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        .dropdown-name {
+        .dropdown-fullname {
             font-size: 15px;
-            font-weight: 700;
-            color: #fff;
+            font-weight: 800;
+            color: #ffffff;
         }
 
-        .dropdown-username {
+        .dropdown-handle {
             font-size: 12px;
             color: var(--neon-cyan);
-            font-family: monospace;
+            font-family: var(--font-mono);
             margin-top: 2px;
         }
 
-        .dropdown-status {
-            display: inline-block;
+        .dropdown-badge-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
             margin-top: 6px;
+        }
+
+        .dropdown-badge {
             font-size: 10px;
-            text-transform: uppercase;
             font-weight: 800;
             letter-spacing: 0.5px;
+            text-transform: uppercase;
             padding: 2px 8px;
-            border-radius: 12px;
-            background: rgba(99, 102, 241, 0.2);
+            border-radius: 10px;
+            background: rgba(99, 102, 241, 0.18);
             color: #a5b4fc;
-            border: 1px solid rgba(99, 102, 241, 0.4);
+            border: 1px solid rgba(99, 102, 241, 0.35);
         }
 
         .dropdown-link {
@@ -195,17 +360,17 @@
             align-items: center;
             gap: 10px;
             padding: 10px 12px;
-            border-radius: 8px;
-            color: var(--text-dim);
+            border-radius: 10px;
+            color: var(--text-secondary);
             text-decoration: none;
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
             transition: all 0.2s ease;
         }
 
         .dropdown-link:hover {
-            background: var(--glass-hover);
-            color: #fff;
+            background: rgba(99, 102, 241, 0.15);
+            color: #ffffff;
             transform: translateX(4px);
         }
 
@@ -221,117 +386,275 @@
             color: #fca5a5;
         }
 
-        /* Container */
-        .main-container {
-            max-width: 1100px;
+        /* Asosiy Kontent */
+        .main-stage {
+            max-width: 1240px;
             margin: 0 auto;
-            padding: 50px 24px;
+            padding: 40px 24px 130px; /* Pastki suzuvchi menyubar uchun 130px joy */
             flex: 1;
             width: 100%;
         }
 
-        /* Footer */
-        .footer {
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 30px 36px;
-            margin-top: auto;
+        /* ========================================================
+           MENYUBAR V3 (PASTKI SUZUVCHI CYBER DOCK)
+           ======================================================== */
+        .menyubar-v3-dock {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 990;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            font-size: 12px;
-            color: var(--text-dim);
-            background: rgba(5, 7, 13, 0.9);
+            gap: 8px;
+            padding: 8px 14px;
+            background: rgba(10, 15, 33, 0.85);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border-radius: 40px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.65), 0 0 25px rgba(99, 102, 241, 0.18), inset 0 1px 0 var(--specular-highlight);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .footer a {
+        .menyubar-v3-dock:hover {
+            border-color: var(--glass-border-bright);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 35px rgba(0, 242, 254, 0.25);
+            transform: translateX(-50%) translateY(-2px);
+        }
+
+        .dock-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+            border-radius: 28px;
+            text-decoration: none;
+            color: var(--text-dim);
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .dock-item-icon {
+            font-size: 20px;
+            line-height: 1;
+            margin-bottom: 3px;
+            filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.15));
+            transition: transform 0.25s ease, filter 0.25s ease;
+        }
+
+        .dock-item-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        .dock-item:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .dock-item:hover .dock-item-icon {
+            transform: scale(1.18) translateY(-2px);
+            filter: drop-shadow(0 0 12px var(--neon-cyan));
+        }
+
+        .dock-item.active {
+            color: #ffffff;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(0, 242, 254, 0.15));
+            border: 1px solid rgba(0, 242, 254, 0.4);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.25);
+        }
+
+        .dock-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            width: 14px;
+            height: 3px;
+            border-radius: 3px;
+            background-color: var(--neon-cyan);
+            box-shadow: 0 0 8px var(--neon-cyan);
+        }
+
+        /* Footer */
+        .cyber-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 30px 32px 100px; /* dock ostiga kirib ketmaslik uchun */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(5, 8, 20, 0.95);
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+
+        .footer-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-links a {
             color: var(--text-dim);
             text-decoration: none;
-            margin-left: 18px;
             transition: color 0.2s;
         }
 
-        .footer a:hover {
+        .footer-links a:hover {
             color: var(--neon-cyan);
         }
 
-        @media (max-width: 600px) {
-            .navbar { padding: 14px 20px; }
-            .footer { flex-direction: column; gap: 14px; text-align: center; }
-            .footer a { margin: 0 8px; }
+        @media (max-width: 768px) {
+            .cyber-navbar { padding: 10px 18px; }
+            .nav-stats-bar { display: none; }
+            .dock-item { padding: 7px 11px; }
+            .dock-item-icon { font-size: 18px; }
+            .dock-item-label { font-size: 10px; }
+            .cyber-footer { flex-direction: column; gap: 16px; text-align: center; }
         }
     </style>
     {% block extra_head %}{% endblock %}
 </head>
 <body>
-    <header class="navbar">
-        <a href="/" class="brand">
-            <img src="/static/favicon.png" alt="SStudio Logo" class="brand-logo-img">
-            <span>SStudio</span>
-        </a>
 
-        <!-- Profile Avatari va Dropdown -->
-        <div class="profile-container" id="profile-trigger-box">
-            <div class="avatar-trigger" tabindex="0">
-                <span class="avatar-icon">
-                    {% if user %}
-                        {{ user.name[0] | upper }}
-                    {% else %}
-                        ✦
-                    {% endif %}
+    <!-- Kiber Navbar -->
+    <header class="cyber-navbar">
+        <a href="/" class="brand-cluster">
+            <div class="brand-emblem-wrap">
+                <img src="/favicon.png" alt="SStudio Logo" class="brand-emblem">
+            </div>
+            <div class="brand-title-wrap">
+                <span class="brand-title">SStudio</span>
+                <span class="brand-status-pill">
+                    <span class="status-dot-pulse"></span>
+                    <span>ONLINE v3.0 HYPER-CORE</span>
                 </span>
             </div>
+        </a>
 
-            <!-- Glassmorphism Dropdown -->
-            <div class="glass-dropdown">
-                {% if user %}
-                    <div class="dropdown-header">
-                        <div class="dropdown-name">{{ user.name }} {{ user.surname }}</div>
-                        <div class="dropdown-username">@{{ user.username }}</div>
-                        <span class="dropdown-status">{{ user.status }}</span>
+        <!-- Tezkor Stats / Navigatsiya -->
+        <div class="nav-stats-bar">
+            <a href="https://quizer.{{ domain }}" class="nav-stat-chip">⚡ Quizer Testlar</a>
+            <a href="https://sagent.{{ domain }}" class="nav-stat-chip">🤖 SAgent AI</a>
+            <a href="/wallet" class="nav-stat-chip">💎 Hamyon</a>
+        </div>
+
+        <!-- Profil Dropdown -->
+        <div class="profile-container" id="profile-container-box">
+            {% if user %}
+                <button class="profile-trigger-btn" type="button">
+                    <div class="avatar-circle">
+                        {% if user.avatar_url %}
+                            <img src="{{ user.avatar_url }}" alt="{{ user.name }}">
+                        {% else %}
+                            {{ user.name[0] | upper }}
+                        {% endif %}
                     </div>
-                    <a href="/user/{{ user.id }}" class="dropdown-link">👤 Profilim</a>
-                    <a href="/apps" class="dropdown-link">🎯 Ilovalar</a>
-                    <a href="/users" class="dropdown-link">🏆 Reyting</a>
-                    <a href="https://auth.{{ domain }}/logout" class="dropdown-link logout">🚪 Chiqish</a>
-                {% else %}
-                    <div class="dropdown-header">
-                        <div class="dropdown-name">SStudio Xush kelibsiz</div>
-                        <div class="dropdown-username">Tizimga kiring</div>
+                    <span class="profile-label-name">{{ user.name }}</span>
+                    <span style="font-size: 10px; color: var(--text-dim);">▼</span>
+                </button>
+
+                <div class="cyber-dropdown">
+                    <div class="dropdown-user-info">
+                        <div class="dropdown-fullname">{{ user.name }} {{ user.surname }}</div>
+                        <div class="dropdown-handle">@{{ user.username }}</div>
+                        <div class="dropdown-badge-row">
+                            <span class="dropdown-badge">{{ user.status or 'FOYDALANUVCHI' }}</span>
+                            {% if user.school_name %}
+                                <span class="dropdown-badge" style="border-color: rgba(0, 242, 254, 0.4); color: var(--neon-cyan);">{{ user.school_name }}</span>
+                            {% endif %}
+                        </div>
                     </div>
-                    <a href="https://auth.{{ domain }}/login" class="dropdown-link">🔑 Kirish (Log in)</a>
-                    <a href="https://auth.{{ domain }}/register" class="dropdown-link">✨ Ro'yxatdan o'tish</a>
-                    <a href="/apps" class="dropdown-link">🎯 Ilovalar</a>
-                    <a href="/faq" class="dropdown-link">❓ FAQ</a>
-                {% endif %}
-            </div>
+                    <a href="/user/{{ user.id }}" class="dropdown-link">👤 Profil & Kiber-Dashboard</a>
+                    <a href="/wallet" class="dropdown-link">💎 SCoin & Tariflar</a>
+                    <a href="/storage" class="dropdown-link">☁️ SStorage Xotira (40MB)</a>
+                    <a href="/users" class="dropdown-link">🏆 Maktablar Reytingi</a>
+                    <a href="https://auth.{{ domain }}/logout" class="dropdown-link logout">🚪 Xavfsiz Chiqish</a>
+                </div>
+            {% else %}
+                <button class="profile-trigger-btn" type="button">
+                    <div class="avatar-circle">✦</div>
+                    <span class="profile-label-name">Kirish</span>
+                    <span style="font-size: 10px; color: var(--text-dim);">▼</span>
+                </button>
+
+                <div class="cyber-dropdown">
+                    <div class="dropdown-user-info">
+                        <div class="dropdown-fullname">SStudio Kiber-Ekotizim</div>
+                        <div class="dropdown-handle">Profilga kiring</div>
+                    </div>
+                    <a href="https://auth.{{ domain }}/login" class="dropdown-link" style="color: var(--neon-cyan);">🔑 Kirish (Sign In)</a>
+                    <a href="https://auth.{{ domain }}/register" class="dropdown-link" style="color: #ffffff; background: rgba(99, 102, 241, 0.2);">✨ Ro'yxatdan o'tish</a>
+                    <a href="/apps" class="dropdown-link">🎯 Barcha Ilovalar</a>
+                    <a href="/faq" class="dropdown-link">❓ Yordam va FAQ</a>
+                </div>
+            {% endif %}
         </div>
     </header>
 
-    <main class="main-container">
+    <!-- Asosiy Arena -->
+    <main class="main-stage">
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="footer">
-        <div>© 2026 SSTUDIO. CYBER EDUCATION ECOSYSTEM.</div>
-        <div>
-            <a href="/privacy">Maxfiylik</a>
-            <a href="/terms">Shartlar</a>
+    <!-- ========================================================
+         MENYUBAR V3 (PASTKI SUZUVCHI CYBER DOCK)
+         ======================================================== -->
+    <nav class="menyubar-v3-dock" aria-label="Asosiy Menyubar">
+        <a href="/" class="dock-item {% if active_page == 'home' %}active{% endif %}">
+            <span class="dock-item-icon">🏠</span>
+            <span class="dock-item-label">Asosiy</span>
+        </a>
+        <a href="https://quizer.{{ domain }}" class="dock-item {% if active_page == 'quizer' %}active{% endif %}">
+            <span class="dock-item-icon">⚡</span>
+            <span class="dock-item-label">Quizer</span>
+        </a>
+        <a href="https://sagent.{{ domain }}" class="dock-item {% if active_page == 'sagent' %}active{% endif %}">
+            <span class="dock-item-icon">🤖</span>
+            <span class="dock-item-label">SAgent</span>
+        </a>
+        <a href="/apps" class="dock-item {% if active_page == 'apps' %}active{% endif %}">
+            <span class="dock-item-icon">🎯</span>
+            <span class="dock-item-label">Ilovalar</span>
+        </a>
+        <a href="/users" class="dock-item {% if active_page == 'users' %}active{% endif %}">
+            <span class="dock-item-icon">🏆</span>
+            <span class="dock-item-label">Reyting</span>
+        </a>
+        <a href="/wallet" class="dock-item {% if active_page == 'wallet' %}active{% endif %}">
+            <span class="dock-item-icon">💎</span>
+            <span class="dock-item-label">Hamyon</span>
+        </a>
+    </nav>
+
+    <!-- Kiber Footer -->
+    <footer class="cyber-footer">
+        <div>© 2026 SSTUDIO. BARCHA HUQUQLAR HIMOYALANGAN. KIBER-TA'LIM EKOTIZIMI.</div>
+        <div class="footer-links">
+            <a href="/terms">Foydalanish shartlari</a>
+            <a href="/privacy">Maxfiylik siyosati</a>
             <a href="/connect">Bog'lanish</a>
         </div>
     </footer>
 
     <script>
-        const profileBox = document.getElementById('profile-trigger-box');
-        profileBox.addEventListener('click', function(e) {
-            e.stopPropagation();
-            profileBox.classList.toggle('active');
-        });
-
-        document.addEventListener('click', function(e) {
-            if (!profileBox.contains(e.target)) {
-                profileBox.classList.remove('active');
-            }
-        });
+        // Profil dropdown boshqaruvi
+        const profileBox = document.getElementById('profile-container-box');
+        if (profileBox) {
+            profileBox.addEventListener('click', function(e) {
+                e.stopPropagation();
+                profileBox.classList.toggle('active');
+            });
+            document.addEventListener('click', function(e) {
+                if (!profileBox.contains(e.target)) {
+                    profileBox.classList.remove('active');
+                }
+            });
+        }
     </script>
+    {% block extra_scripts %}{% endblock %}
 </body>
 </html>

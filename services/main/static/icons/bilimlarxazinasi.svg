@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#0f0a1e"/>
+    </radialGradient>
+    <radialGradient id="glowGrad" cx="50%" cy="60%" r="50%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="chestBody" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#92400e"/>
+    </linearGradient>
+    <linearGradient id="chestLid" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="innerGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100" height="100" rx="22" fill="url(#bgGrad)"/>
+
+  <!-- Ambient glow behind chest -->
+  <ellipse cx="50" cy="65" rx="34" ry="20" fill="url(#glowGrad)"/>
+
+  <!-- Light rays from chest opening -->
+  <g opacity="0.55" filter="url(#glow)">
+    <line x1="50" y1="44" x2="28" y2="14" stroke="#fef3c7" stroke-width="1.2" stroke-linecap="round"/>
+    <line x1="50" y1="44" x2="38" y2="10" stroke="#fef3c7" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="50" y1="44" x2="50" y2="10" stroke="#fef3c7" stroke-width="1.8" stroke-linecap="round"/>
+    <line x1="50" y1="44" x2="62" y2="10" stroke="#fef3c7" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="50" y1="44" x2="72" y2="14" stroke="#fef3c7" stroke-width="1.2" stroke-linecap="round"/>
+  </g>
+
+  <!-- Chest Body -->
+  <rect x="22" y="54" width="56" height="33" rx="6" fill="url(#chestBody)" stroke="#fbbf24" stroke-width="1.5"/>
+  <!-- Body metal bands -->
+  <rect x="22" y="63" width="56" height="4" fill="#92400e" opacity="0.6"/>
+  <!-- Keyhole -->
+  <circle cx="50" cy="71" r="4" fill="#1e1b4b" stroke="#fbbf24" stroke-width="1"/>
+  <rect x="48" y="71" width="4" height="5" rx="1" fill="#1e1b4b"/>
+  <!-- Lock plate -->
+  <rect x="44" y="67" width="12" height="9" rx="2" fill="none" stroke="#fbbf24" stroke-width="1"/>
+  <!-- Corner bolts -->
+  <circle cx="26" cy="58" r="2" fill="#fbbf24"/>
+  <circle cx="74" cy="58" r="2" fill="#fbbf24"/>
+  <circle cx="26" cy="83" r="2" fill="#fbbf24"/>
+  <circle cx="74" cy="83" r="2" fill="#fbbf24"/>
+
+  <!-- Chest Lid (slightly open/rotated look) -->
+  <path d="M20 54 Q20 42 50 40 Q80 42 80 54 Z" fill="url(#chestLid)" stroke="#fbbf24" stroke-width="1.5"/>
+  <!-- Lid top edge highlight -->
+  <path d="M24 48 Q50 40 76 48" fill="none" stroke="#fef3c7" stroke-width="1" opacity="0.6"/>
+
+  <!-- Inner glow of open chest -->
+  <ellipse cx="50" cy="52" rx="22" ry="8" fill="url(#innerGlow)" opacity="0.8" filter="url(#glow)"/>
+
+  <!-- Floating stars / knowledge symbols -->
+  <g filter="url(#glow)" opacity="0.9">
+    <!-- Star left -->
+    <text x="30" y="34" font-size="9" text-anchor="middle" fill="#8b5cf6">★</text>
+    <!-- Book icon (simplified) -->
+    <rect x="44" y="20" width="12" height="10" rx="1" fill="#8b5cf6" opacity="0.8"/>
+    <line x1="50" y1="20" x2="50" y2="30" stroke="#fef3c7" stroke-width="0.8" opacity="0.7"/>
+    <!-- Star right -->
+    <text x="70" y="34" font-size="9" text-anchor="middle" fill="#f59e0b">★</text>
+    <!-- Small sparkles -->
+    <circle cx="35" cy="22" r="1.5" fill="#fbbf24"/>
+    <circle cx="65" cy="25" r="1" fill="#a78bfa"/>
+    <circle cx="20" cy="42" r="1" fill="#fbbf24"/>
+    <circle cx="80" cy="40" r="1" fill="#a78bfa"/>
+  </g>
+
+  <!-- Purple accent border glow -->
+  <rect x="1" y="1" width="98" height="98" rx="21" fill="none" stroke="#7c3aed" stroke-width="1.5" opacity="0.4"/>
+</svg>

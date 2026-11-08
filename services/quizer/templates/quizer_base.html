@@ -317,10 +317,93 @@
             color: var(--neon-cyan);
         }
 
+        /* Menyubar V3 Floating Cyber Dock */
+        .menyubar-v3-dock {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 990;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            background: rgba(10, 15, 33, 0.85);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border-radius: 40px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.65), 0 0 25px rgba(99, 102, 241, 0.18);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .menyubar-v3-dock:hover {
+            border-color: rgba(0, 242, 254, 0.45);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 35px rgba(0, 242, 254, 0.25);
+            transform: translateX(-50%) translateY(-2px);
+        }
+
+        .dock-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+            border-radius: 28px;
+            text-decoration: none;
+            color: var(--text-dim);
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .dock-item-icon {
+            font-size: 20px;
+            line-height: 1;
+            margin-bottom: 3px;
+            transition: transform 0.25s ease;
+        }
+
+        .dock-item-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        .dock-item:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .dock-item:hover .dock-item-icon {
+            transform: scale(1.18) translateY(-2px);
+        }
+
+        .dock-item.active {
+            color: #ffffff;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(0, 242, 254, 0.15));
+            border: 1px solid rgba(0, 242, 254, 0.4);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.25);
+        }
+
+        .dock-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            width: 14px;
+            height: 3px;
+            border-radius: 3px;
+            background-color: var(--neon-cyan);
+            box-shadow: 0 0 8px var(--neon-cyan);
+        }
+
         @media (max-width: 600px) {
             .navbar { padding: 14px 20px; }
             .footer { flex-direction: column; gap: 14px; text-align: center; }
             .footer a { margin: 0 8px; }
+            .dock-item { padding: 7px 11px; }
+            .dock-item-icon { font-size: 18px; }
+            .dock-item-label { font-size: 10px; }
         }
     </style>
     {% block extra_head %}{% endblock %}
@@ -373,6 +456,34 @@
     <main class="main-container">
         {% block content %}{% endblock %}
     </main>
+
+    <!-- MENYUBAR V3 (PASTKI SUZUVCHI CYBER DOCK) -->
+    <nav class="menyubar-v3-dock" aria-label="Asosiy Menyubar">
+        <a href="https://{{ domain }}" class="dock-item">
+            <span class="dock-item-icon">🏠</span>
+            <span class="dock-item-label">Asosiy</span>
+        </a>
+        <a href="/" class="dock-item active">
+            <span class="dock-item-icon">⚡</span>
+            <span class="dock-item-label">Quizer</span>
+        </a>
+        <a href="https://sagent.{{ domain }}" class="dock-item">
+            <span class="dock-item-icon">🤖</span>
+            <span class="dock-item-label">SAgent</span>
+        </a>
+        <a href="https://{{ domain }}/apps" class="dock-item">
+            <span class="dock-item-icon">🎯</span>
+            <span class="dock-item-label">Ilovalar</span>
+        </a>
+        <a href="https://{{ domain }}/users" class="dock-item">
+            <span class="dock-item-icon">🏆</span>
+            <span class="dock-item-label">Reyting</span>
+        </a>
+        <a href="https://{{ domain }}/wallet" class="dock-item">
+            <span class="dock-item-icon">💎</span>
+            <span class="dock-item-label">Hamyon</span>
+        </a>
+    </nav>
 
     <footer class="footer">
         <div>© 2026 SSTUDIO QUIZER. CYBER EDUCATION ECOSYSTEM.</div>

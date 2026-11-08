@@ -59,8 +59,33 @@ class TestEcosystemServices(unittest.TestCase):
     def test_admin_template_rendering(self):
         env = Environment(loader=FileSystemLoader(str(SERVICES_DIR / "admin" / "templates")))
         tmpl = env.get_template("dashboard.html")
-        rendered = tmpl.render(domain="sstudio.uz", user=None, metrics={"total_users": 10, "total_scoin": 500, "total_tests": 5}, pending_receipts=[])
-        self.assertIn("Boshqaruv", rendered)
+        rendered = tmpl.render(domain="sstudio.uz", user=None, metrics={"total_users": 10, "active_tests": 5, "total_revenue": 100, "flagged_logs": 2}, pending_receipts=[])
+        self.assertIn("Boshqaruv Paneli", rendered)
+
+    def test_sagent_routes_and_squiz_cipher(self):
+        from services.sagent.app.main import app as sagent_app
+        from services.sagent.app.tools import export_squiz_file, import_squiz_file
+        paths = [r.path for r in sagent_app.routes]
+        self.assertIn("/", paths)
+        self.assertIn("/api/chat", paths)
+        self.assertIn("/api/tools/generate-doc", paths)
+        self.assertIn("/api/tools/generate-slides", paths)
+        self.assertIn("/api/tools/generate-squiz", paths)
+        self.assertIn("/v1/chat/completions", paths)
+
+        # .squiz shifrlash va ochish tekshiruvi
+        test_payload = {
+            "title": "Kiber Test",
+            "subject": "Fizika",
+            "questions": [{"q": "Kuch birligi?", "a": "Nyuton"}]
+        }
+        file_path = export_squiz_file(test_payload, user_id=999, filename="test_unit.squiz")
+        self.assertTrue(Path(file_path).exists())
+        with open(file_path, "rb") as f:
+            decrypted = import_squiz_file(f.read())
+        self.assertEqual(decrypted["title"], "Kiber Test")
+        self.assertEqual(decrypted["subject"], "Fizika")
+        Path(file_path).unlink(missing_ok=True)
 
 
 if __name__ == "__main__":

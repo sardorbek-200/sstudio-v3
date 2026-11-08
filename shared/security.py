@@ -46,3 +46,26 @@ def decode_access_token(token: str) -> Optional[Dict[str, Any]]:
         return payload
     except jwt.PyJWTError:
         return None
+
+
+async def get_current_user_optional(request: Any = None) -> Optional[Dict[str, Any]]:
+    """Cookie orqali joriy foydalanuvchini oladi (agar kirgan bo'lsa)"""
+    if not request:
+        return None
+    token = request.cookies.get("sstudio_token")
+    if not token:
+        return None
+    return decode_access_token(token)
+
+
+async def get_current_user(request: Any = None) -> Dict[str, Any]:
+    """Majburiy kirgan foydalanuvchini oladi"""
+    user = await get_current_user_optional(request)
+    if not user:
+        from fastapi import HTTPException, status
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Tizimga kirish talab etiladi."
+        )
+    return user
+

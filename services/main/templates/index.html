@@ -1,201 +1,476 @@
 {% extends "base.html" %}
 
-{% block title %}SStudio — Cyber Education Platform{% endblock %}
+{% block title %}SStudio — Kelajak Ta'lim va Kiber Ekotizimi{% endblock %}
 
 {% block content %}
 <style>
-    .hero {
+    /* Hero Arena */
+    .hero-arena {
         text-align: center;
-        padding: 50px 0 70px;
+        padding: 40px 10px 70px;
         position: relative;
     }
 
-    .hero-badge {
+    .hero-cyber-pill {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        padding: 6px 16px;
-        border-radius: 30px;
-        background: rgba(99, 102, 241, 0.1);
-        border: 1px solid rgba(99, 102, 241, 0.3);
+        gap: 10px;
+        padding: 7px 18px;
+        border-radius: 40px;
+        background: rgba(99, 102, 241, 0.12);
+        border: 1px solid rgba(0, 242, 254, 0.35);
         color: var(--neon-cyan);
         font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 1px;
+        font-weight: 800;
+        letter-spacing: 1.2px;
         text-transform: uppercase;
         margin-bottom: 24px;
-        box-shadow: 0 0 20px rgba(0, 242, 254, 0.15);
+        box-shadow: 0 0 25px rgba(0, 242, 254, 0.2);
     }
 
-    .hero-title {
-        font-size: 52px;
+    .hero-headline {
+        font-size: 58px;
         font-weight: 900;
-        letter-spacing: -1px;
-        line-height: 1.15;
-        margin-bottom: 20px;
+        letter-spacing: -1.5px;
+        line-height: 1.12;
+        margin-bottom: 24px;
         text-transform: uppercase;
     }
 
-    .hero-title span {
-        background: linear-gradient(135deg, #00f2fe 0%, #4facfe 30%, #a855f7 100%);
+    .hero-headline .gradient-text {
+        background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 30%, var(--neon-cyan) 70%, var(--neon-purple) 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        filter: drop-shadow(0 0 25px rgba(0, 242, 254, 0.3));
+        filter: drop-shadow(0 0 35px rgba(0, 242, 254, 0.35));
     }
 
-    .hero-subtitle {
-        font-size: 17px;
-        color: var(--text-dim);
-        max-width: 620px;
-        margin: 0 auto 36px;
+    .hero-desc {
+        font-size: 18px;
+        color: var(--text-secondary);
+        max-width: 720px;
+        margin: 0 auto 40px;
         line-height: 1.7;
+        font-weight: 400;
     }
 
-    .hero-actions {
+    .hero-actions-cluster {
         display: flex;
+        align-items: center;
         justify-content: center;
         gap: 16px;
+        flex-wrap: wrap;
     }
 
-    .btn-cyber {
-        padding: 12px 28px;
-        border-radius: 10px;
-        font-size: 14px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        text-decoration: none;
-        transition: all 0.3s ease;
+    .btn-cyber-primary {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-    }
-
-    .btn-primary-cyber {
-        background: linear-gradient(135deg, var(--neon-primary), var(--neon-purple));
-        color: #fff;
+        gap: 10px;
+        padding: 14px 34px;
+        border-radius: 14px;
+        font-size: 15px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        text-decoration: none;
+        color: #ffffff;
+        background: linear-gradient(135deg, var(--neon-violet), var(--neon-purple));
         border: 1px solid rgba(255, 255, 255, 0.2);
-        box-shadow: 0 0 25px rgba(99, 102, 241, 0.4);
+        box-shadow: 0 0 30px rgba(99, 102, 241, 0.45);
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    .btn-primary-cyber:hover {
-        box-shadow: 0 0 35px rgba(168, 85, 247, 0.6);
-        transform: translateY(-2px);
+    .btn-cyber-primary:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 0 45px rgba(168, 85, 247, 0.65);
     }
 
-    .btn-glass {
-        background: var(--glass-card);
-        color: var(--text-main);
-        border: 1px solid var(--glass-border);
-        backdrop-filter: blur(12px);
-    }
-
-    .btn-glass:hover {
-        background: var(--glass-hover);
-        border-color: var(--neon-cyan);
-        box-shadow: 0 0 20px rgba(0, 242, 254, 0.25);
-        transform: translateY(-2px);
-    }
-
-    /* Cyber Glass Grid */
-    .cyber-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 24px;
-        margin-top: 40px;
-    }
-
-    .glass-card {
+    .btn-cyber-glass {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 30px;
+        border-radius: 14px;
+        font-size: 15px;
+        font-weight: 700;
+        text-decoration: none;
+        color: var(--text-primary);
         background: var(--glass-card);
         border: 1px solid var(--glass-border);
         backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border-radius: 20px;
-        padding: 30px;
-        position: relative;
-        overflow: hidden;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: all 0.3s ease;
     }
 
-    .glass-card::before {
+    .btn-cyber-glass:hover {
+        border-color: var(--neon-cyan);
+        color: var(--neon-cyan);
+        background: var(--glass-card-hover);
+        box-shadow: 0 0 25px rgba(0, 242, 254, 0.25);
+        transform: translateY(-3px);
+    }
+
+    /* Kiber Statistika Barometri */
+    .metrics-barometer {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin: 50px 0 70px;
+        padding: 24px;
+        background: var(--glass-card);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 var(--specular-highlight);
+    }
+
+    .metric-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 12px;
+        border-right: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .metric-cell:last-child {
+        border-right: none;
+    }
+
+    .metric-value {
+        font-size: 32px;
+        font-weight: 900;
+        color: #ffffff;
+        font-family: var(--font-mono);
+        background: linear-gradient(135deg, #ffffff, var(--neon-cyan));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        line-height: 1.1;
+        margin-bottom: 6px;
+    }
+
+    .metric-label {
+        font-size: 12px;
+        color: var(--text-dim);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+    }
+
+    /* Kiber Ekotizim Matritsasi */
+    .section-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .section-badge {
+        font-size: 11px;
+        font-weight: 800;
+        color: var(--neon-blue);
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        display: inline-block;
+    }
+
+    .section-title {
+        font-size: 36px;
+        font-weight: 900;
+        color: #ffffff;
+        letter-spacing: -0.5px;
+    }
+
+    .cyber-ecosystem-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+        gap: 28px;
+    }
+
+    .cyber-matrix-card {
+        background: var(--glass-card);
+        border: 1px solid var(--glass-border);
+        border-radius: 26px;
+        padding: 34px 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 var(--specular-highlight);
+        transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .cyber-matrix-card::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
-        width: 100%;
+        right: 0;
         height: 2px;
         background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
         opacity: 0;
-        transition: opacity 0.3s;
+        transition: opacity 0.35s ease;
     }
 
-    .glass-card:hover {
-        transform: translateY(-6px);
-        border-color: rgba(99, 102, 241, 0.45);
-        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6), 0 0 20px rgba(99, 102, 241, 0.2);
+    .cyber-matrix-card:hover {
+        transform: translateY(-8px);
+        background: var(--glass-card-hover);
+        border-color: var(--glass-border-bright);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 35px rgba(0, 242, 254, 0.25);
     }
 
-    .glass-card:hover::before {
+    .cyber-matrix-card:hover::before {
         opacity: 1;
     }
 
-    .card-icon {
-        font-size: 32px;
-        margin-bottom: 16px;
-        display: inline-block;
-        filter: drop-shadow(0 0 12px rgba(99, 102, 241, 0.5));
+    .card-top-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 22px;
+    }
+
+    .card-emblem-box {
+        width: 60px;
+        height: 60px;
+        border-radius: 18px;
+        background: rgba(99, 102, 241, 0.15);
+        border: 1px solid rgba(0, 242, 254, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.35);
+        transition: transform 0.3s ease;
+    }
+
+    .cyber-matrix-card:hover .card-emblem-box {
+        transform: scale(1.1) rotate(4deg);
+        box-shadow: 0 0 25px rgba(0, 242, 254, 0.5);
+    }
+
+    .card-status-badge {
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        padding: 4px 10px;
+        border-radius: 12px;
+        background: rgba(0, 242, 254, 0.12);
+        color: var(--neon-cyan);
+        border: 1px solid rgba(0, 242, 254, 0.3);
     }
 
     .card-title {
-        font-size: 20px;
+        font-size: 22px;
         font-weight: 800;
-        color: #fff;
-        margin-bottom: 8px;
+        color: #ffffff;
+        margin-bottom: 10px;
     }
 
     .card-desc {
         font-size: 14px;
         color: var(--text-dim);
-        line-height: 1.6;
+        line-height: 1.65;
+        margin-bottom: 26px;
+    }
+
+    .card-link-btn {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 18px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        text-decoration: none;
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--glass-border);
+        transition: all 0.25s ease;
+    }
+
+    .card-link-btn:hover {
+        background: linear-gradient(135deg, var(--neon-violet), var(--neon-purple));
+        border-color: rgba(255, 255, 255, 0.3);
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
     }
 
     @media (max-width: 768px) {
-        .hero-title { font-size: 34px; }
-        .hero-subtitle { font-size: 15px; }
-        .hero-actions { flex-direction: column; align-items: center; }
+        .hero-headline { font-size: 36px; }
+        .hero-desc { font-size: 15px; }
+        .metric-cell { border-right: none; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
+        .metric-cell:last-child { border-bottom: none; }
     }
 </style>
 
-<section class="hero">
-    <div class="hero-badge">⚡ Next-Gen Cyber Ecosystem</div>
-    <h1 class="hero-title">Kelajak <span>Ta'lim Tizimi</span></h1>
-    <p class="hero-subtitle">
-        AI quvvati bilan testlar tuzish, shaffof maktablar reytingi va kiber-ekotizim ilovalari bir joyda.
+<!-- Hero Section -->
+<section class="hero-arena">
+    <div class="hero-cyber-pill">✦ SSTUDIO 3.0 • INTERAKTIV KIBER-EKOTIZIM ✦</div>
+    
+    <h1 class="hero-headline">
+        Kelajak Ta'limining <br>
+        <span class="gradient-text">Yangi Kiber Avlodi</span>
+    </h1>
+
+    <p class="hero-desc">
+        Anti-Cheat bilan xavfsiz testlar o'tkazish, Gemini AI quvvatidagi aqlli <b>SAgent</b>, 
+        darsliklardan avtomatik test/slaydlar generatsiyasi va O'zbekiston bo'ylab shaffof maktablar reytingi.
     </p>
 
-    <div class="hero-actions">
-        <a href="/apps" class="btn-cyber btn-primary-cyber">Ilovalar katalogi</a>
-        <a href="/users" class="btn-cyber btn-glass">Foydalanuvchilar</a>
+    <div class="hero-actions-cluster">
+        <a href="https://quizer.{{ domain }}" class="btn-cyber-primary">⚡ Quizer Testlariga Kirish</a>
+        <a href="https://sagent.{{ domain }}" class="btn-cyber-glass">🤖 SAgent AI bilan Suhbat</a>
+        <a href="/apps" class="btn-cyber-glass">🎯 Barcha Ilovalar</a>
     </div>
 </section>
 
-<div class="cyber-grid">
-    <div class="glass-card">
-        <div class="card-icon">🎯</div>
-        <div class="card-title">Quizer Platformasi</div>
-        <p class="card-desc">AI asosidagi test sinovlari, 5 xil savol turlari, maxfiy PIN-kodli testlar va anti-cheat nazorati.</p>
+<!-- Kiber Barometr (Statistika) -->
+<div class="metrics-barometer">
+    <div class="metric-cell">
+        <div class="metric-value">100%</div>
+        <div class="metric-label">Xavfsiz Anti-Cheat</div>
+    </div>
+    <div class="metric-cell">
+        <div class="metric-value">50K</div>
+        <div class="metric-label">Kunlik Bepul Token</div>
+    </div>
+    <div class="metric-cell">
+        <div class="metric-value">7 Xil</div>
+        <div class="metric-label">Test Savol Turlari</div>
+    </div>
+    <div class="metric-cell">
+        <div class="metric-value">40 MB</div>
+        <div class="metric-label">SStorage Shaxsiy Xotira</div>
+    </div>
+    <div class="metric-cell">
+        <div class="metric-value">Top-100</div>
+        <div class="metric-label">Maktablar Reytingi</div>
+    </div>
+</div>
+
+<!-- Ekotizim Modullari Matritsasi -->
+<div class="section-header">
+    <span class="section-badge">INTEGRATSIYALASHGAN MODULLAR</span>
+    <h2 class="section-title">SStudio Kiber-Ekotizimi</h2>
+</div>
+
+<div class="cyber-ecosystem-grid">
+
+    <!-- Quizer -->
+    <div class="cyber-matrix-card">
+        <div>
+            <div class="card-top-row">
+                <div class="card-emblem-box">⚡</div>
+                <span class="card-status-badge">ONLINE • XAVFSIZ</span>
+            </div>
+            <h3 class="card-title">Quizer Platformasi</h3>
+            <p class="card-desc">
+                Qat'iy Anti-Cheat (to'liq ekran, oynadan chiqish limiti), PIN-kodli yopiq testlar, 
+                jonli kiber-radar nazorati va shifrlangan <code>.squiz</code> test fayllari bilan imtihonlar o'tkazish.
+            </p>
+        </div>
+        <a href="https://quizer.{{ domain }}" class="card-link-btn">
+            <span>Quizerga O'tish</span>
+            <span>→</span>
+        </a>
     </div>
 
-    <div class="glass-card">
-        <div class="card-icon">🏛️</div>
-        <div class="card-title">Maktablar Reytingi</div>
-        <p class="card-desc">Gemini AI orqali ta'lim muassasasi nomlari yagona standartga keltirilib, butun respublika bo'yicha baholanadi.</p>
+    <!-- SAgent -->
+    <div class="cyber-matrix-card">
+        <div>
+            <div class="card-top-row">
+                <div class="card-emblem-box">🤖</div>
+                <span class="card-status-badge">GEMINI HYPER-CORE</span>
+            </div>
+            <h3 class="card-title">SAgent Sun'iy Intellekti</h3>
+            <p class="card-desc">
+                Word (.docx), PowerPoint (.pptx) slaydlar va testlarni bir zumda generatsiya qiluvchi haqiqiy AI agent. 
+                Freemium uchun kuniga 50K token va dasturchilar uchun ochiq API.
+            </p>
+        </div>
+        <a href="https://sagent.{{ domain }}" class="card-link-btn">
+            <span>SAgent bilan Ishlash</span>
+            <span>→</span>
+        </a>
     </div>
 
-    <div class="glass-card">
-        <div class="card-icon">💎</div>
-        <div class="card-title">S-Shop & SCoin</div>
-        <p class="card-desc">Ta'limiy yutuqlar, virtual hamyon, omad charxi va qo'shimcha kvotalar ekotizimi.</p>
+    <!-- Maktablar Reytingi -->
+    <div class="cyber-matrix-card">
+        <div>
+            <div class="card-top-row">
+                <div class="card-emblem-box">🏛️</div>
+                <span class="card-status-badge">AI STANDART</span>
+            </div>
+            <h3 class="card-title">Maktablar Kiber-Reytingi</h3>
+            <p class="card-desc">
+                O'quvchilar kiritgan maktab nomlari Gemini AI orqali yagona standartga keltirilib, 
+                Respublika va Viloyat bo'yicha shaffof ta'lim reytingi shakllantiriladi.
+            </p>
+        </div>
+        <a href="/users" class="card-link-btn">
+            <span>Reytingni Ko'rish</span>
+            <span>→</span>
+        </a>
     </div>
+
+    <!-- SStorage Cloud -->
+    <div class="cyber-matrix-card">
+        <div>
+            <div class="card-top-row">
+                <div class="card-emblem-box">☁️</div>
+                <span class="card-status-badge">40 MB BEPUL</span>
+            </div>
+            <h3 class="card-title">SStorage Kiber-Xotira</h3>
+            <p class="card-desc">
+                Foydalanuvchining shaxsiy darsliklari, SAgent yaratgan hujjatlar va <code>.squiz</code> 
+                fayllarini xavfsiz saqlash hamda Quizer ga bir zumda Drag & Drop qilish imkoniyati.
+            </p>
+        </div>
+        <a href="/storage" class="card-link-btn">
+            <span>Xotirani Ochish</span>
+            <span>→</span>
+        </a>
+    </div>
+
+    <!-- Hamyon va Tariflar -->
+    <div class="cyber-matrix-card">
+        <div>
+            <div class="card-top-row">
+                <div class="card-emblem-box">💎</div>
+                <span class="card-status-badge">SCoin & 30+ TARIF</span>
+            </div>
+            <h3 class="card-title">Hamyon va Kiber-Tariflar</h3>
+            <p class="card-desc">
+                Karta orqali to'lov, chek rasmini yuklaganda <b>Gemini Flash avtomatik OCR</b> tekshiruvi, 
+                SCoin tangalari va o'qituvchilar/o'quvchilar uchun moslashuvchan tariflar.
+            </p>
+        </div>
+        <a href="/wallet" class="card-link-btn">
+            <span>Hamyonni Boshqarish</span>
+            <span>→</span>
+        </a>
+    </div>
+
+    <!-- Rasmiy Kiber-Olimpiadalar -->
+    <div class="cyber-matrix-card">
+        <div>
+            <div class="card-top-row">
+                <div class="card-emblem-box">🏆</div>
+                <span class="card-status-badge">ULTRA-SECURITY</span>
+            </div>
+            <h3 class="card-title">Kiber-Olimpiadalar</h3>
+            <p class="card-desc">
+                Respublika miqyosida o'tkaziluvchi rasmiy bellashuvlar: Device Fingerprint, yagona vaqt sinxronizatsiyasi 
+                va qimmatbaho SCoin mukofotlari bilan katta sinov maydoni.
+            </p>
+        </div>
+        <a href="https://quizer.{{ domain }}/olympiads" class="card-link-btn">
+            <span>Olimpiadalar Jadvali</span>
+            <span>→</span>
+        </a>
+    </div>
+
 </div>
 {% endblock %}
