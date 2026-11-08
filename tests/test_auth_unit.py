@@ -40,6 +40,17 @@ class TestAuthCore(unittest.TestCase):
         self.assertEqual(req.username, "sardor_dev")
         self.assertEqual(req.birthday.year, 2013)
 
+        # Tug'ilgan sana kiritilmagan holat
+        valid_data_no_birthday = {
+            "username": "saloxiddin",
+            "password": "mypassword123",
+            "name": "Salohiddin",
+            "surname": "Jurayev",
+            "gmail": "salohiddin@example.com"
+        }
+        req_no_bday = RegisterRequest(**valid_data_no_birthday)
+        self.assertIsNone(req_no_bday.birthday)
+
 
 if __name__ == "__main__":
     unittest.main()
