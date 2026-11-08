@@ -7,7 +7,7 @@ Type=simple
 User=root
 WorkingDirectory=/root/app/v3
 EnvironmentFile=/root/app/v3/.env
-ExecStart=/root/app/v3/.venv/bin/uvicorn services.sagent.app.main:app --host 127.0.0.1 --port 8004 --workers 2
+ExecStart=/root/app/v3/.venv/bin/uvicorn services.sagent.app.main:app --host 127.0.0.1 --port 8004 --workers 1
 Restart=always
 RestartSec=3
 
